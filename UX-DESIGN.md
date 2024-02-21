@@ -5,6 +5,9 @@
 
 ## Wireframe Diagram
 
+### Entire Wireframe Diagram
+![Alt text](ux-design/wireframe-diagram/Wireframe.jpg)
+
 ### Create Account Page
 ![Alt text](<ux-design/wireframe-diagram/Create Account.png>)
 
