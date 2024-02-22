@@ -1,19 +1,38 @@
-# Project Repository
+# Crypto Portfolio Tracker and Analyzer
 
-This repository will be used for team projects.
+## Product Vision Statement
+The Crypto Portfolio Tracker and Analyzer aims to empower individual crypto investors by providing a comprehensive and intuitive platform to track and analyze the performance of their cryptocurrency investments. In the fast-paced and volatile crypto market, staying informed is key to making educated investment decisions. Our application addresses this need by offering real-time market data, insightful analysis, and user-friendly data visualization to cater to both novice and experienced traders.
 
-Several sets of instructions are included in this repository. They should each be treated as separate assignments with their own due dates and sets of requirements.
+## Core Team
+- **Reyhan Abdul Quayum** - Developer  
+  GitHub: [Reyhan's GitHub](https://github.com/ReyhanQ)  
 
-1. See the [App Map & Wireframes](instructions-0a-app-map-wireframes.md) and [Prototyping](./instructions-0b-prototyping.md) instructions for the requirements of the initial user experience design of the app.
+- **Alessandro Landi** - Developer  
+  GitHub: [Alessandro's GitHub](https://github.com/alessandrolandi)  
 
-1. Delete the contents of this file and replace with the contents of a proper README.md, as described in the [project setup instructions](./instructions-0c-project-setup.md)
+## Project Genesis
+The idea for the Crypto Portfolio Tracker and Analyzer was born out of the personal experiences of its creators, Reyhan Quayum and Alessandro, who recognized the challenges of managing crypto investments through disparate platforms and tools. The project aims to consolidate various tools into a single, coherent application that provides real-time insights, trend analysis, and portfolio performance in an accessible manner for everyone invested in the cryptocurrency market.
 
-1. See the [Sprint Planning instructions](instructions-0d-sprint-planning.md) for the requirements of Sprint Planning for each Sprint.
+## Contributing
+We welcome contributions from the community! For more information on how to contribute, please refer to our [CONTRIBUTING.md](./CONTRIBUTING.md) document.
 
-1. See the [Front-End Development instructions](./instructions-1-front-end.md) for the requirements of the initial Front-End Development.
+## Building and Testing [INCOMPLETE]
+*Note: Detailed instructions will be added as the project develops.*
 
-1. See the [Back-End Development instructions](./instructions-2-back-end.md) for the requirements of the initial Back-End Development.
+To set up the project locally, ensure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed. Clone the repository and install dependencies:
 
-1. See the [Database Integration instructions](./instructions-3-database.md) for the requirements of integrating a database into the back-end.
+```bash
+git clone https://github.com/YourProjectRepository
+cd YourProjectRepository
+npm install
+```
 
-1. See the [Deployment instructions](./instructions-4-deployment.md) for the requirements of deploying an app.
+To run the project:
+```bash
+npm start
+```
+
+For testing:
+```bash
+npm test
+```
