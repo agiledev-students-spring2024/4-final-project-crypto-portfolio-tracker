@@ -10,8 +10,12 @@ The Crypto Portfolio Tracker and Analyzer aims to empower individual crypto inve
 - **Alessandro Landi** - Developer  
   GitHub: [Alessandro's GitHub](https://github.com/alessandrolandi)  
 
+- **Ryan Rim** - Developer  
+  GitHub: [Ryan's GitHub](https://github.com/rryan1010)  
+
+
 ## Project Genesis
-The idea for the Crypto Portfolio Tracker and Analyzer was born out of the personal experiences of its creators, Reyhan Quayum and Alessandro, who recognized the challenges of managing crypto investments through disparate platforms and tools. The project aims to consolidate various tools into a single, coherent application that provides real-time insights, trend analysis, and portfolio performance in an accessible manner for everyone invested in the cryptocurrency market.
+The idea for the Crypto Portfolio Tracker and Analyzer was born out of the personal experiences of its creators, Alessandro, Reyhan, and Ryan who recognized the challenges of managing crypto investments through disparate platforms and tools. The project aims to consolidate various tools into a single, coherent application that provides real-time insights, trend analysis, and portfolio performance in an accessible manner for everyone invested in the cryptocurrency market.
 
 ## Contributing
 We welcome contributions from the community! For more information on how to contribute, please refer to our [CONTRIBUTING.md](./CONTRIBUTING.md) document.
