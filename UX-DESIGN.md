@@ -1,5 +1,8 @@
 # User Experience Design
 
+## Link to Prototype
+[Figma Prototype](https://www.figma.com/file/BmB4nsH9YKMo9Ain20f8cl/Wireframe?type=design&node-id=0%3A1&mode=design&t=WtEkWT9zoQ15370X-1)
+
 ## App Map
 ![Alt text](ux-design/appmap.png)
 
