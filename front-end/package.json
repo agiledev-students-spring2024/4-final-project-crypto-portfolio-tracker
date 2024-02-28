@@ -1,0 +1,15 @@
+{
+  "name": "front-end",
+  "version": "1.0.0",
+  "description": "The front-end of your project will live in this directory by the end of Sprint 1.",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "tailwindcss build src/styles.css -o public/styles.css"
+    },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
