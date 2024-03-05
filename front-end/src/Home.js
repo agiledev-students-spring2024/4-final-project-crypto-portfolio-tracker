@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './Header';
 import { Link } from 'react-router-dom';
 import './styles.css';
 
@@ -9,8 +10,9 @@ const Home = props => {
                 <h1 className="text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
                     Crypto Portfolio Tracker
                 </h1>
+                <Header></Header>
                 <Link to="/login" className="my-4 mx-4 inline-block">Login</Link> 
-                <Link to="/settings" className="my-4 mx-4 inline-block">Login</Link>
+                <Link to="/settings" className="my-4 mx-4 inline-block">Settings</Link>
                 <Section title="News" />
                 <Section title="Recent Updates" />
             </div>
@@ -23,7 +25,7 @@ const Section = ({ title }) => (
         <h1 className='text-2xl font-extrabold my-4'>
             {title}
         </h1>
-        <div className='bg-gray-300 w-full p-4'>
+        <div className='bg-gray-300 p-4'>
             <ListItem />
             <ListItem />
             <ListItem />
