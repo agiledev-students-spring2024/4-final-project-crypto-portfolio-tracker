@@ -2,37 +2,48 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import './styles.css'
-import Header from './Header'
 
-const Login = props => {
+const Login = (props) => {
     return (
-        <div className="container flex justify-center items-center h-screen w-screen">
+        <div className="container flex h-screen w-screen items-center justify-center dark:bg-zinc-900 dark:text-white">
             <div className="container flex flex-col items-center">
-                <h1 className="mb-8 my-5 flex justify-center text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
+                <h1 className="my-5 mb-8 flex justify-center text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
                     Login
                 </h1>
-                
-                <input className="p-4 my-4 border-b-4" type="text" name="username" placeholder="username" />
-                <input className="p-4 my-4 border-b-4" type="text" name="password" placeholder="password" />
 
-                <div className="container flex flex-row justify-center items-center mt-5">
+                <input
+                    className="my-4 border-b-4 p-4 dark:border-primary dark:bg-black"
+                    type="text"
+                    name="username"
+                    placeholder="username"
+                />
+                <input
+                    className="my-4 border-b-4 p-4 dark:border-primary dark:bg-black"
+                    type="password"
+                    name="password"
+                    placeholder="password"
+                />
+
+                <div className="container mt-5 flex flex-row items-center justify-center">
                     <Link to="/register">
                         <p className="mr-3"> Register </p>
                     </Link>
                     <Link to="/forgot_password">
-                        <p className="ml-3"> Forgot Password? </p>
+                        <p className="ml-3 dark:text-orange-dark">
+                            {' '}
+                            Forgot Password?{' '}
+                        </p>
                     </Link>
                 </div>
-                
+
                 <Link to="/">
-                    <button className="bg-black text-white font-bold mt-8 py-3 px-12 rounded">
+                    <button className="bg-secondary mt-8 rounded bg-orange-light px-12 py-3 font-bold text-white dark:bg-orange-dark dark:text-black">
                         Login
                     </button>
                 </Link>
-                
             </div>
-        </div> 
-    );
+        </div>
+    )
 }
 
-export default Login;
+export default Login
