@@ -2,22 +2,20 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Login from './Login'
 import Register from './Register'
 import Forgot from './Forgot'
-import './styles.css';
+import './styles.css'
 
-const App = props => {
-  return (
-    < div className="App">
-      <Router>
-        <Routes>
-
-          <Route path="/login" element={<Login />}/>
-          <Route path="/register" element={<Register />}/>
-          <Route path="/forgot_password" element={<Forgot />}/>
-
-        </Routes>
-      </Router>
-    </div>
-  );
+const App = (props) => {
+    return (
+        <div className="App">
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/forgot_password" element={<Forgot />} />
+                </Routes>
+            </Router>
+        </div>
+    )
 }
 
-export default App;
+export default App
