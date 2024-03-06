@@ -20,7 +20,7 @@ const Home = props => {
 
 const Section = ({ title }) => (
     <div className="mx-1">
-        <h1 className='text-2xl font-extrabold my-4'>
+        <h1 className='text-2xl font-extrabold my-2'>
             {title}
         </h1>
         <div className='bg-gray-300 p-4'>
@@ -36,7 +36,7 @@ const Section = ({ title }) => (
 );
 
 const ListItem = () => (
-    <button className='bg-white my-2 p-4 shadow-md rounded-lg w-full block hover:bg-gradient-to-r from-pink-500 to-orange-500 hover:text-white'>
+    <button className='bg-white my-1 p-4 shadow-md rounded-lg w-full block hover:bg-gradient-to-r from-pink-500 to-orange-500 hover:text-white'>
         {/* Content goes here */}
         <p className='font-medium'>{'Sample Item Text'}</p>
         
