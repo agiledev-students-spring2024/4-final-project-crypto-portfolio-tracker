@@ -22,11 +22,14 @@ const Header = props => {
             <li className="nav-item">
               <Link to="/settings" className='px-3 py-2 rounded-md text-sm font-medium'>Settings</Link>
             </li>
+            <li className="nav-item">
+              <Link to="/news" className='px-3 py-2 rounded-md text-sm font-medium'>News</Link>
+            </li>
               <li className="nav-item">
                 <Link to="/about" className='px-3 py-2 rounded-md text-sm font-medium'>About</Link>
             </li>
           </ul>
-          <div className='md:hidden text-left size'>
+          <div className='md:hidden text-left p-2' style={{ maxWidth: '50px' }}>
               <Hamburger></Hamburger>
           </div>
         </nav>

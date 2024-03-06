@@ -1,46 +1,35 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './Header';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import './styles.css';
+import Header from './Header';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBitcoinSign} from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
-const Home = props => {
+const Home = (props) => {
     return (
-        <div className="container mx-auto p-4 h-screen w-screen">
-            <div className="text-center">
-                <h1 className="text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
-                    Crypto Portfolio Tracker
-                </h1>
-                <Header></Header>
-                <Section title="News" />
-                <Section title="Recent Updates" />
+      <div className="flex flex-col min-h-screen bg-dark-blue text-white">
+        <Header />
+    
+        <div className="flex flex-col items-center px-6 py-12">
+          <h1 className="text-4xl font-bold mb-4">Jump start your crypto portfolio </h1>
+          <p className="text-lg mb-8">CryptoTracker is the easiest place to track your cryptos in one place. Sign up and get started today.</p>
+          <form className="w-full max-w-md">
+            <div className="flex flex-col items-stretch mb-6">
+              <input 
+                type="email" 
+                placeholder="Email address"
+                className="px-4 py-3 mb-4 rounded-md text-black"
+              />
+              <button 
+              className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-3 rounded-md transition duration-300"
+              >
+                <Link to="/register">Sign Up</Link>
+              </button>
             </div>
+          </form>
         </div>
+      </div>
     );
-};
-
-const Section = ({ title }) => (
-    <div className="mx-1">
-        <h1 className='text-2xl font-extrabold my-2'>
-            {title}
-        </h1>
-        <div className='bg-gray-300 p-4'>
-            <div className="overflow-y-auto h-48">
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem />
-                <ListItem /> 
-            </div>
-        </div>
-    </div>
-);
-
-const ListItem = () => (
-    <button className='bg-white my-1 p-4 shadow-md rounded-lg w-full block hover:bg-gradient-to-r from-pink-500 to-orange-500 hover:text-white'>
-        {/* Content goes here */}
-        <p className='font-medium'>{'Sample Item Text'}</p>
-        
-    </button>
-);
+  };
 
 export default Home;
