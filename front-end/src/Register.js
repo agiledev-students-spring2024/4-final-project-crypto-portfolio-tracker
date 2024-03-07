@@ -12,25 +12,25 @@ const Register = (props) => {
                 </h1>
 
                 <input
-                    className="my-4 border-b-4 p-4 "
+                    className="my-4 border-b-4 p-4 dark:text-black"
                     type="text"
                     name="name"
                     placeholder="name"
                 />
                 <input
-                    className="my-4 border-b-4 p-4"
+                    className="my-4 border-b-4 p-4 dark:text-black"
                     type="text"
                     name="email"
                     placeholder="email"
                 />
                 <input
-                    className="my-4 border-b-4 p-4 "
+                    className="my-4 border-b-4 p-4 dark:text-black"
                     type="text"
                     name="username"
                     placeholder="username"
                 />
                 <input
-                    className="my-4 border-b-4 p-4 "
+                    className="my-4 border-b-4 p-4 dark:text-black"
                     type="text"
                     name="password"
                     placeholder="password"
