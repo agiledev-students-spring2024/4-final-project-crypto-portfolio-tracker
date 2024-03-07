@@ -1,46 +1,41 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './Header';
-import { Link } from 'react-router-dom';
-import './styles.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import Header from './Header'
+import { Link } from 'react-router-dom'
+import './styles.css'
 
-const News = props => {
+const News = (props) => {
     return (
-        <div className="container mx-auto p-4 h-screen w-screen">
+        <div className="container mx-auto h-screen w-screen p-4 dark:bg-dark-blue dark:text-white">
             <div className="text-center">
-                <h1 className="text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
-                    Crypto Portfolio Tracker
-                </h1>
                 <Header></Header>
                 <Section title="News" />
+                <br></br>
                 <Section title="Recent Updates" />
             </div>
         </div>
-    );
-};
+    )
+}
 
 const Section = ({ title }) => (
     <div className="mx-1">
-        <h1 className='text-2xl font-extrabold my-2'>
-            {title}
-        </h1>
-        <div className='bg-gray-300 p-4'>
-            <div className="overflow-y-auto h-48">
+        <h1 className="my-2 text-2xl font-extrabold">{title}</h1>
+        <div className="bg-gray-300 p-4">
+            <div className="h-48 overflow-y-auto">
                 <ListItem />
                 <ListItem />
                 <ListItem />
                 <ListItem />
-                <ListItem /> 
+                <ListItem />
             </div>
         </div>
     </div>
-);
+)
 
 const ListItem = () => (
-    <button className='bg-white my-1 p-4 shadow-md rounded-lg w-full block hover:bg-gradient-to-r from-pink-500 to-orange-500 hover:text-white'>
+    <button className="my-1 block w-full rounded-lg bg-white from-pink-500 to-orange-500 p-4 text-black shadow-md hover:bg-gradient-to-r hover:text-white">
         {/* Content goes here */}
-        <p className='font-medium'>{'Lorem ipsum'}</p>
-        
+        <p className="font-medium">{'Lorem ipsum'}</p>
     </button>
-);
+)
 
-export default News;
+export default News
