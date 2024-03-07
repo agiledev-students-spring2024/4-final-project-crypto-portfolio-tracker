@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import Header from './Header'
 import './Portfolio.css'
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
@@ -54,6 +55,7 @@ const Portfolio = () => {
   
     return (
         <div className="portfolio-container">
+            <Header></Header>
             <div className="portfolio-content">
             <div className="portfolio-graph">
                 <h2>Portfolio Performance Graph</h2>
