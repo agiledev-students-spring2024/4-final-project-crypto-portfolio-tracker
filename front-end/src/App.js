@@ -6,6 +6,7 @@ import Settings from './Settings'
 import About from './About'
 import Home from './Home'
 import Portfolio from './Portfolio'
+import CryptoList from './CryptoList'
 import News from './News'
 import './styles.css'
 
@@ -21,6 +22,7 @@ const App = (props) => {
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/news" element={<News />} />
                     <Route path="/portfolio" element={<Portfolio />} />
+                    <Route path="/cryptolist" element={<Portfolio />} />
                     <Route path="/About" element={<About />} />
                 </Routes>
             </Router>

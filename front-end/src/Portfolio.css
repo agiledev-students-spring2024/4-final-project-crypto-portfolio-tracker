@@ -1,0 +1,160 @@
+/* Portfolio.css */
+
+/* Use the dark blue as the primary background color and orange for highlights */
+.portfolio-container {
+    background-color: #14213d; /* Dark blue background */
+    color: #ffffff; /* White text for contrast */
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Style the graph container */
+.portfolio-graph {
+    background-color: #000000; /* Dark background for the graph */
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* More pronounced shadow for depth */
+    color: #ffffff; 
+    background-color: #14213d;
+}
+
+/* Style the portfolio section */
+.my-portfolio {
+    background-color: #151717; /* Slightly off-black background for the portfolio section */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    color: #ffffff; 
+    background-color: #14213d;
+}
+
+/* Style the assets list to make it look like a sleek table */
+.portfolio-assets {
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* Style the header row to use the accent color */
+.portfolio-asset-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fca311; /* Orange color for header */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Style individual asset items */
+.portfolio-asset-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e5e5e5; /* Light gray background for asset items */
+    color: #000000; /* Black text for contrast */
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Make the Add Coin button match the header */
+.add-asset-button {
+    background-color: #14213d; /* Orange background to stand out */
+    color: #ffffff; /* White text for readability */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+/* Style the form for adding assets */
+.add-asset-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+/* Style the inputs with darker colors and white text */
+.add-asset-form input {
+    background-color: #14213d;
+    color: #ffffff; /* White text for contrast */
+    border: 1px solid #e5e5e5; /* Subtle borders */
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    
+}
+
+/* Adjust input placeholder color for better readability */
+.add-asset-form input::placeholder {
+    color: #b1b1b1;
+}
+
+/* When on mobile or smaller screens */
+@media (max-width: 768px) {
+    .portfolio-asset-header, .portfolio-asset-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .add-asset-form {
+        width: 100%;
+    }
+
+    .add-asset-form input, .add-asset-button {
+        width: 100%; /* Full width on small screens */
+    }
+}
+
+
+/*Recharts Info*/
+
+/* Improve the visibility of the legend and labels */
+.recharts-legend-item-text,
+.recharts-label {
+  fill: #ffffff !important; /* Force white color text for SVG elements */
+    font-size: 12px; /* Adjust font size as needed */
+    text-anchor: 'middle'; /* Ensure the text is centered */
+}
+  
+
+/* Style tooltips for better readability */
+.recharts-tooltip-wrapper {
+    background-color: #14213d !important; /* Dark blue background for tooltip */
+    border-radius: 8px; /* Rounded corners for tooltip */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Shadow for depth */
+  }
+  
+.recharts-tooltip-item {
+color: #ffffff !important; /* White text for tooltip items */
+}
+
+
+
+/* Hamburger menu */
+.hamburger {
+    cursor: pointer;
+    /* Style your hamburger icon */
+  }
+  
+  .nav-menu {
+    display: none;
+    /* Hidden by default */
+  }
+  
+  .nav-menu.open {
+    display: block;
+    /* Shown when 'open' class is added, you'll need to position it as needed */
+  }
+  
+  @media (max-width: 768px) {
+    /* Assuming you want the hamburger menu for mobile view */
+    .nav-menu {
+      display: block;
+    }
+  }
+  
