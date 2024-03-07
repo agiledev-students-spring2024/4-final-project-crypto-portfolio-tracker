@@ -13,13 +13,13 @@ const Login = (props) => {
                 </h1>
 
                 <input
-                    className="my-4 border-b-4 p-4"
+                    className="my-4 border-b-4 p-4 dark:text-black"
                     type="text"
                     name="username"
                     placeholder="username"
                 />
                 <input
-                    className="dark:border-primary my-4 border-b-4 p-4"
+                    className="dark:border-primary my-4 border-b-4 p-4 dark:text-black"
                     type="password"
                     name="password"
                     placeholder="password"

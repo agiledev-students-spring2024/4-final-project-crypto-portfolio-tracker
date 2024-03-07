@@ -17,7 +17,7 @@ const Forgot = (props) => {
                 </p>
 
                 <input
-                    className="my-4 border-b-4 p-4"
+                    className="my-4 border-b-4 p-4 dark:text-black"
                     type="text"
                     name="email"
                     placeholder="email"
