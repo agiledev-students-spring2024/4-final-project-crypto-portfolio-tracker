@@ -22,10 +22,12 @@ const Home = (props) => {
                             placeholder="Email address"
                             className="mb-4 rounded-md px-4 py-3 text-black"
                         />
-
-                        <button className="hover:bg-oragne-dark rounded-md bg-orange-light py-3 font-bold text-white transition duration-300">
-                            <Link to="/register">Sign Up</Link>
-                        </button>
+                        <Link to="/register" className="block text-center">
+                            <button className="hover:bg-oragne-dark rounded-md bg-orange-light py-3 font-bold text-white transition duration-300 w-full">
+                                Sign Up
+                            </button>
+                        </Link>
+                        <p className="mb-8 text-sm py-2">Already have an account? <Link to="/login" className="text-blue-500 hover:text-blue-700">Log in</Link></p>
                     </div>
                 </form>
             </div>
