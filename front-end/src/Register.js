@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import './styles.css'
 
 const Register = (props) => {
+    const [email, setEmail] = useState('')
+    const location = useLocation()
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search)
+        const emailParam = queryParams.get('email')
+        if (emailParam) setEmail(decodeURIComponent(emailParam))
+    }, [location])
+
     return (
         <div className="container flex h-screen w-screen items-center justify-center dark:bg-dark-blue dark:text-white">
             <div className="container flex flex-col items-center">
@@ -19,9 +28,11 @@ const Register = (props) => {
                 />
                 <input
                     className="my-4 border-b-4 p-4 dark:text-black"
-                    type="text"
+                    type="email"
                     name="email"
-                    placeholder="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     className="my-4 border-b-4 p-4 dark:text-black"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import Header from './Header'
 import './CryptoList.css'
 
 const CryptoList = props => {
@@ -37,6 +38,7 @@ const CryptoList = props => {
 
     return (
         <div className="crypto-list-container">
+            <Header></Header>
             <div className="search-container">
                 <input
                     type="text"
