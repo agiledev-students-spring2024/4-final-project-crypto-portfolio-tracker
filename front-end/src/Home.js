@@ -32,10 +32,21 @@ const Home = (props) => {
                             placeholder="Email address"
                             className="mb-4 rounded-md px-4 py-3 text-black"
                         />
-                        <button type="submit" className="hover:bg-oragne-dark rounded-md bg-orange-light py-3 font-bold text-white transition duration-300 w-full">
-                                Sign Up
-                            </button>
-                        <p className="mb-8 text-sm py-2">Already have an account? <Link to="/login" className="text-blue-500 hover:text-blue-700">Log in</Link></p>
+                        <button
+                            type="submit"
+                            className="hover:bg-oragne-dark w-full rounded-md bg-orange-light py-3 font-bold text-white transition duration-300"
+                        >
+                            Sign Up
+                        </button>
+                        <p className="mb-8 py-2 text-sm">
+                            Already have an account?{' '}
+                            <Link
+                                to="/login"
+                                className="text-blue-500 hover:text-blue-700"
+                            >
+                                Log in
+                            </Link>
+                        </p>
                     </div>
                 </form>
             </div>
