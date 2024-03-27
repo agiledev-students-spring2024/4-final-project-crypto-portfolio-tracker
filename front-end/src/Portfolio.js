@@ -5,85 +5,141 @@ import Header from './Header'
 import './Portfolio.css'
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
-import { PieChart, Pie, Cell, Text, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    PieChart,
+    Pie,
+    Cell,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from 'recharts'
 
 // For column graph if needed to rollback
 // import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-
 const Portfolio = () => {
     // State for the list of assets and new asset inputs
     const [portfolioAssets, setPortfolioAssets] = useState([
-      { id: 1, name: 'BTC', amount: 0.5, value: 701.03 },
-      { id: 2, name: 'ETH', amount: 1, value: 391.16 },
-      { id: 3, name: 'SOL', amount: 2, value: 129.41 },
-      { id: 4, name: 'BCH', amount: 1, value: 452.89 },
-      { id: 5, name: 'ETC', amount: 10, value: 35.11 },
-    ]);
-    const [newAsset, setNewAsset] = useState({ name: '', amount: '', value: '' });
-  
+        { id: 1, name: 'BTC', amount: 0.5, value: 701.03 },
+        { id: 2, name: 'ETH', amount: 1, value: 391.16 },
+        { id: 3, name: 'SOL', amount: 2, value: 129.41 },
+        { id: 4, name: 'BCH', amount: 1, value: 452.89 },
+        { id: 5, name: 'ETC', amount: 10, value: 35.11 },
+    ])
+
+    // Mock data for the histogram
+    const lineChartData = [
+        { time: '14:00', USD: 560, BTC: 0.008, ETH: 0.16 },
+        { time: '15:00', USD: 570, BTC: 0.009, ETH: 0.17 },
+        // ... more data points will be needed
+    ]
+
+    const [newAsset, setNewAsset] = useState({
+        name: '',
+        amount: '',
+        value: '',
+    })
+
     // Add a new asset to the portfolio
     const addNewAsset = (e) => {
-      e.preventDefault();
-      const updatedAssets = [
-        ...portfolioAssets,
-        {
-          id: portfolioAssets.length + 1,
-          name: newAsset.name,
-          amount: Number(newAsset.amount),
-          value: Number(newAsset.value),
-        },
-      ];
-      setPortfolioAssets(updatedAssets);
-      setNewAsset({ name: '', amount: '', value: '' }); // Reset form
-    };
-  
+        e.preventDefault()
+        const updatedAssets = [
+            ...portfolioAssets,
+            {
+                id: portfolioAssets.length + 1,
+                name: newAsset.name,
+                amount: Number(newAsset.amount),
+                value: Number(newAsset.value),
+            },
+        ]
+        setPortfolioAssets(updatedAssets)
+        setNewAsset({ name: '', amount: '', value: '' }) // Reset form
+    }
+
     // Calculate total value for the portfolio
     const totalValue = portfolioAssets.reduce(
-        (acc, asset) => acc + (asset.amount * parseFloat(asset.value)),
+        (acc, asset) => acc + asset.amount * parseFloat(asset.value),
         0
-    );
-  
+    )
+
     // Map the data to include a percentage value for the pie chart
     const pieData = portfolioAssets.map((asset) => ({
-      name: asset.name,
-      value: ((asset.amount * parseFloat(asset.value)) / totalValue) * 100,
-    }));
-  
+        name: asset.name,
+        value: ((asset.amount * parseFloat(asset.value)) / totalValue) * 100,
+    }))
+
     // Define colors for the pie chart
-    const COLORS = ['#FFD700', '#FFA500', '#FF8C00', '#FF7F50', '#FF6347'];
-  
+    const COLORS = ['#FFD700', '#FFA500', '#FF8C00', '#FF7F50', '#FF6347']
+
     return (
         <div className="portfolio-container">
             <Header></Header>
             <div className="portfolio-content">
-            <div className="portfolio-graph">
-                <h2>Portfolio Performance Graph</h2>
+                {/* Histogram Chart */}
+                <div className="portfolio-graph">
+                    <h2>Portfolio Value Over Time</h2>
                     <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                        <Pie
-                            data={pieData}
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={80} // Adjust radius if necessary
-                            fill="#8884d8"
-                            dataKey="value"
-                            nameKey="name"
-                            label={renderCustomLabel}
-                            labelLine={false} // Hide label lines if they clutter the chart
+                        <LineChart data={lineChartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="time" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line
+                                type="monotone"
+                                dataKey="USD"
+                                stroke="#8884d8"
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="BTC"
+                                stroke="#82ca9d"
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="ETH"
+                                stroke="#ffc658"
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+                <div className="portfolio-graph">
+                    <h2>Portfolio Composition</h2>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                            <Pie
+                                data={pieData}
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80} // Adjust radius if necessary
+                                fill="#8884d8"
+                                dataKey="value"
+                                nameKey="name"
+                                label={renderCustomLabel}
+                                labelLine={false} // Hide label lines if they clutter the chart
                             >
-                            {pieData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
+                                {pieData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={COLORS[index % COLORS.length]}
+                                    />
+                                ))}
                             </Pie>
 
-                        <Tooltip formatter={(value) => `${value.toFixed(2)}%`} />
-                        <Legend />
-                    </PieChart>
+                            <Tooltip
+                                formatter={(value) => `${value.toFixed(2)}%`}
+                            />
+                            <Legend />
+                        </PieChart>
                     </ResponsiveContainer>
-            </div>
-            <div className="my-portfolio">
-                <h2>My Portfolio</h2>
+                </div>
+                <div className="my-portfolio">
+                    <h2>My Portfolio</h2>
                     <div className="portfolio-assets">
                         <div className="portfolio-asset-header">
                             <span>Coin</span>
@@ -92,44 +148,63 @@ const Portfolio = () => {
                             <span>Total Value</span>
                         </div>
                         {portfolioAssets.map((asset) => (
-                            <div key={asset.id} className="portfolio-asset-item">
-                            <span>{asset.name}</span>
-                            <span>{asset.amount}</span>
-                            <span>${asset.value.toFixed(2)}</span>
-                            <span>${(asset.amount * asset.value).toFixed(2)}</span>
+                            <div
+                                key={asset.id}
+                                className="portfolio-asset-item"
+                            >
+                                <span>{asset.name}</span>
+                                <span>{asset.amount}</span>
+                                <span>${asset.value.toFixed(2)}</span>
+                                <span>
+                                    ${(asset.amount * asset.value).toFixed(2)}
+                                </span>
+                            </div>
+                        ))}
                     </div>
-                    ))}
-            </div>
-            <form onSubmit={addNewAsset} className="add-asset-form">
-              <input
-                type="text"
-                placeholder="Coin name"
-                value={newAsset.name}
-                onChange={(e) => setNewAsset({ ...newAsset, name: e.target.value })}
-              />
-              <input
-                type="number"
-                placeholder="Number"
-                value={newAsset.amount}
-                onChange={(e) => setNewAsset({ ...newAsset, amount: e.target.value })}
-              />
-              <input
-                type="number"
-                placeholder="Value per Coin"
-                value={newAsset.value}
-                onChange={(e) => setNewAsset({ ...newAsset, value: e.target.value })}
-              />
-              <button type="submit">Add Coin</button>
-                </form>
+                    <form onSubmit={addNewAsset} className="add-asset-form">
+                        <input
+                            type="text"
+                            placeholder="Coin name"
+                            value={newAsset.name}
+                            onChange={(e) =>
+                                setNewAsset({
+                                    ...newAsset,
+                                    name: e.target.value,
+                                })
+                            }
+                        />
+                        <input
+                            type="number"
+                            placeholder="Number"
+                            value={newAsset.amount}
+                            onChange={(e) =>
+                                setNewAsset({
+                                    ...newAsset,
+                                    amount: e.target.value,
+                                })
+                            }
+                        />
+                        <input
+                            type="number"
+                            placeholder="Value per Coin"
+                            value={newAsset.value}
+                            onChange={(e) =>
+                                setNewAsset({
+                                    ...newAsset,
+                                    value: e.target.value,
+                                })
+                            }
+                        />
+                        <button type="submit">Add Coin</button>
+                    </form>
                 </div>
             </div>
-        </div>  
-    );
+        </div>
+    )
 }
 
-
 // Needed for charting
-const RADIAN = Math.PI / 180;
+const RADIAN = Math.PI / 180
 const renderCustomLabel = ({
     cx,
     cy,
@@ -138,24 +213,36 @@ const renderCustomLabel = ({
     outerRadius,
     percent,
     name,
-  }) => {
-    const radius = outerRadius + 10; // Label position outside the outerRadius
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    
-    return (
-      <g>
-        <text x={x} y={y} fill="#fff" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-          {name}
-        </text>
-        <text x={x} y={y + 20} fill="#fff" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-          {`${(percent * 100).toFixed(2)}%`}
-        </text>
-      </g>
-    );
-  };
+}) => {
+    const radius = outerRadius + 10 // Label position outside the outerRadius
+    const x = cx + radius * Math.cos(-midAngle * RADIAN)
+    const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
-export default Portfolio;
+    return (
+        <g>
+            <text
+                x={x}
+                y={y}
+                fill="#fff"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+            >
+                {name}
+            </text>
+            <text
+                x={x}
+                y={y + 20}
+                fill="#fff"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+            >
+                {`${(percent * 100).toFixed(2)}%`}
+            </text>
+        </g>
+    )
+}
+
+export default Portfolio
 
 /*
 
