@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import Header from './Header'
 import './Portfolio.css'
 // REQUIRES INSTALLATION OF Recharts Library.
@@ -23,8 +21,11 @@ import {
 // import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const Portfolio = () => {
+    const [showPortfolios, setShowPortfolios] = useState(false)
+    const [showAddModal, setShowAddModal] = useState(false)
+    const [bitcoinAddress, setBitcoinAddress] = useState('')
     // State for the list of assets and new asset inputs
-    const [portfolioAssets, setPortfolioAssets] = useState([
+    const [portfolioAssets] = useState([
         { id: 1, name: 'BTC', amount: 0.5, value: 701.03 },
         { id: 2, name: 'ETH', amount: 1, value: 391.16 },
         { id: 3, name: 'SOL', amount: 2, value: 129.41 },
@@ -32,34 +33,35 @@ const Portfolio = () => {
         { id: 5, name: 'ETC', amount: 10, value: 35.11 },
     ])
 
+    // Mockup data for the existing portfolios gonna make this come from backend later
+    const portfolios = [
+        {
+            id: 'portfolio-1',
+            name: 'Coinbase',
+            balance: '$557',
+            address: '0xa177...5e38',
+        },
+        // ... other portfolios
+    ]
+
+    // Function to handle adding new wallet or exchange
+    const handleAddWalletOrExchange = (e) => {
+        e.preventDefault()
+        // Here you would handle adding the Bitcoin address or connecting to Coinbase
+        console.log(bitcoinAddress)
+        // Reset the bitcoin address and close the modal
+        setBitcoinAddress('')
+        setShowAddModal(false)
+    }
+    const togglePortfolios = () => setShowPortfolios(!showPortfolios)
+    const toggleAddModal = () => setShowAddModal(!showAddModal)
+
     // Mock data for the histogram
     const lineChartData = [
         { time: '14:00', USD: 560, BTC: 0.008, ETH: 0.16 },
         { time: '15:00', USD: 570, BTC: 0.009, ETH: 0.17 },
         // ... more data points will be needed
     ]
-
-    const [newAsset, setNewAsset] = useState({
-        name: '',
-        amount: '',
-        value: '',
-    })
-
-    // Add a new asset to the portfolio
-    const addNewAsset = (e) => {
-        e.preventDefault()
-        const updatedAssets = [
-            ...portfolioAssets,
-            {
-                id: portfolioAssets.length + 1,
-                name: newAsset.name,
-                amount: Number(newAsset.amount),
-                value: Number(newAsset.value),
-            },
-        ]
-        setPortfolioAssets(updatedAssets)
-        setNewAsset({ name: '', amount: '', value: '' }) // Reset form
-    }
 
     // Calculate total value for the portfolio
     const totalValue = portfolioAssets.reduce(
@@ -80,6 +82,68 @@ const Portfolio = () => {
         <div className="portfolio-container">
             <Header></Header>
             <div className="portfolio-content">
+                {/* All Portfolios Button */}
+                <button
+                    className="all-portfolios-button"
+                    onClick={togglePortfolios}
+                >
+                    All Portfolios
+                </button>
+
+                {/* Portfolios List */}
+                {showPortfolios && (
+                    <div className="portfolios-list">
+                        {portfolios.map((portfolio) => (
+                            <div key={portfolio.id} className="portfolio-item">
+                                <span>{portfolio.name}</span>
+                                <span>{portfolio.balance}</span>
+                                <span>{portfolio.address}</span>
+                            </div>
+                        ))}
+                        <button
+                            className="add-wallet-exchange-button"
+                            onClick={toggleAddModal}
+                        >
+                            Add Wallet/Exchange
+                        </button>
+                    </div>
+                )}
+
+                {/* Add Wallet/Exchange Modal */}
+                {showAddModal && (
+                    <div className="modal">
+                        <div className="modal-background">
+                        <div className="modal-content">
+                            <span
+                                className="modal-close-button"
+                                onClick={toggleAddModal}
+                            >
+                                &times;
+                            </span>
+                            <h2>Add Wallet or Exchange</h2>
+                            <form onSubmit={handleAddWalletOrExchange}>
+                                <input
+                                    type="text"
+                                    placeholder="Bitcoin Wallet Address"
+                                    value={bitcoinAddress}
+                                    onChange={(e) =>
+                                        setBitcoinAddress(e.target.value)
+                                    }
+                                />
+                                <button type="submit">Add Wallet</button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        /* Coinbase connect logic  will go here*/
+                                    }}
+                                >
+                                    Add Coinbase Exchange
+                                </button>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                )}
                 {/* Histogram Chart */}
                 <div className="portfolio-graph">
                     <h2>Portfolio Value Over Time</h2>
@@ -161,42 +225,6 @@ const Portfolio = () => {
                             </div>
                         ))}
                     </div>
-                    <form onSubmit={addNewAsset} className="add-asset-form">
-                        <input
-                            type="text"
-                            placeholder="Coin name"
-                            value={newAsset.name}
-                            onChange={(e) =>
-                                setNewAsset({
-                                    ...newAsset,
-                                    name: e.target.value,
-                                })
-                            }
-                        />
-                        <input
-                            type="number"
-                            placeholder="Number"
-                            value={newAsset.amount}
-                            onChange={(e) =>
-                                setNewAsset({
-                                    ...newAsset,
-                                    amount: e.target.value,
-                                })
-                            }
-                        />
-                        <input
-                            type="number"
-                            placeholder="Value per Coin"
-                            value={newAsset.value}
-                            onChange={(e) =>
-                                setNewAsset({
-                                    ...newAsset,
-                                    value: e.target.value,
-                                })
-                            }
-                        />
-                        <button type="submit">Add Coin</button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -209,7 +237,6 @@ const renderCustomLabel = ({
     cx,
     cy,
     midAngle,
-    innerRadius,
     outerRadius,
     percent,
     name,
@@ -243,20 +270,3 @@ const renderCustomLabel = ({
 }
 
 export default Portfolio
-
-/*
-
-      <Text
-        x={x}
-        y={y}
-        fill="red" // or any color you want for the labels
-        textAnchor={x > cx ? 'start' : 'end'}
-        dominantBaseline="central"
-        style={{
-          fontSize: '0.8em', // Adjust font size as needed
-        }}
-      >
-        {`${name}: ${(percent * 100).toFixed(2)}%`}
-      </Text>
-
-*/
