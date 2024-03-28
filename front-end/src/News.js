@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom'
 import './styles.css'
 
 const News = (props) => {
-    const [news, setNews] = useState([])
+    const [data, setData] = useState([])
     useEffect(() => {
         const fetchNews = async () => {
             try {
                 const response = await fetch('http://localhost:3000/news')
                 const jsonData = await response.json()
-                setNews(jsonData.news)
+                setData(jsonData.data)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
@@ -27,7 +27,7 @@ const News = (props) => {
                     <h1 className="my-2 text-2xl font-extrabold">News</h1>
                     <div className="bg-gray-300 p-4">
                         <div className="h-48 overflow-y-auto">
-                            {news.map((item, index) => (
+                            {data.map((item, index) => (
                                 <ListItem
                                     url={item.url}
                                     title={item.title}
@@ -45,7 +45,7 @@ const News = (props) => {
                     </h1>
                     <div className="bg-gray-300 p-4">
                         <div className="h-48 overflow-y-auto">
-                            {news.map((item, index) => (
+                            {data.map((item, index) => (
                                 <ListItem
                                     url={item.url}
                                     title={item.title}
