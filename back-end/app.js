@@ -23,12 +23,6 @@ app.get("/news", (req, res, next) => {
         .catch(err => next(err))
 }); 
 
-
-//For CryptoList API
-const axios = require('axios');
-const cors = require('cors');
-app.use(cors());
-
 //For CryptoList API - Route handler for GET requests to the '/api/coins' endpoint
 
 app.get('/api/coins', async (req, res) => {
