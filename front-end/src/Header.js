@@ -36,6 +36,14 @@ const Header = (props) => {
                     </li>
                     <li className="nav-item">
                         <Link
+                            to="/cryptolist"
+                            className="rounded-md px-3 py-2 text-sm font-medium"
+                        >
+                            Cryptocurrencies
+                        </Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link
                             to="/settings"
                             className="rounded-md px-3 py-2 text-sm font-medium"
                         >

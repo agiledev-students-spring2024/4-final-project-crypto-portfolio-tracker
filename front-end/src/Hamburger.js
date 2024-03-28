@@ -10,6 +10,7 @@ import {
     faInfoCircle,
     faBriefcase,
     faNewspaper,
+    faArrowTrendUp
 } from '@fortawesome/free-solid-svg-icons';
 import './styles.css';
 
@@ -53,6 +54,13 @@ const Hamburger = () => {
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faBriefcase} className="mr-2" /> My Portfolio
+                </Link>
+                <Link
+                    to="/cryptolist"
+                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    onClick={() => setIsOpen(false)}
+                >
+                    <FontAwesomeIcon icon={faArrowTrendUp} className="mr-2" /> Cryptocurrencies
                 </Link>
                 <Link
                     to="/settings"
