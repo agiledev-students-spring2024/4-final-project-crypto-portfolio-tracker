@@ -7,7 +7,7 @@ const dotenv = require("dotenv");
 
 app.use(cors());
 
-app.get("/news", (req, res) => {
+app.get("/news", (req, res, next) => {
     const options = {
         method: 'GET',
         url: 'https://cryptocurrency-news2.p.rapidapi.com/v1/coindesk',
