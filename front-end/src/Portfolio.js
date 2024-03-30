@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Header from './Header'
+import './styles.css'
 import './Portfolio.css'
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
@@ -108,12 +109,11 @@ const Portfolio = () => {
     const COLORS = ['#FFD700', '#FFA500', '#FF8C00', '#FF7F50', '#FF6347']
 
     return (
-        <div className="portfolio-container">
+        <div className="min-h-screen bg-dark-blue p-5 text-white">
             <Header></Header>
-            <div className="portfolio-content">
-                {/* All Portfolios Button */}
+            <div className="content">
                 <button
-                    className="all-portfolios-button"
+                    className="bg-gradient-to-r from-orange-500 to-yellow-500 mb-4 rounded px-4 py-2 font-bold text-white transition duration-150 ease-in-out hover:shadow-lg"
                     onClick={togglePortfolios}
                 >
                     All Portfolios
@@ -121,23 +121,28 @@ const Portfolio = () => {
 
                 {/* Portfolios List */}
                 {showPortfolios && (
-                    <div className="portfolios-list">
-                        <table>
-                            <thead>
+                    <div className="overflow-x-auto">
+                        <table className="w-full overflow-hidden rounded-lg text-left">
+                            <thead className="bg-orange-light text-white">
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Address</th>
-                                    <th>Action</th>
+                                    <th className="p-3">Name</th>
+                                    <th className="p-3">Address</th>
+                                    <th className="p-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {portfolios.map((portfolio) => (
-                                    <tr key={portfolio.id}>
-                                        <td>{portfolio.name}</td>
-                                        <td>{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
-                                        <td>
-                                            <button className='
-                                            delete-button'
+                                    <tr
+                                        key={portfolio.id}
+                                        className="border-b border-gray-700"
+                                    >
+                                        <td className="p-3">
+                                            {portfolio.name}
+                                        </td>
+                                        <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
+                                        <td className="p-3">
+                                            <button
+                                                className="text-s rounded bg-red-500 px-3 py-1 text-white hover:bg-red-700"
                                                 onClick={() =>
                                                     handleDeletePortfolio(
                                                         portfolio.id
@@ -153,7 +158,7 @@ const Portfolio = () => {
                         </table>
 
                         <button
-                            className="add-wallet-exchange-button"
+                            className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
                             onClick={toggleAddModal}
                         >
                             Add Wallet/Exchange
@@ -208,7 +213,9 @@ const Portfolio = () => {
                 )}
 
                 <div className="portfolio-graph">
-                    <h2>Portfolio Composition</h2>
+                    <h2 className="my-2 text-2xl font-extrabold">
+                        Portfolio Composition
+                    </h2>
                     <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
                             <Pie
@@ -238,7 +245,9 @@ const Portfolio = () => {
                     </ResponsiveContainer>
                 </div>
                 <div className="my-portfolio">
-                    <h2>My Portfolio</h2>
+                    <h2 className="my-2 text-2xl font-extrabold">
+                        My Portfolio
+                    </h2>
                     <div className="portfolio-assets">
                         <div className="portfolio-asset-header">
                             <span>Coin</span>
