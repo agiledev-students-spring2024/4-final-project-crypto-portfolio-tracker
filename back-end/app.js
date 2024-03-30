@@ -38,6 +38,15 @@ app.post("/api/addWallet", async (req, res) => {
   res.json({ message: `Address ${address} received and processed.` });
 });
 
+app.delete("/api/deleteWallet/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log('DELETE request to /api/deleteWallet with ID ${id}')
+  // find wallet by ID and delete it -- neds to be implemented
+
+  //for now just send a message
+  res.json({message: `Wallet with ID ${id} deleted.`})
+})
+
 
 //For CryptoList API - Route handler for GET requests to the '/api/coins' endpoint
 

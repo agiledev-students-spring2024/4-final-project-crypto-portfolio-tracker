@@ -19,6 +19,8 @@ const Portfolio = () => {
     const [showPortfolios, setShowPortfolios] = useState(false)
     const [showAddModal, setShowAddModal] = useState(false)
     const [bitcoinAddress, setBitcoinAddress] = useState('')
+    const [walletName, setWalletName] = useState('')
+
     // State for the list of assets and new asset inputs
     const [portfolioAssets] = useState([
         { id: 1, name: 'BTC', amount: 0.5, value: 701.03 },
@@ -29,21 +31,27 @@ const Portfolio = () => {
     ])
 
     // Mockup data for the existing portfolios gonna make this come from backend later
-    const portfolios = [
+    const [portfolios, setPortfolios] = useState([
         {
             id: 'portfolio-1',
             name: 'Coinbase',
             balance: '$557',
             address: '0xa177...5e38',
         },
-        // ... other portfolios
-    ]
+        // gonna need more portfolios...
+    ])
 
+    
     // Function to handle adding new wallet or exchange
     const handleAddWalletOrExchange = async (e) => {
         e.preventDefault()
 
-        const walletData = { address: bitcoinAddress }
+        const newPortfolio = {
+            id: Date.now().toString(), // make an ID for it we can change later for when mongo
+            name: walletName,
+            address: bitcoinAddress,
+            balance: '$0', // default value for now
+        }
         try {
             // POST request to the back-end with the Bitcoin address
             const response = await fetch('/api/addWallet', {
@@ -51,20 +59,40 @@ const Portfolio = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(walletData),
+                body: JSON.stringify(newPortfolio),
             })
 
             const responseData = await response.json()
-
             console.log(responseData)
+
+            // update front end portfolio list
+            setPortfolios([...portfolios, newPortfolio])
+
         } catch (error) {
             console.error('Error posting wallet data:', error)
         }
 
-        // Reset the bitcoin address input and close the modal
-        setBitcoinAddress('')
+        setBitcoinAddress('') // reset the address
+        setWalletName('')
         setShowAddModal(false)
     }
+
+
+    const handleDeletePortfolio = async (id) => {
+        try {
+            const response = await fetch(`/api/deleteWallet/${id}`, {
+                method: 'DELETE',
+            })
+
+            const responseData = await response.json()
+            console.log(responseData)
+            setPortfolios(portfolios.filter((portfolio) => portfolio.id !== id));
+        } catch (error) {
+            console.errog('Error deleting wallet data:', error);
+        }
+    };
+
+
     const togglePortfolios = () => setShowPortfolios(!showPortfolios)
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
@@ -98,13 +126,35 @@ const Portfolio = () => {
                 {/* Portfolios List */}
                 {showPortfolios && (
                     <div className="portfolios-list">
-                        {portfolios.map((portfolio) => (
-                            <div key={portfolio.id} className="portfolio-item">
-                                <span>{portfolio.name}</span>
-                                <span>{portfolio.balance}</span>
-                                <span>{portfolio.address}</span>
-                            </div>
-                        ))}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {portfolios.map((portfolio) => (
+                                    <tr key={portfolio.id}>
+                                        <td>{portfolio.name}</td>
+                                        <td>{portfolio.address}</td>
+                                        <td>
+                                            <button
+                                                onClick={() =>
+                                                    handleDeletePortfolio(
+                                                        portfolio.id
+                                                    )
+                                                }
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
                         <button
                             className="add-wallet-exchange-button"
                             onClick={toggleAddModal}
@@ -127,6 +177,15 @@ const Portfolio = () => {
                                 </span>
                                 <h2>Add Wallet or Exchange</h2>
                                 <form onSubmit={handleAddWalletOrExchange}>
+                                    <input
+                                        type="text"
+                                        name="walletName"
+                                        placeholder="Portfolio Name"
+                                        value={walletName}
+                                        onChange={(e) =>
+                                            setWalletName(e.target.value)
+                                        }
+                                    />
                                     <input
                                         type="text"
                                         name="bitcoinAddress"
