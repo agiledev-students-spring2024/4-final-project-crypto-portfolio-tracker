@@ -4,11 +4,6 @@ import './Portfolio.css'
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
 import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
     PieChart,
     Pie,
     Cell,
@@ -45,23 +40,33 @@ const Portfolio = () => {
     ]
 
     // Function to handle adding new wallet or exchange
-    const handleAddWalletOrExchange = (e) => {
+    const handleAddWalletOrExchange = async (e) => {
         e.preventDefault()
-        // Here you would handle adding the Bitcoin address or connecting to Coinbase
-        console.log(bitcoinAddress)
-        // Reset the bitcoin address and close the modal
+
+        const walletData = { address: bitcoinAddress }
+        try {
+            // POST request to the back-end with the Bitcoin address
+            const response = await fetch('/api/addWallet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(walletData),
+            })
+
+            const responseData = await response.json()
+
+            console.log(responseData)
+        } catch (error) {
+            console.error('Error posting wallet data:', error)
+        }
+
+        // Reset the bitcoin address input and close the modal
         setBitcoinAddress('')
         setShowAddModal(false)
     }
     const togglePortfolios = () => setShowPortfolios(!showPortfolios)
     const toggleAddModal = () => setShowAddModal(!showAddModal)
-
-    // Mock data for the histogram
-    const lineChartData = [
-        { time: '14:00', USD: 560, BTC: 0.008, ETH: 0.16 },
-        { time: '15:00', USD: 570, BTC: 0.009, ETH: 0.17 },
-        // ... more data points will be needed
-    ]
 
     // Calculate total value for the portfolio
     const totalValue = portfolioAssets.reduce(
@@ -113,65 +118,39 @@ const Portfolio = () => {
                 {showAddModal && (
                     <div className="modal">
                         <div className="modal-background">
-                        <div className="modal-content">
-                            <span
-                                className="modal-close-button"
-                                onClick={toggleAddModal}
-                            >
-                                &times;
-                            </span>
-                            <h2>Add Wallet or Exchange</h2>
-                            <form onSubmit={handleAddWalletOrExchange}>
-                                <input
-                                    type="text"
-                                    placeholder="Bitcoin Wallet Address"
-                                    value={bitcoinAddress}
-                                    onChange={(e) =>
-                                        setBitcoinAddress(e.target.value)
-                                    }
-                                />
-                                <button type="submit">Add Wallet</button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        /* Coinbase connect logic  will go here*/
-                                    }}
+                            <div className="modal-content">
+                                <span
+                                    className="modal-close-button"
+                                    onClick={toggleAddModal}
                                 >
-                                    Add Coinbase Exchange
-                                </button>
-                            </form>
-                        </div>
+                                    &times;
+                                </span>
+                                <h2>Add Wallet or Exchange</h2>
+                                <form onSubmit={handleAddWalletOrExchange}>
+                                    <input
+                                        type="text"
+                                        name="bitcoinAddress"
+                                        placeholder="Bitcoin Wallet Address"
+                                        value={bitcoinAddress}
+                                        onChange={(e) =>
+                                            setBitcoinAddress(e.target.value)
+                                        }
+                                    />
+                                    <button type="submit">Add Wallet</button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            /* Coinbase connect logic  will go here*/
+                                        }}
+                                    >
+                                        Add Coinbase Exchange
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 )}
-                {/* Histogram Chart */}
-                <div className="portfolio-graph">
-                    <h2>Portfolio Value Over Time</h2>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={lineChartData}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="time" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Line
-                                type="monotone"
-                                dataKey="USD"
-                                stroke="#8884d8"
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="BTC"
-                                stroke="#82ca9d"
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="ETH"
-                                stroke="#ffc658"
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
+
                 <div className="portfolio-graph">
                     <h2>Portfolio Composition</h2>
                     <ResponsiveContainer width="100%" height={300}>
