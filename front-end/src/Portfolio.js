@@ -41,7 +41,6 @@ const Portfolio = () => {
         // gonna need more portfolios...
     ])
 
-    
     // Function to handle adding new wallet or exchange
     const handleAddWalletOrExchange = async (e) => {
         e.preventDefault()
@@ -67,7 +66,6 @@ const Portfolio = () => {
 
             // update front end portfolio list
             setPortfolios([...portfolios, newPortfolio])
-
         } catch (error) {
             console.error('Error posting wallet data:', error)
         }
@@ -77,7 +75,6 @@ const Portfolio = () => {
         setShowAddModal(false)
     }
 
-
     const handleDeletePortfolio = async (id) => {
         try {
             const response = await fetch(`/api/deleteWallet/${id}`, {
@@ -86,12 +83,11 @@ const Portfolio = () => {
 
             const responseData = await response.json()
             console.log(responseData)
-            setPortfolios(portfolios.filter((portfolio) => portfolio.id !== id));
+            setPortfolios(portfolios.filter((portfolio) => portfolio.id !== id))
         } catch (error) {
-            console.errog('Error deleting wallet data:', error);
+            console.errog('Error deleting wallet data:', error)
         }
-    };
-
+    }
 
     const togglePortfolios = () => setShowPortfolios(!showPortfolios)
     const toggleAddModal = () => setShowAddModal(!showAddModal)
@@ -138,9 +134,10 @@ const Portfolio = () => {
                                 {portfolios.map((portfolio) => (
                                     <tr key={portfolio.id}>
                                         <td>{portfolio.name}</td>
-                                        <td>{portfolio.address}</td>
+                                        <td>{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
                                         <td>
-                                            <button
+                                            <button className='
+                                            delete-button'
                                                 onClick={() =>
                                                     handleDeletePortfolio(
                                                         portfolio.id

@@ -153,26 +153,63 @@
     text-align: center;
 }
 
-/* Style the portfolio list */
-.portfolio-list {
-    background-color: #f1f1f1;
-    padding: 10px;
+.portfolios-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: #000;
+    background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    color: #14213d;
-    margin-bottom: 20px;
+    overflow: hidden;
 }
 
-/* Style individual portfolio items */
-.portfolio-list-item {
-    background-color: #ffffff;
-    color: #14213d;
-    padding: 10px;
+.portfolios-list th, .portfolios-list td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+/* Header row styling */
+.portfolios-list th {
+    width: 100%;
+    background-color: #fca311;
+    color: #ffffff;
+}
+
+/* Alternate row background for better readability */
+.portfolios-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Hover effect for rows */
+.portfolios-list tr:hover {
+    background-color: #ddd;
+}
+
+.delete-button {
+    padding: 4px 10px;
+    background-color: #fc1111;
+    color: #ffffff;
+    border: none;
     border-radius: 5px;
-    margin: 10px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.25s, transform 0.25s;
+}
+
+.delete-button:hover {
+    background-color: #e80000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(232, 0, 0, 0.4);
+}
+
+
+/* Responsive table */
+@media (max-width: 768px) {
+    .portfolios-list table {
+        display: block;
+        overflow-x: auto;
+    }
 }
 
 /* Add Wallet/Exchange Modal */
