@@ -6,8 +6,54 @@ const axios = require('axios');
 const dotenv = require("dotenv");
 
 app.use(cors());
+app.use(express.json());
 
-app.get("/news", (req, res, next) => {
+app.post("/api/login", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const data = {
+        status: "login accepted",
+        message: "login successful",
+        username: username,
+        password: password,
+    };
+
+    res.json(data);
+ });
+
+ app.post("/api/forgot_password", async (req, res) => {
+    const email = req.body.email;
+
+    const data = {
+        status: "Email accepted",
+        message: "Email has been sent",
+        email: email,
+    };
+    
+    res.json(data);
+ });
+
+ app.post("/api/register", async (req, res) => {
+    const name = req.body.name;
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    const data = {
+        status: "User Registration successful",
+        message: "User has been registered",
+        name: name,
+        username: username,
+        email: email,
+        password: password,
+    };
+    
+    res.json(data);
+ });
+
+
+app.get("/api/news", (req, res, next) => {
     const options = {
         method: 'GET',
         url: 'https://cryptocurrency-news2.p.rapidapi.com/v1/coindesk',
