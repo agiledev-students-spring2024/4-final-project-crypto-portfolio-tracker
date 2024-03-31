@@ -26,21 +26,43 @@ app.get("/news", (req, res, next) => {
 
 // Portfolio Routes
 
+  // get portfolio data from the database or wherever it's stored this is just temporary
+  const portfoliosData = [
+    {
+        id: 'portfolio-1',
+        name: 'Coinbase',
+        balance: '$557',
+        address: '0xa177...5e38',
+    },
+    // more portfolios will be added
+];
+
+app.get("/api/portfolios", async (req, res) => {
+  res.json(portfoliosData);
+});
+
 app.post("/api/addWallet", async (req, res) => {
-  console.log("POST request to /api/addWallet");
-  const { address } = req.body;
+  const { name, address, balance } = req.body;
 
-  // You can now use the received 'address' to perform any server-side logic
-  // For example, you might want to save this address to a database
-  // or use it to fetch wallet information from a blockchain API
+  // make a new portfolio object
+  const newPortfolio = {
+    id: `portfolio-${portfoliosData.length + 1}`, // ID generation we can change later when we integrate database
+    name,
+    address,
+    balance,
+  };
 
-  // For demonstration, let's just send back a confirmation message
-  res.json({ message: `Address ${address} received and processed.` });
+  portfoliosData.push(newPortfolio);
+
+  res.json({
+    portfolios: portfoliosData,
+    message: `Address ${address} received and processed.`
+  });
 });
 
 app.delete("/api/deleteWallet/:id", async (req, res) => {
   const { id } = req.params;
-  console.log('DELETE request to /api/deleteWallet with ID ${id}')
+  console.log(`DELETE request to /api/deleteWallet with ID ${id}`)
   // find wallet by ID and delete it -- neds to be implemented
 
   //for now just send a message

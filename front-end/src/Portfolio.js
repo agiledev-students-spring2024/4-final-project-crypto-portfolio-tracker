@@ -21,33 +21,39 @@ const Portfolio = () => {
     const [showAddModal, setShowAddModal] = useState(false)
     const [bitcoinAddress, setBitcoinAddress] = useState('')
     const [walletName, setWalletName] = useState('')
+    const [portfolios, setPortfolios] = useState([]);
 
-    // State for the list of assets and new asset inputs
-    const [portfolioAssets] = useState([
-        { id: 1, name: 'BTC', amount: 0.5, value: 701.03 },
-        { id: 2, name: 'ETH', amount: 1, value: 391.16 },
-        { id: 3, name: 'SOL', amount: 2, value: 129.41 },
-        { id: 4, name: 'BCH', amount: 1, value: 452.89 },
-        { id: 5, name: 'ETC', amount: 10, value: 35.11 },
-    ])
+    // // State for the list of assets and new asset inputs
+    // const [portfolioAssets] = useState([
+    //     { id: 1, name: 'BTC', amount: 0.5, value: 701.03 },
+    //     { id: 2, name: 'ETH', amount: 1, value: 391.16 },
+    //     { id: 3, name: 'SOL', amount: 2, value: 129.41 },
+    //     { id: 4, name: 'BCH', amount: 1, value: 452.89 },
+    //     { id: 5, name: 'ETC', amount: 10, value: 35.11 },
+    // ])
 
-    // Mockup data for the existing portfolios gonna make this come from backend later
-    const [portfolios, setPortfolios] = useState([
-        {
-            id: 'portfolio-1',
-            name: 'Coinbase',
-            balance: '$557',
-            address: '0xa177...5e38',
-        },
-        // gonna need more portfolios...
-    ])
+    // fetch portfolio data when ShowPortfolio is true
+    useEffect(() => {
+        const fetchPortfolios = async () => {
+            if (showPortfolios) {
+                try {
+                    const response = await fetch('/api/portfolios');
+                    const data = await response.json();
+                    setPortfolios(data); // Assuming the data is an array of portfolios
+                } catch (error) {
+                    console.error('Error fetching portfolio data:', error);
+                }
+            }
+        };
+    
+        fetchPortfolios();
+    }, [showPortfolios]);
 
     // Function to handle adding new wallet or exchange
     const handleAddWalletOrExchange = async (e) => {
         e.preventDefault()
 
         const newPortfolio = {
-            id: Date.now().toString(), // make an ID for it we can change later for when mongo
             name: walletName,
             address: bitcoinAddress,
             balance: '$0', // default value for now
@@ -86,7 +92,7 @@ const Portfolio = () => {
             console.log(responseData)
             setPortfolios(portfolios.filter((portfolio) => portfolio.id !== id))
         } catch (error) {
-            console.errog('Error deleting wallet data:', error)
+            console.error('Error deleting wallet data:', error)
         }
     }
 
@@ -94,16 +100,16 @@ const Portfolio = () => {
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
     // Calculate total value for the portfolio
-    const totalValue = portfolioAssets.reduce(
-        (acc, asset) => acc + asset.amount * parseFloat(asset.value),
-        0
-    )
+    // const totalValue = portfolioAssets.reduce(
+    //     (acc, asset) => acc + asset.amount * parseFloat(asset.value),
+    //     0
+    // )
 
     // Map the data to include a percentage value for the pie chart
-    const pieData = portfolioAssets.map((asset) => ({
-        name: asset.name,
-        value: ((asset.amount * parseFloat(asset.value)) / totalValue) * 100,
-    }))
+    // const pieData = portfolioAssets.map((asset) => ({
+    //     name: asset.name,
+    //     value: ((asset.amount * parseFloat(asset.value)) / totalValue) * 100,
+    // }))
 
     // Define colors for the pie chart
     const COLORS = ['#FFD700', '#FFA500', '#FF8C00', '#FF7F50', '#FF6347']
@@ -113,8 +119,8 @@ const Portfolio = () => {
             <Header></Header>
             <div className="content">
                 <button
-                    className="bg-gradient-to-r from-orange-500 to-yellow-500 mb-4 rounded px-4 py-2 font-bold text-white"
-                    onClick={togglePortfolios}
+                    className="bg-gradient-to-r from-orange-500 to-yellow-500 mb-4 mt-6 rounded px-4 py-2 font-bold text-white"
+                    onClick={() => setShowPortfolios(!showPortfolios)}
                 >
                     All Portfolios
                 </button>
@@ -212,7 +218,7 @@ const Portfolio = () => {
                     </div>
                 )}
 
-                <div className="portfolio-graph">
+                {/* <div className="portfolio-graph">
                     <h2 className="my-2 text-2xl font-extrabold">
                         Portfolio Composition
                     </h2>
@@ -269,7 +275,7 @@ const Portfolio = () => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     )
