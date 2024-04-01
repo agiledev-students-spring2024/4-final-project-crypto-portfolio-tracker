@@ -39,9 +39,15 @@ const Portfolio = () => {
                 try {
                     const response = await fetch('/api/portfolios');
                     const data = await response.json();
-                    setPortfolios(data); // Assuming the data is an array of portfolios
+                    if (Array.isArray(data)) {
+                        setPortfolios(data);
+                    } else {
+                        console.error('Received data is not an array:', data);
+                        setPortfolios([]); 
+                    }
                 } catch (error) {
                     console.error('Error fetching portfolio data:', error);
+                    setPortfolios([]); 
                 }
             }
         };
@@ -50,11 +56,12 @@ const Portfolio = () => {
     }, [showPortfolios]);
 
     // Function to handle adding new wallet or exchange
-    const handleAddWalletOrExchange = async (e) => {
+    const handleAddWallet = async (e) => {
         e.preventDefault()
 
         const newPortfolio = {
             name: walletName,
+            platformId: 'bitcoin',
             address: bitcoinAddress,
             balance: '$0', // default value for now
         }
@@ -80,6 +87,7 @@ const Portfolio = () => {
         setBitcoinAddress('') // reset the address
         setWalletName('')
         setShowAddModal(false)
+        setShowPortfolios(false)
     }
 
     const handleDeletePortfolio = async (id) => {
@@ -133,6 +141,7 @@ const Portfolio = () => {
                                 <tr>
                                     <th className="p-3">Name</th>
                                     <th className="p-3">Address</th>
+                                    <th className="p-3">Balance</th>
                                     <th className="p-3">Action</th>
                                 </tr>
                             </thead>
@@ -146,6 +155,7 @@ const Portfolio = () => {
                                             {portfolio.name}
                                         </td>
                                         <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
+                                        <td className="p-3">{portfolio.balance}</td>
                                         <td className="p-3">
                                             <button
                                                 className="text-s rounded bg-red-500 px-3 py-1 text-white hover:bg-red-700"
@@ -184,7 +194,7 @@ const Portfolio = () => {
                                     &times;
                                 </span>
                                 <h2>Add Wallet or Exchange</h2>
-                                <form onSubmit={handleAddWalletOrExchange}>
+                                <form onSubmit={handleAddWallet}>
                                     <input
                                         type="text"
                                         name="walletName"
