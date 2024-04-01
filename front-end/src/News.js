@@ -9,7 +9,7 @@ const News = (props) => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const response = await fetch('http://localhost:3000/news')
+                const response = await fetch('http://localhost:5000/api/news')
                 const jsonData = await response.json()
                 setData(jsonData.data)
             } catch (error) {
@@ -65,8 +65,14 @@ const ListItem = ({ url, title, description, thumbnail }) => (
     <a href={url}>
         <button className="my-1 block w-full rounded-lg bg-white from-pink-500 to-orange-500 p-4 text-black shadow-md hover:bg-gradient-to-r hover:text-white">
             {/* Content goes here */}
-            <p className="font-bold">{title}</p>
-            <p className="font-small">{description}</p>
+
+            <div className="flex flex-row">
+                <img src={thumbnail} alt="thumbnail" width="50" height="10" />
+                <div className="flex flex-col">
+                    <p className="font-bold">{title}</p>
+                    <p className="font-small">{description}</p>
+                </div>
+            </div>
         </button>
     </a>
 )
