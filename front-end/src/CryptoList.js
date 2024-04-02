@@ -4,60 +4,90 @@ import { Link } from 'react-router-dom'
 import Header from './Header'
 import './CryptoList.css'
 
-const CryptoList = (props) => {
-    // Mock data for cryptocurrency list, will need to make this dynamic later
-    const initialCryptoList = [
-        { id: 1, name: 'Bitcoin', price: '$67,571.03' },
-        { id: 2, name: 'Ethereum', price: '$3,591.16' },
-        { id: 3, name: 'Tether', price: '$1.005' },
-        { id: 4, name: 'BNB', price: '$414.27' },
-        { id: 5, name: 'Solana', price: '$128.88' },
-        { id: 6, name: 'XRP', price: '$0.6474' },
-        { id: 7, name: 'Lido Staked Ether', price: '$3,582.16' },
-        { id: 8, name: 'USDC', price: '$1' },
-        { id: 9, name: 'Cardano', price: '$0.766' },
-        { id: 10, name: 'Dogecoin', price: '$0.1753' },
-    ]
 
-    // State for the filtered list
-    const [filteredCryptoList, setFilteredCryptoList] =
-        useState(initialCryptoList)
-    // State for the search query
-    const [searchQuery, setSearchQuery] = useState('')
+const CryptoList = () => {
 
-    // Function to handle search input change
-    const handleSearchChange = (event) => {
-        const query = event.target.value.toLowerCase()
-        setSearchQuery(query)
-        // Filter the crypto list based on the search query
-        const filteredList = initialCryptoList.filter((crypto) =>
-            crypto.name.toLowerCase().includes(query)
-        )
-        setFilteredCryptoList(filteredList)
-    }
+    // State management for Crypto data, Search-filtered data, Search query, and Pagination
+    const [cryptoData, setCryptoData] = useState([]);
+    const [filteredCryptoData, setFilteredCryptoData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // useEffect to fetch Crypto data based on page number
+    useEffect(() => {
+        const fetchCryptoData = async () => {
+            try {
+                const response = await fetch(`https://api.coincap.io/v2/assets?limit=100&offset=${(currentPage - 1) * 100}`);
+                const json = await response.json();
+                setCryptoData(json.data);
+                setFilteredCryptoData(json.data);
+            } catch (error) {
+                console.error('Error fetching crypto data:', error);
+            }
+        };
+        fetchCryptoData();
+    }, [currentPage]); // Re-runs when currentPage changes
+
+    // Filters data from search query
+    useEffect(() => {
+        const filteredList = cryptoData.filter(crypto =>
+            crypto.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredCryptoData(filteredList);
+    }, [searchQuery, cryptoData]); // Re-runs when searchQuery or cryptoData changes
+
+
+    // Pagination Start
+    const handleNextPage = () => setCurrentPage(currentPage + 1);
+    const handlePreviousPage = () => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
 
     return (
         <div className="crypto-list-container">
-            <Header></Header>
+            <Header />
+            <div className="title-container">
+                <h1>Today's Crypto Prices</h1>
+            </div>
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder="Search"
+                    placeholder="Search by name..."
                     value={searchQuery}
-                    onChange={handleSearchChange}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="search-input"
                 />
             </div>
-            <div className="crypto-list">
-                {filteredCryptoList.map((crypto) => (
-                    <div key={crypto.id} className="crypto-item">
-                        <span className="crypto-name">{crypto.name}</span>
-                        <span className="crypto-price">{crypto.price}</span>
-                    </div>
-                ))}
+            <table className="crypto-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>24h %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredCryptoData.map((crypto, index) => (
+                        <tr key={crypto.id}>
+                            <td>{index + 1 + ((currentPage - 1) * 100)}</td>
+                            <td>{crypto.name}</td>
+                            <td>${parseFloat(crypto.priceUsd).toFixed(2)}</td>
+                            <td style={{ color: crypto.changePercent24Hr.startsWith('-') ? 'red' : 'green' }}>
+                                {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <div className="pagination">
+                <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                    Previous
+                </button>
+                <button onClick={handleNextPage}>
+                    Next
+                </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default CryptoList
+export default CryptoList;
