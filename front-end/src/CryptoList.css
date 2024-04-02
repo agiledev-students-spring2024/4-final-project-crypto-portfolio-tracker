@@ -78,9 +78,9 @@
   
   .crypto-table th,
   .crypto-table td {
-    padding: 12px;
+    padding: 2px; /* Made the entries more compact, less spread out */
     border: 1px solid #1e2a45;
-    text-align: left;
+    text-align: middle;
     font-size: 1rem;
   }
   
@@ -129,3 +129,17 @@
     background-color: #ccc; 
     cursor: default;
   }
+
+  .crypto-icon {
+    margin-right: 8px; /* Adjust the spacing between the icon and the name */
+    width: 24px; /* Adjust the size of the icon */
+    height: 24px;
+    vertical-align: middle; /* Align the icon vertically with the text */
+  }
+
+
+  /* Narrows the # column to be less noticeable */
+  .crypto-table th:first-child,
+  .crypto-table td:first-child {
+  width: 20px; /* Adjust this value to your desired width */
+  } 

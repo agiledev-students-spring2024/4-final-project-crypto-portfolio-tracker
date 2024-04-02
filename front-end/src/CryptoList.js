@@ -66,17 +66,24 @@ const CryptoList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredCryptoData.map((crypto, index) => (
-                        <tr key={crypto.id}>
-                            <td>{index + 1 + ((currentPage - 1) * 100)}</td>
-                            <td>{crypto.name}</td>
-                            <td>${parseFloat(crypto.priceUsd).toFixed(2)}</td>
-                            <td style={{ color: crypto.changePercent24Hr.startsWith('-') ? 'red' : 'green' }}>
-                                {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+                {filteredCryptoData.map((crypto, index) => (
+  <tr key={crypto.id}>
+    <td>{index + 1 + ((currentPage - 1) * 100)}</td>
+    <td>
+      <img
+        src={`https://assets.coincap.io/assets/icons/${crypto.symbol.toLowerCase()}@2x.png`}
+        alt={crypto.name}
+        className="crypto-icon"
+      />
+      {crypto.name}
+    </td>
+    <td>${parseFloat(crypto.priceUsd).toFixed(2)}</td>
+    <td style={{ color: crypto.changePercent24Hr.startsWith('-') ? 'red' : 'green' }}>
+      {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
+    </td>
+  </tr>
+))}
+                    </tbody>
             </table>
             <div className="pagination">
                 <button onClick={handlePreviousPage} disabled={currentPage === 1}>
