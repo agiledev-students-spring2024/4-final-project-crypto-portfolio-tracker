@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Header from './Header'
 import './styles.css'
 
 const Login = (props) => {
     const [usernameInput, setUsername] = useState('')
     const [passwordInput, setPassword] = useState('')
+
+    const navigate = useNavigate()
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -34,6 +36,8 @@ const Login = (props) => {
 
         setUsername('')
         setPassword('')
+
+        navigate('/')
     }
     return (
         <div className="flex min-h-screen flex-col bg-white text-black dark:bg-dark-blue dark:text-white">
