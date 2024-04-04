@@ -37,7 +37,7 @@ const Portfolio = () => {
         const fetchPortfolios = async () => {
             if (showPortfolios) {
                 try {
-                    const response = await fetch('/api/portfolios');
+                    const response = await fetch('http://localhost:5000/api/portfolios');
                     const data = await response.json();
                     if (Array.isArray(data)) {
                         setPortfolios(data);
@@ -67,7 +67,7 @@ const Portfolio = () => {
         }
         try {
             // POST request to the back-end with the Bitcoin address
-            const response = await fetch('/api/addWallet', {
+            const response = await fetch(`http://localhost:5000/api/addWallet${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const Portfolio = () => {
 
     const handleDeletePortfolio = async (id) => {
         try {
-            const response = await fetch(`/api/deleteWallet/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/deleteWallet${id}`, {
                 method: 'DELETE',
             })
 
