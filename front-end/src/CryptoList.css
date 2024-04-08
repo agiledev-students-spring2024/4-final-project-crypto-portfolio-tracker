@@ -3,7 +3,7 @@
     color: #ffffff; /* Title Color */
     text-align: center; /* Center Title */
     margin-top: 20px; /* Top Spacing*/
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
     padding: 0 20px;
     z-index: 10; /* Ensures title is above other elements */
     font-size: 2rem;
@@ -12,19 +12,18 @@
 
 .crypto-list-container {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    color: #ffffff; 
-    background-color: #14213d; 
+    color: #ffffff;
+    background-color: #14213d;
     min-height: 100vh;
     padding: 20px;
 }
 
 .search-container {
     padding: 20px;
-    background-color: #fca311; 
+    background-color: #fca311;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
 
 /* Search Input */
 .search-input {
@@ -34,10 +33,9 @@
     font-size: 16px;
     border: none;
     border-radius: 4px;
-    background-color: #14213d; 
+    background-color: #14213d;
     color: #ffffff;
 }
-
 
 /* Crypto List*/
 .crypto-list {
@@ -49,10 +47,10 @@
     justify-content: space-between;
     margin-bottom: 10px;
     padding: 10px;
-    background-color: #151717; 
-    color: #ffffff; 
+    background-color: #151717;
+    color: #ffffff;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .crypto-name {
@@ -61,55 +59,53 @@
 
 /* Ensures Crypto price is visible against the darker background */
 .crypto-price {
-    color: #ffffff; 
+    color: #ffffff;
 }
-
 
 /* Crypto Table  */
 .crypto-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-  }
-  
-  .crypto-table thead {
-    background-color: #14213d; 
-  }
-  
-  .crypto-table th,
-  .crypto-table td {
+}
+
+.crypto-table thead {
+    background-color: #14213d;
+}
+
+.crypto-table th,
+.crypto-table td {
     padding: 12px;
     border: 1px solid #1e2a45;
     text-align: left;
     font-size: 1rem;
-  }
-  
-  .crypto-table th {
-    color: #ffffff; 
-    font-weight: bold; 
-  }
-  
-  .crypto-table tbody td {
+}
+
+.crypto-table th {
     color: #ffffff;
-  }
-  
-  .crypto-table tbody tr:hover {
+    font-weight: bold;
+}
+
+.crypto-table tbody td {
+    color: #ffffff;
+}
+
+.crypto-table tbody tr:hover {
     background-color: #1e2a45;
-  }
-  
-  .crypto-table tbody tr:nth-child(even) {
-    background-color: #162035; 
-  }
-  
-  
-  /* Pagination Styles */
-  .pagination {
+}
+
+.crypto-table tbody tr:nth-child(even) {
+    background-color: #162035;
+}
+
+/* Pagination Styles */
+.pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-  }
-  
-  .pagination button {
+}
+
+.pagination button {
     padding: 10px 15px;
     margin: 0 5px;
     background-color: #fca311;
@@ -118,14 +114,14 @@
     font-weight: bold;
     color: #ffffff;
     transition: background-color 0.3s ease;
-  }
-  
-  .pagination button:hover {
-    background-color: #e69500; 
+}
+
+.pagination button:hover {
+    background-color: #e69500;
     cursor: pointer;
-  }
-  
-  .pagination button:disabled {
-    background-color: #ccc; 
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
     cursor: default;
-  }
+}

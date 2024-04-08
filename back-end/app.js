@@ -4,53 +4,37 @@ const app = express(); // instantiate an Express object
 const cors = require("cors");
 const axios = require("axios");
 const dotenv = require("dotenv").config();
-
+const mongoose = require("mongoose");
+const User = require("./models/User.js")
 app.use(cors());
 app.use(express.json());
 
-app.post("/api/login", async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+// the following are used for authentication with JSON Web Tokens
+const jwt = require("jsonwebtoken")
+const passport = require("passport")
 
-  const data = {
-    status: "login accepted",
-    message: "login successful",
-    username: username,
-    password: password,
-  };
+// use this JWT strategy within passport for authentication handling
+const jwtStrategy = require("./config/jwt-config.js") // import setup options for using JWT in passport
+passport.use(jwtStrategy)
 
-  res.json(data);
-});
+app.use(passport.initialize())
 
-app.post("/api/forgot_password", async (req, res) => {
-  const email = req.body.email;
+// connect to the database
+// console.log(`Conneting to MongoDB at ${process.env.MONGODB_URI}`)
+try {
+    mongoose.connect(process.env.MONGODB_URI)
+    console.log(`Connected to MongoDB.`)
+  } catch (err) {
+    console.log(
+      `Error connecting to MongoDB Atlas: ${err}`
+    )
+  }
 
-  const data = {
-    status: "Email accepted",
-    message: "Email has been sent",
-    email: email,
-  };
+const authenticationRoutes = require("./routes/user-authentication.js")
+const protectedRoutes = require("./routes/protected-content-routes.js")
 
-  res.json(data);
-});
-
-app.post("/api/register", async (req, res) => {
-  const name = req.body.name;
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = req.body.password;
-
-  const data = {
-    status: "User Registration successful",
-    message: "User has been registered",
-    name: name,
-    username: username,
-    email: email,
-    password: password,
-  };
-
-  res.json(data);
-});
+app.use("/api", authenticationRoutes())
+app.use("/api/protected", protectedRoutes())
 
 app.get("/api/news", (req, res, next) => {
   const options = {

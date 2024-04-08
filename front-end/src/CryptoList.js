@@ -4,42 +4,42 @@ import { Link } from 'react-router-dom'
 import Header from './Header'
 import './CryptoList.css'
 
-
 const CryptoList = () => {
-
     // State management for Crypto data, Search-filtered data, Search query, and Pagination
-    const [cryptoData, setCryptoData] = useState([]);
-    const [filteredCryptoData, setFilteredCryptoData] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [cryptoData, setCryptoData] = useState([])
+    const [filteredCryptoData, setFilteredCryptoData] = useState([])
+    const [searchQuery, setSearchQuery] = useState('')
+    const [currentPage, setCurrentPage] = useState(1)
 
     // useEffect to fetch Crypto data based on page number
     useEffect(() => {
         const fetchCryptoData = async () => {
             try {
-                const response = await fetch(`https://api.coincap.io/v2/assets?limit=100&offset=${(currentPage - 1) * 100}`);
-                const json = await response.json();
-                setCryptoData(json.data);
-                setFilteredCryptoData(json.data);
+                const response = await fetch(
+                    `https://api.coincap.io/v2/assets?limit=100&offset=${(currentPage - 1) * 100}`
+                )
+                const json = await response.json()
+                setCryptoData(json.data)
+                setFilteredCryptoData(json.data)
             } catch (error) {
-                console.error('Error fetching crypto data:', error);
+                console.error('Error fetching crypto data:', error)
             }
-        };
-        fetchCryptoData();
-    }, [currentPage]); // Re-runs when currentPage changes
+        }
+        fetchCryptoData()
+    }, [currentPage]) // Re-runs when currentPage changes
 
     // Filters data from search query
     useEffect(() => {
-        const filteredList = cryptoData.filter(crypto =>
+        const filteredList = cryptoData.filter((crypto) =>
             crypto.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setFilteredCryptoData(filteredList);
-    }, [searchQuery, cryptoData]); // Re-runs when searchQuery or cryptoData changes
-
+        )
+        setFilteredCryptoData(filteredList)
+    }, [searchQuery, cryptoData]) // Re-runs when searchQuery or cryptoData changes
 
     // Pagination Start
-    const handleNextPage = () => setCurrentPage(currentPage + 1);
-    const handlePreviousPage = () => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+    const handleNextPage = () => setCurrentPage(currentPage + 1)
+    const handlePreviousPage = () =>
+        setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)
 
     return (
         <div className="crypto-list-container">
@@ -52,7 +52,7 @@ const CryptoList = () => {
                     type="text"
                     placeholder="Search by name..."
                     value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="search-input"
                 />
             </div>
@@ -68,26 +68,38 @@ const CryptoList = () => {
                 <tbody>
                     {filteredCryptoData.map((crypto, index) => (
                         <tr key={crypto.id}>
-                            <td>{index + 1 + ((currentPage - 1) * 100)}</td>
+                            <td>{index + 1 + (currentPage - 1) * 100}</td>
                             <td>{crypto.name}</td>
                             <td>${parseFloat(crypto.priceUsd).toFixed(2)}</td>
-                            <td style={{ color: crypto.changePercent24Hr.startsWith('-') ? 'red' : 'green' }}>
-                                {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
+                            <td
+                                style={{
+                                    color: crypto.changePercent24Hr.startsWith(
+                                        '-'
+                                    )
+                                        ? 'red'
+                                        : 'green',
+                                }}
+                            >
+                                {parseFloat(crypto.changePercent24Hr).toFixed(
+                                    2
+                                )}
+                                %
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
             <div className="pagination">
-                <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                <button
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                >
                     Previous
                 </button>
-                <button onClick={handleNextPage}>
-                    Next
-                </button>
+                <button onClick={handleNextPage}>Next</button>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default CryptoList;
+export default CryptoList
