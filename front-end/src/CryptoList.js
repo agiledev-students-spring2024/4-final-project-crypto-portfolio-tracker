@@ -38,8 +38,15 @@ const CryptoList = () => {
 
 
     // Pagination Start
-    const handleNextPage = () => setCurrentPage(currentPage + 1);
+    const handleNextPage = () => setCurrentPage(currentPage < 5 ? currentPage + 1 : 5);
     const handlePreviousPage = () => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+
+    const renderChangePercent = (crypto) => {
+        if (!crypto.changePercent24Hr) {
+            return ''; // or some default value you want to show
+        }
+        return parseFloat(crypto.changePercent24Hr).toFixed(2) + '%';
+    };
 
     return (
         <div className="crypto-list-container">
@@ -66,26 +73,49 @@ const CryptoList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredCryptoData.map((crypto, index) => (
-                        <tr key={crypto.id}>
-                            <td>{index + 1 + ((currentPage - 1) * 100)}</td>
-                            <td>{crypto.name}</td>
-                            <td>${parseFloat(crypto.priceUsd).toFixed(2)}</td>
-                            <td style={{ color: crypto.changePercent24Hr.startsWith('-') ? 'red' : 'green' }}>
-                                {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+                {filteredCryptoData.map((crypto, index) => (
+                    <tr key={crypto.id}>
+                        <td>{index + 1 + ((currentPage - 1) * 100)}</td>
+                        <td>
+                            <img
+                                src={`https://assets.coincap.io/assets/icons/${crypto.symbol.toLowerCase()}@2x.png`}
+                                alt={crypto.name}
+                                className="crypto-icon"
+                            />
+                            {crypto.name}
+                        </td>
+                        <td>${parseFloat(crypto.priceUsd).toFixed(2)}</td>
+                        <td style={{ color: crypto.changePercent24Hr.startsWith('-') ? 'red' : 'green' }}>
+                        {parseFloat(crypto.changePercent24Hr).toFixed(2)}%
+                        </td>
+                        <td style={{ 
+                            color: crypto.changePercent24Hr && crypto.changePercent24Hr.startsWith('-') ? 'red' : 'green'
+                        }}>
+                            {renderChangePercent(crypto)}
+                        </td>
+                    </tr>
+                ))}
+        </tbody>
             </table>
             <div className="pagination">
-                <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-                    Previous
-                </button>
-                <button onClick={handleNextPage}>
-                    Next
-                </button>
-            </div>
+            <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                Previous
+            </button>
+
+            {/* Display current page number */}
+            <span>Page {currentPage} of 5</span> 
+
+            <button 
+                onClick={handleNextPage} 
+                disabled={currentPage === 5} // Disable button on the 5th page
+                style={{ 
+                    backgroundColor: currentPage === 5 ? '#ccc' : '', // Style to grey out button
+                    cursor: currentPage === 5 ? 'default' : 'pointer', // Style to change cursor
+                }}
+            >
+                Next
+            </button>
+        </div>
         </div>
     );
 };
