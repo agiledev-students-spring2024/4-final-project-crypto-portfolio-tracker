@@ -137,11 +137,13 @@ app.post("/api/addWallet", async (req, res) => {
 
 app.delete("/api/deleteWallet/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(`DELETE request to /api/deleteWallet with ID ${id}`);
-  // find wallet by ID and delete it -- neds to be implemented
-
-  //for now just send a message
-  res.json({ message: `Wallet with ID ${id} deleted.` });
+  const index = portfoliosData.findIndex(p => p.id === id); // TODO: will need to be changed for MongoDB
+  if (index !== -1) {
+    portfoliosData.splice(index, 1); // removes the portfolio from the array
+    res.json({ message: `Wallet with ID ${id} deleted.` });
+  } else {
+    res.status(404).json({ message: `Wallet with ID ${id} not found.` });
+  }
 });
 
 //For CryptoList API - Route handler for GET requests to the '/api/coins' endpoint

@@ -97,9 +97,7 @@ const Portfolio = () => {
 
     const handleDeletePortfolio = async (id) => {
         try {
-            const response = await fetch(
-                `http://localhost:5000/api/deleteWallet${id}`,
-                {
+            const response = await fetch(`http://localhost:5000/api/deleteWallet/${id}`, {
                     method: 'DELETE',
                 }
             )
