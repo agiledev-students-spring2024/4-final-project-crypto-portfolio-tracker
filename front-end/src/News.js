@@ -26,25 +26,7 @@ const News = (props) => {
                 <div className="mx-1">
                     <h1 className="my-2 text-2xl font-extrabold">News</h1>
                     <div className="bg-gray-300 p-4">
-                        <div className="h-48 overflow-y-auto">
-                            {data.map((item, index) => (
-                                <ListItem
-                                    url={item.url}
-                                    title={item.title}
-                                    description={item.description}
-                                    thumbnail={item.thumbnail}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-                <br></br>
-                <div className="mx-1">
-                    <h1 className="my-2 text-2xl font-extrabold">
-                        Recent Updates
-                    </h1>
-                    <div className="bg-gray-300 p-4">
-                        <div className="h-48 overflow-y-auto">
+                        <div className="h-screen overflow-y-auto">
                             {data.map((item, index) => (
                                 <ListItem
                                     url={item.url}
@@ -67,7 +49,6 @@ const ListItem = ({ url, title, description, thumbnail }) => (
             {/* Content goes here */}
 
             <div className="flex flex-row">
-                <img src={thumbnail} alt="thumbnail" width="50" height="10" />
                 <div className="flex flex-col">
                     <p className="font-bold">{title}</p>
                     <p className="font-small">{description}</p>

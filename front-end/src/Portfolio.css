@@ -281,7 +281,7 @@
 
 /* Wallet Data Display */
 .wallet-data {
-    background-color: #162a47; 
+    background-color: #162a47;
     padding: 20px;
     border-radius: 8px;
     margin-top: 20px;
@@ -289,17 +289,17 @@
 }
 
 .wallet-data h3 {
-    color: #fca311; 
+    color: #fca311;
     margin-bottom: 15px;
     text-align: center;
 }
 
 .wallet-data p {
-    color: #ffffff; 
+    color: #ffffff;
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 10px;
-    border-bottom: 1px solid #fca311; 
+    border-bottom: 1px solid #fca311;
     padding-bottom: 10px;
 }
 
@@ -309,10 +309,10 @@
     }
 
     .wallet-data h3 {
-        font-size: 18px; 
+        font-size: 18px;
     }
 
     .wallet-data p {
-        font-size: 14px; 
+        font-size: 14px;
     }
 }

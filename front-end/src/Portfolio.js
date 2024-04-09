@@ -21,7 +21,7 @@ const Portfolio = () => {
     const [showAddModal, setShowAddModal] = useState(false)
     const [bitcoinAddress, setBitcoinAddress] = useState('')
     const [walletName, setWalletName] = useState('')
-    const [portfolios, setPortfolios] = useState([]);
+    const [portfolios, setPortfolios] = useState([])
 
     // // State for the list of assets and new asset inputs
     // const [portfolioAssets] = useState([
@@ -37,23 +37,25 @@ const Portfolio = () => {
         const fetchPortfolios = async () => {
             if (showPortfolios) {
                 try {
-                    const response = await fetch('/api/portfolios');
-                    const data = await response.json();
+                    const response = await fetch(
+                        'http://localhost:5000/api/portfolios'
+                    )
+                    const data = await response.json()
                     if (Array.isArray(data)) {
-                        setPortfolios(data);
+                        setPortfolios(data)
                     } else {
-                        console.error('Received data is not an array:', data);
-                        setPortfolios([]); 
+                        console.error('Received data is not an array:', data)
+                        setPortfolios([])
                     }
                 } catch (error) {
-                    console.error('Error fetching portfolio data:', error);
-                    setPortfolios([]); 
+                    console.error('Error fetching portfolio data:', error)
+                    setPortfolios([])
                 }
             }
-        };
-    
-        fetchPortfolios();
-    }, [showPortfolios]);
+        }
+
+        fetchPortfolios()
+    }, [showPortfolios])
 
     // Function to handle adding new wallet or exchange
     const handleAddWallet = async (e) => {
@@ -67,13 +69,16 @@ const Portfolio = () => {
         }
         try {
             // POST request to the back-end with the Bitcoin address
-            const response = await fetch('/api/addWallet', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newPortfolio),
-            })
+            const response = await fetch(
+                `http://localhost:5000/api/addWallet`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newPortfolio),
+                }
+            )
 
             const responseData = await response.json()
             console.log(responseData)
@@ -92,9 +97,12 @@ const Portfolio = () => {
 
     const handleDeletePortfolio = async (id) => {
         try {
-            const response = await fetch(`/api/deleteWallet/${id}`, {
-                method: 'DELETE',
-            })
+            const response = await fetch(
+                `http://localhost:5000/api/deleteWallet${id}`,
+                {
+                    method: 'DELETE',
+                }
+            )
 
             const responseData = await response.json()
             console.log(responseData)
@@ -127,7 +135,7 @@ const Portfolio = () => {
             <Header></Header>
             <div className="content">
                 <button
-                    className="bg-gradient-to-r from-orange-500 to-yellow-500 mb-4 mt-6 rounded px-4 py-2 font-bold text-white"
+                    className="mb-4 mt-6 rounded bg-gradient-to-r from-orange-500 to-yellow-500 px-4 py-2 font-bold text-white"
                     onClick={() => setShowPortfolios(!showPortfolios)}
                 >
                     All Portfolios
@@ -155,7 +163,9 @@ const Portfolio = () => {
                                             {portfolio.name}
                                         </td>
                                         <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
-                                        <td className="p-3">{portfolio.balance}</td>
+                                        <td className="p-3">
+                                            {portfolio.balance}
+                                        </td>
                                         <td className="p-3">
                                             <button
                                                 className="text-s rounded bg-red-500 px-3 py-1 text-white hover:bg-red-700"
