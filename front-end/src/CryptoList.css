@@ -16,6 +16,9 @@
     background-color: #14213d;
     min-height: 100vh;
     padding: 20px;
+    max-width: 100vw; /* Max width to viewport width */
+    width: 100%;
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .search-container {
@@ -23,6 +26,15 @@
     background-color: #fca311;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Update media queries for responsive padding and font sizes */
+@media (max-width: 768px) {
+  .crypto-table th, .crypto-table td {
+    padding: 0.5em; /* Less padding on smaller screens */
+    font-size: 0.9em; /* Smaller font size on smaller screens */
+  }
 }
 
 /* Search Input */
@@ -62,6 +74,13 @@
     color: #ffffff;
 }
 
+.crypto-icon {
+  margin-right: 8px; /* Adjust the spacing between the icon and the name */
+  width: 24px; /* Adjust the size of the icon */
+  height: 24px;
+  vertical-align: middle; /* Align the icon vertically with the text */
+}
+
 /* Crypto Table  */
 .crypto-table {
     width: 100%;
@@ -70,58 +89,79 @@
 }
 
 .crypto-table thead {
-    background-color: #14213d;
+  background-color: #14213d; 
 }
 
 .crypto-table th,
 .crypto-table td {
-    padding: 12px;
-    border: 1px solid #1e2a45;
-    text-align: left;
-    font-size: 1rem;
+  padding: 2px; /* Made the entries more compact, less spread out */
+  border: 1px solid #1e2a45;
+  text-align: middle;
+  font-size: 1rem;
 }
 
 .crypto-table th {
-    color: #ffffff;
-    font-weight: bold;
+  color: #ffffff; 
+  font-weight: bold; 
 }
 
 .crypto-table tbody td {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 .crypto-table tbody tr:hover {
-    background-color: #1e2a45;
+  background-color: #1e2a45;
 }
 
 .crypto-table tbody tr:nth-child(even) {
-    background-color: #162035;
+  background-color: #162035; 
 }
+
+/* Narrows the # column to be less noticeable */
+.crypto-table th:first-child,
+.crypto-table td:first-child {
+width: 50px; 
+} 
+
+.crypto-table th:last-child,
+.crypto-table td:last-child {
+  display: none;
+}
+
+/*********************************************************************/
 
 /* Pagination Styles */
 .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .pagination button {
-    padding: 10px 15px;
-    margin: 0 5px;
-    background-color: #fca311;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-    color: #ffffff;
-    transition: background-color 0.3s ease;
+  padding: 10px 15px;
+  margin: 0 5px;
+  background-color: #fca311;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.3s ease;
 }
 
 .pagination button:hover {
-    background-color: #e69500;
-    cursor: pointer;
+  background-color: #e69500; 
+  cursor: pointer;
 }
 
 .pagination button:disabled {
-    background-color: #ccc;
-    cursor: default;
+  background-color: #ccc; /* Grey background */
+  cursor: not-allowed; /* Cursor to indicate the button is not clickable */
+  color: #666; /* Dim the text color a bit */
 }
+
+.pagination span {
+  margin: 0 10px; /* Add some margin around the text for spacing */
+  color: #ffffff; /* Set the color of the text */
+  font-weight: bold; /* Optional: to make it stand out more */
+}
+
