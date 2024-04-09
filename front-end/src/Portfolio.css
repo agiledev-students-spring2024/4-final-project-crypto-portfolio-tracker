@@ -16,8 +16,8 @@
     text-align: center;
     margin-bottom: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* More pronounced shadow for depth */
-    color: #ffffff; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* More pronounced shadow for depth */
+    color: #ffffff;
     background-color: #14213d;
 }
 
@@ -26,8 +26,8 @@
     background-color: #151717; /* Slightly off-black background for the portfolio section */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    color: #ffffff; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
     background-color: #14213d;
 }
 
@@ -86,7 +86,6 @@
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 4px;
-    
 }
 
 /* Adjust input placeholder color for better readability */
@@ -96,7 +95,8 @@
 
 /* When on mobile or smaller screens */
 @media (max-width: 768px) {
-    .portfolio-asset-header, .portfolio-asset-item {
+    .portfolio-asset-header,
+    .portfolio-asset-item {
         flex-direction: column;
         text-align: center;
     }
@@ -105,56 +105,214 @@
         width: 100%;
     }
 
-    .add-asset-form input, .add-asset-button {
+    .add-asset-form input,
+    .add-asset-button {
         width: 100%; /* Full width on small screens */
     }
 }
-
 
 /*Recharts Info*/
 
 /* Improve the visibility of the legend and labels */
 .recharts-legend-item-text,
 .recharts-label {
-  fill: #ffffff !important; /* Force white color text for SVG elements */
+    fill: #ffffff !important; /* Force white color text for SVG elements */
     font-size: 12px; /* Adjust font size as needed */
     text-anchor: 'middle'; /* Ensure the text is centered */
 }
-  
 
 /* Style tooltips for better readability */
 .recharts-tooltip-wrapper {
     background-color: #14213d !important; /* Dark blue background for tooltip */
     border-radius: 8px; /* Rounded corners for tooltip */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Shadow for depth */
-  }
-  
-.recharts-tooltip-item {
-color: #ffffff !important; /* White text for tooltip items */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Shadow for depth */
 }
 
+.recharts-tooltip-item {
+    color: #ffffff !important; /* White text for tooltip items */
+}
 
-
-/* Hamburger menu */
-.hamburger {
-    cursor: pointer;
-    /* Style your hamburger icon */
-  }
-  
-  .nav-menu {
-    display: none;
-    /* Hidden by default */
-  }
-  
-  .nav-menu.open {
-    display: block;
-    /* Shown when 'open' class is added, you'll need to position it as needed */
-  }
-  
-  @media (max-width: 768px) {
-    /* Assuming you want the hamburger menu for mobile view */
+@media (max-width: 768px) {
     .nav-menu {
-      display: block;
+        display: block;
     }
-  }
-  
+}
+
+/* Add Wallet/Exchange Modal */
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal content styling */
+.modal-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: auto;
+    max-width: 90%;
+    max-height: 80vh;
+    position: relative;
+    overflow-y: auto;
+}
+.modal-content h2 {
+    color: #333; /* A dark color for visibility */
+    font-size: 24px; /* Or whatever size you prefer */
+    margin-bottom: 20px; /* Spacing below the heading */
+    font-weight: normal; /* Adjust the font weight as needed */
+    text-align: center; /* Center the heading */
+}
+/* Modal close button styling */
+.modal-close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: #333;
+    font-size: 0;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+}
+
+.modal-close-button::before,
+.modal-close-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 9px;
+    width: 2px;
+    height: 20px;
+    background-color: #333;
+}
+
+.modal-close-button::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.modal-close-button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.modal-close-button:hover::before,
+.modal-close-button:hover::after {
+    background-color: #555;
+}
+
+/* Input fields styling */
+.modal-content input[type='text'] {
+    width: calc(100% - 24px);
+    margin: 10px 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background: #fff;
+}
+
+.modal-content input[type='text']:focus {
+    border-color: #fca311;
+    box-shadow: 0 0 0 3px rgba(252, 163, 17, 0.2);
+    outline: none;
+}
+
+/* Button styling */
+.modal-content button {
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 20px;
+    background-color: #fca311;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition:
+        background-color 0.25s,
+        transform 0.25s;
+}
+
+.modal-content button:hover {
+    background-color: #e89f00;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(232, 159, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 15x;
+    }
+
+    .modal-close-button {
+        top: 10px;
+        right: 10px;
+    }
+}
+
+.add-wallet-exchange-button {
+    background-color: #fca311;
+    color: #ffffff;
+    padding: 15px 30px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.add-wallet-exchange-button:hover,
+.add-wallet-exchange-button:focus {
+    background-color: #e89f00;
+}
+
+/* Wallet Data Display */
+.wallet-data {
+    background-color: #162a47; 
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.wallet-data h3 {
+    color: #fca311; 
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.wallet-data p {
+    color: #ffffff; 
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #fca311; 
+    padding-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .wallet-data {
+        padding: 15px;
+    }
+
+    .wallet-data h3 {
+        font-size: 18px; 
+    }
+
+    .wallet-data p {
+        font-size: 14px; 
+    }
+}

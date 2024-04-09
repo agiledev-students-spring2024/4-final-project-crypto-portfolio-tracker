@@ -36,49 +36,49 @@ const Hamburger = () => {
             >
                 <Link
                     to="/"
-                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    className="flex items-center px-4 pl-6 py-2 pt-4 text-lg font-medium"
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faHome} className="mr-2" /> Home
                 </Link>
                 <Link
                     to="/login"
-                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    className="flex items-center px-4 pl-6 py-2 text-lg font-medium"
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faSignInAlt} className="mr-2" /> Login
                 </Link>
                 <Link
                     to="/portfolio"
-                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    className="flex items-center px-4 pl-6 py-2 text-lg font-medium"
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faBriefcase} className="mr-2" /> My Portfolio
                 </Link>
                 <Link
                     to="/cryptolist"
-                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    className="flex items-center px-4 pl-6 py-2 text-lg font-medium"
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faArrowTrendUp} className="mr-2" /> Cryptocurrencies
                 </Link>
                 <Link
                     to="/settings"
-                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    className="flex items-center px-4 pl-6 py-2 text-lg font-medium"
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faCog} className="mr-2" /> Settings
                 </Link>
                 <Link
                     to="/news"
-                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    className="flex items-center px-4 pl-6 py-2 text-lg font-medium"
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faNewspaper} className="mr-2" /> News
                 </Link>
                 <Link
                     to="/about"
-                    className="flex items-center px-4 py-2 text-lg font-medium"
+                    className="flex items-center px-4 pl-6 py-2 text-lg font-medium"
                     onClick={() => setIsOpen(false)}
                 >
                     <FontAwesomeIcon icon={faInfoCircle} className="mr-2" /> About
