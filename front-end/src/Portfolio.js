@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import Header from './Header'
 import './styles.css'
 import './Portfolio.css'
+import { jwtDecode } from 'jwt-decode'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
 import {
@@ -17,6 +20,7 @@ import {
 // import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const Portfolio = () => {
+    //Portfolio
     const [showPortfolios, setShowPortfolios] = useState(false)
     const [showAddModal, setShowAddModal] = useState(false)
     const [bitcoinAddress, setBitcoinAddress] = useState('')
@@ -131,7 +135,7 @@ const Portfolio = () => {
     const COLORS = ['#FFD700', '#FFA500', '#FF8C00', '#FF7F50', '#FF6347']
 
     return (
-        <div className="min-h-screen bg-dark-blue p-5 text-white">
+        <div className="min-h-screen bg-white p-5 text-black dark:bg-dark-blue dark:text-white">
             <Header></Header>
             <div className="content">
                 <button
@@ -213,6 +217,7 @@ const Portfolio = () => {
                                         onChange={(e) =>
                                             setWalletName(e.target.value)
                                         }
+                                        required
                                     />
                                     <input
                                         type="text"
@@ -222,6 +227,7 @@ const Portfolio = () => {
                                         onChange={(e) =>
                                             setBitcoinAddress(e.target.value)
                                         }
+                                        required
                                     />
                                     <button type="submit">Add Wallet</button>
                                     <button
