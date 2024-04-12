@@ -126,7 +126,6 @@ app.post("/api/addWallet", async (req, res) => {
     address,
     balance,
   };
-
   portfoliosData.push(newPortfolio);
 
   res.json({
