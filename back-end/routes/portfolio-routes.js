@@ -14,12 +14,22 @@ const portfolioRouter = () => {
    ];
     
   // function to get the current Bitcoin price in USD
+  let cachedBitcoinPrice = null;
+  let lastFetchedTime = 0;
   async function getCurrentBitcoinPrice() {
+    const now = Date.now();
+    // if  last fetched time is within 5 minutes return the cached price so we dont need to constantly call api
+    if (cachedBitcoinPrice && (now - lastFetchedTime) < 5 * 60 * 1000) {
+      return cachedBitcoinPrice;
+    }
+  
     try {
       const response = await axios.get(
         "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
       );
-      return response.data.bitcoin.usd;
+      cachedBitcoinPrice = response.data.bitcoin.usd;
+      lastFetchedTime = now;
+      return cachedBitcoinPrice;
     } catch (error) {
       console.error("Error fetching Bitcoin price:", error);
       return null;
@@ -91,11 +101,14 @@ const portfolioRouter = () => {
   
   router.delete("/deleteWallet/:id", async (req, res) => {
     const { id } = req.params;
-    console.log(`DELETE request to /api/deleteWallet with ID ${id}`);
-    // find wallet by ID and delete it -- neds to be implemented
   
-    //for now just send a message
-    res.json({ message: `Wallet with ID ${id} deleted.` });
+    const index = portfoliosData.findIndex(p => p.id === id);
+    if (index !== -1) {
+      portfoliosData.splice(index, 1); // Remove the portfolio from the array
+      res.json({ message: `Wallet with ID ${id} deleted.` });
+    } else {
+      res.status(404).json({ message: `Wallet with ID ${id} not found.` });
+    }
   });
   
   //For CryptoList API - Route handler for GET requests to the '/api/coins' endpoint
