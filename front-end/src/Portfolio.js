@@ -23,9 +23,10 @@ const Portfolio = () => {
     //Portfolio
     const [showPortfolios, setShowPortfolios] = useState(false)
     const [showAddModal, setShowAddModal] = useState(false)
-    const [bitcoinAddress, setBitcoinAddress] = useState('')
+    const [address, setAddress] = useState('')
     const [walletName, setWalletName] = useState('')
     const [portfolios, setPortfolios] = useState([])
+    const [selectedCurrency, setSelectedCurrency] = useState('bitcoin')
 
     // // State for the list of assets and new asset inputs
     // const [portfolioAssets] = useState([
@@ -67,8 +68,8 @@ const Portfolio = () => {
 
         const newPortfolio = {
             name: walletName,
-            platformId: 'bitcoin',
-            address: bitcoinAddress,
+            platformId: selectedCurrency,
+            address: address,
             balance: '$0', // default value for now
         }
         try {
@@ -93,15 +94,18 @@ const Portfolio = () => {
             console.error('Error posting wallet data:', error)
         }
 
-        setBitcoinAddress('') // reset the address
+        setAddress('') // reset the address
         setWalletName('')
+        setSelectedCurrency('bitcoin')
         setShowAddModal(false)
         setShowPortfolios(false)
     }
 
     const handleDeletePortfolio = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/deleteWallet/${id}`, {
+            const response = await fetch(
+                `http://localhost:5000/api/deleteWallet/${id}`,
+                {
                     method: 'DELETE',
                 }
             )
@@ -219,23 +223,50 @@ const Portfolio = () => {
                                     />
                                     <input
                                         type="text"
-                                        name="bitcoinAddress"
-                                        placeholder="Bitcoin Wallet Address"
-                                        value={bitcoinAddress}
+                                        name="address"
+                                        placeholder={`${selectedCurrency.charAt(0).toUpperCase() + selectedCurrency.slice(1)} Wallet Address`} // dynamically update placeholder text based off crypto type
+                                        value={address}
                                         onChange={(e) =>
-                                            setBitcoinAddress(e.target.value)
+                                            setAddress(e.target.value)
                                         }
                                         required
                                     />
-                                    <button type="submit">Add Wallet</button>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            /* Coinbase connect logic  will go here*/
-                                        }}
-                                    >
-                                        Add Coinbase Exchange
-                                    </button>
+                                    <div className="mt-4">
+                                        <select
+                                            className="block w-11/12 rounded-md border border-gray-300 bg-white px-4 py-2 text-black shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500"
+                                            value={selectedCurrency}
+                                            onChange={(e) =>
+                                                setSelectedCurrency(
+                                                    e.target.value
+                                                )
+                                            }
+                                            required
+                                        >
+                                            <option value="bitcoin">
+                                                Bitcoin (BTC)
+                                            </option>
+                                            <option value="ethereum">
+                                                Ethereum (ETH)
+                                            </option>
+                                            <option value="cardano">
+                                                Cardano (ADA)
+                                            </option>
+                                            {/* we can add more options here*/}
+                                        </select>
+                                    </div>
+                                    <div className="py-2">
+                                        <button type="submit">
+                                            Add Wallet
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                /* Coinbase connect logic  will go here*/
+                                            }}
+                                        >
+                                            Add Coinbase Exchange
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
