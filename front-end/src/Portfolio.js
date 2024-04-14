@@ -16,9 +16,6 @@ import {
     ResponsiveContainer,
 } from 'recharts'
 
-// For column graph if needed to rollback
-// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
 const Portfolio = () => {
     //Portfolio
     const [showPortfolios, setShowPortfolios] = useState(false)
@@ -26,19 +23,18 @@ const Portfolio = () => {
     const [address, setAddress] = useState('')
     const [walletName, setWalletName] = useState('')
     const [portfolios, setPortfolios] = useState([])
-    const [selectedCurrency, setSelectedCurrency] = useState('bitcoin')
+    const [selectedCurrency, setSelectedCurrency] = useState('bitcoin') // btc as default
+    const [chartData, setChartData] = useState([]);
 
-    // // State for the list of assets and new asset inputs
-    // const [portfolioAssets] = useState([
-    //     { id: 1, name: 'BTC', amount: 0.5, value: 701.03 },
-    //     { id: 2, name: 'ETH', amount: 1, value: 391.16 },
-    //     { id: 3, name: 'SOL', amount: 2, value: 129.41 },
-    //     { id: 4, name: 'BCH', amount: 1, value: 452.89 },
-    //     { id: 5, name: 'ETC', amount: 10, value: 35.11 },
-    // ])
-
-    // fetch portfolio data when ShowPortfolio is true
+    // make platform IDs to abbreviations
+    const cryptoAbbreviations = {
+        bitcoin: 'BTC',
+        ethereum: 'ETH',
+        cardano: 'ADA'
+        // add more mappings as we go
+    };
     useEffect(() => {
+        // fetch portfolio data when ShowPortfolio is true
         const fetchPortfolios = async () => {
             if (showPortfolios) {
                 try {
@@ -61,6 +57,32 @@ const Portfolio = () => {
 
         fetchPortfolios()
     }, [showPortfolios])
+
+    useEffect(() => {
+        // get data for pie chart composition every time data in backend is updated
+        const aggregateData = () => {
+            const dataMap = portfolios.reduce((acc, portfolio) => {
+                const balanceUSD = parseFloat(portfolio.balance.replace(/[^\d.-]/g, ''));
+                const abbreviation = cryptoAbbreviations[portfolio.platformId] || portfolio.platformId.toUpperCase();
+                if (acc[abbreviation]) {
+                    acc[abbreviation] += balanceUSD;
+                } else {
+                    acc[abbreviation] = balanceUSD;
+                }
+                return acc;
+            }, {});
+
+            const newData = Object.keys(dataMap).map(key => ({
+                name: key, // Use abbreviation
+                value: dataMap[key],
+            }));
+
+            setChartData(newData);
+        };
+
+        aggregateData();
+    }, [portfolios]);
+    
 
     // Function to handle adding new wallet or exchange
     const handleAddWallet = async (e) => {
@@ -121,20 +143,8 @@ const Portfolio = () => {
     const togglePortfolios = () => setShowPortfolios(!showPortfolios)
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
-    // Calculate total value for the portfolio
-    // const totalValue = portfolioAssets.reduce(
-    //     (acc, asset) => acc + asset.amount * parseFloat(asset.value),
-    //     0
-    // )
-
-    // Map the data to include a percentage value for the pie chart
-    // const pieData = portfolioAssets.map((asset) => ({
-    //     name: asset.name,
-    //     value: ((asset.amount * parseFloat(asset.value)) / totalValue) * 100,
-    // }))
-
     // Define colors for the pie chart
-    const COLORS = ['#FFD700', '#FFA500', '#FF8C00', '#FF7F50', '#FF6347']
+    const COLORS = ['#9B5DE5', '#00F5D4', '#00BBF9', '#21FA90 ', '#F2DD6E']
 
     return (
         <div className="min-h-screen bg-white p-5 text-black dark:bg-dark-blue dark:text-white">
@@ -150,6 +160,9 @@ const Portfolio = () => {
                 {/* Portfolios List */}
                 {showPortfolios && (
                     <div className="overflow-x-auto">
+                        <h2 className="my-2 text-2xl font-extrabold">
+                            My Portfolios
+                        </h2>
                         <table className="w-full overflow-hidden rounded-lg text-left">
                             <thead className="bg-orange-light text-white">
                                 <tr>
@@ -273,64 +286,34 @@ const Portfolio = () => {
                     </div>
                 )}
 
-                {/* <div className="portfolio-graph">
+                <div className="portfolio-graph">
                     <h2 className="my-2 text-2xl font-extrabold">
                         Portfolio Composition
                     </h2>
                     <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
                             <Pie
-                                data={pieData}
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80} // Adjust radius if necessary
-                                fill="#8884d8"
+                                data={chartData}
                                 dataKey="value"
                                 nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80}
+                                fill="#8884d8"
                                 label={renderCustomLabel}
-                                labelLine={false} // Hide label lines if they clutter the chart
                             >
-                                {pieData.map((entry, index) => (
+                                {chartData.map((entry, index) => (
                                     <Cell
                                         key={`cell-${index}`}
                                         fill={COLORS[index % COLORS.length]}
                                     />
                                 ))}
                             </Pie>
-
-                            <Tooltip
-                                formatter={(value) => `${value.toFixed(2)}%`}
-                            />
+                            <Tooltip />
                             <Legend />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
-                <div className="my-portfolio">
-                    <h2 className="my-2 text-2xl font-extrabold">
-                        My Portfolio
-                    </h2>
-                    <div className="portfolio-assets">
-                        <div className="portfolio-asset-header">
-                            <span>Coin</span>
-                            <span>Number</span>
-                            <span>Value per Coin</span>
-                            <span>Total Value</span>
-                        </div>
-                        {portfolioAssets.map((asset) => (
-                            <div
-                                key={asset.id}
-                                className="portfolio-asset-item"
-                            >
-                                <span>{asset.name}</span>
-                                <span>{asset.amount}</span>
-                                <span>${asset.value.toFixed(2)}</span>
-                                <span>
-                                    ${(asset.amount * asset.value).toFixed(2)}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
             </div>
         </div>
     )

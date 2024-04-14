@@ -124,11 +124,17 @@ const portfolioRouter = () => {
               const bitcoinPriceUSD = await getCurrentBitcoinPrice();
               const btcBalance = await getBitcoinBalance(portfolio.address);
               const btcBalanceUSD = btcBalance * bitcoinPriceUSD;
-              return { ...portfolio, balance: `$${formatNumber(btcBalanceUSD.toFixed(2))}` };
+              return {
+                ...portfolio,
+                balance: `$${formatNumber(btcBalanceUSD.toFixed(2))}`,
+              };
             case "ethereum":
               const ethBalance = await getEthereumBalance(portfolio.address);
               const ethBalanceUSD = ethBalance * prices.ethPrice;
-              return { ...portfolio, balance: `$${formatNumber(ethBalanceUSD.toFixed(2))}` };
+              return {
+                ...portfolio,
+                balance: `$${formatNumber(ethBalanceUSD.toFixed(2))}`,
+              };
             case "cardano":
               const adaBalance = await getCardanoBalance(portfolio.address);
               return { ...portfolio, balance: `${adaBalance} ADA` };
@@ -172,7 +178,7 @@ const portfolioRouter = () => {
 
     const index = portfoliosData.findIndex((p) => p.id === id);
     if (index !== -1) {
-      portfoliosData.splice(index, 1); // Remove the portfolio from the array
+      portfoliosData.splice(index, 1); // remove portfolio from array
       res.json({ message: `Wallet with ID ${id} deleted.` });
     } else {
       res.status(404).json({ message: `Wallet with ID ${id} not found.` });
