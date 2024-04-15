@@ -47,7 +47,7 @@ const portfolioRouter = () => {
   }
 
   async function getEthereumBalance(address) {
-    const apiKey = process.env.ETHERSCAN_API_KEY; // Ensure this matches your .env variable name
+    const apiKey = process.env.ETHERSCAN_API_KEY; 
     const url = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${apiKey}`;
     const response = await axios.get(url);
     return response.data.result / 1e18; // convert from Wei to Ether
@@ -184,6 +184,25 @@ const portfolioRouter = () => {
       res.status(404).json({ message: `Wallet with ID ${id} not found.` });
     }
   });
+
+  // requests for histograph data
+  router.get("/historical/:currencyId", async (req, res) => {
+    const { currencyId } = req.params;
+    const days = req.query.days || 30; // default to last 30 days
+    const url = `https://api.coingecko.com/api/v3/coins/${currencyId}/market_chart?vs_currency=usd&days=${days}`;
+
+    try {
+        const response = await axios.get(url);
+        const prices = response.data.prices.map(price => ({
+            date: new Date(price[0]).toISOString().split('T')[0], // converts timestamp to YYYY-MM-DD
+            price: price[1]
+        }));
+        res.json(prices);
+    } catch (error) {
+        console.error("Error fetching historical data:", error);
+        res.status(500).send("Failed to fetch historical data");
+    }
+});
 
   //For CryptoList API - Route handler for GET requests to the '/api/coins' endpoint
 

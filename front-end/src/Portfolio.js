@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Header from './Header'
 import './styles.css'
 import './Portfolio.css'
-import { jwtDecode } from 'jwt-decode'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import PriceHistogram from './PriceHistogram'
+
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
 import {
@@ -24,15 +23,15 @@ const Portfolio = () => {
     const [walletName, setWalletName] = useState('')
     const [portfolios, setPortfolios] = useState([])
     const [selectedCurrency, setSelectedCurrency] = useState('bitcoin') // btc as default
-    const [chartData, setChartData] = useState([]);
+    const [chartData, setChartData] = useState([])
 
     // make platform IDs to abbreviations
     const cryptoAbbreviations = {
         bitcoin: 'BTC',
         ethereum: 'ETH',
-        cardano: 'ADA'
+        cardano: 'ADA',
         // add more mappings as we go
-    };
+    }
     useEffect(() => {
         // fetch portfolio data when ShowPortfolio is true
         const fetchPortfolios = async () => {
@@ -62,27 +61,30 @@ const Portfolio = () => {
         // get data for pie chart composition every time data in backend is updated
         const aggregateData = () => {
             const dataMap = portfolios.reduce((acc, portfolio) => {
-                const balanceUSD = parseFloat(portfolio.balance.replace(/[^\d.-]/g, ''));
-                const abbreviation = cryptoAbbreviations[portfolio.platformId] || portfolio.platformId.toUpperCase();
+                const balanceUSD = parseFloat(
+                    portfolio.balance.replace(/[^\d.-]/g, '')
+                )
+                const abbreviation =
+                    cryptoAbbreviations[portfolio.platformId] ||
+                    portfolio.platformId.toUpperCase()
                 if (acc[abbreviation]) {
-                    acc[abbreviation] += balanceUSD;
+                    acc[abbreviation] += balanceUSD
                 } else {
-                    acc[abbreviation] = balanceUSD;
+                    acc[abbreviation] = balanceUSD
                 }
-                return acc;
-            }, {});
+                return acc
+            }, {})
 
-            const newData = Object.keys(dataMap).map(key => ({
+            const newData = Object.keys(dataMap).map((key) => ({
                 name: key, // Use abbreviation
                 value: dataMap[key],
-            }));
+            }))
 
-            setChartData(newData);
-        };
+            setChartData(newData)
+        }
 
-        aggregateData();
-    }, [portfolios]);
-    
+        aggregateData()
+    }, [portfolios])
 
     // Function to handle adding new wallet or exchange
     const handleAddWallet = async (e) => {
@@ -159,7 +161,7 @@ const Portfolio = () => {
 
                 {/* Portfolios List */}
                 {showPortfolios && (
-                    <div className="overflow-x-auto py-2 w-fit">
+                    <div className="w-fit overflow-x-auto py-2">
                         <h2 className="my-2 text-2xl font-extrabold">
                             My Portfolios
                         </h2>
@@ -167,8 +169,12 @@ const Portfolio = () => {
                             <thead className="bg-orange-light text-white">
                                 <tr>
                                     <th className="p-3 font-semibold">Name</th>
-                                    <th className="p-3 font-semibold">Address</th>
-                                    <th className="p-3 font-semibold">Balance</th>
+                                    <th className="p-3 font-semibold">
+                                        Address
+                                    </th>
+                                    <th className="p-3 font-semibold">
+                                        Balance
+                                    </th>
                                     <th className="p-3 font-semibold"></th>
                                 </tr>
                             </thead>
@@ -313,6 +319,10 @@ const Portfolio = () => {
                             <Legend />
                         </PieChart>
                     </ResponsiveContainer>
+                </div>
+                <div className='portfolio-graph'>
+                    <h2 className='my-2 text-2xl font-extrabold'>Portfolio Performance</h2>
+                    <PriceHistogram currencyId="bitcoin" />
                 </div>
             </div>
         </div>
