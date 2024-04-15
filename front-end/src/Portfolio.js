@@ -166,10 +166,10 @@ const Portfolio = () => {
                         <table className="w-fit overflow-hidden rounded-lg text-left">
                             <thead className="bg-orange-light text-white">
                                 <tr>
-                                    <th className="p-3">Name</th>
-                                    <th className="p-3">Address</th>
-                                    <th className="p-3">Balance</th>
-                                    <th className="p-3">Action</th>
+                                    <th className="p-3 font-semibold">Name</th>
+                                    <th className="p-3 font-semibold">Address</th>
+                                    <th className="p-3 font-semibold">Balance</th>
+                                    <th className="p-3 font-semibold">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
