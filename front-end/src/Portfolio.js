@@ -175,7 +175,7 @@ const Portfolio = () => {
                                     <th className="p-3 font-semibold">
                                         Balance
                                     </th>
-                                    <th className="p-3 font-semibold"></th>
+                                    <th className="p-3 font-semibold">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -193,7 +193,7 @@ const Portfolio = () => {
                                         </td>
                                         <td className="p-3">
                                             <button
-                                                className="text-s rounded bg-red-500 px-3 py-1 text-white hover:bg-red-700"
+                                                className="text-s font-medium rounded bg-red-500 px-3 py-1 text-white hover:bg-red-700"
                                                 onClick={() =>
                                                     handleDeletePortfolio(
                                                         portfolio.id
