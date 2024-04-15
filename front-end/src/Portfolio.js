@@ -159,11 +159,11 @@ const Portfolio = () => {
 
                 {/* Portfolios List */}
                 {showPortfolios && (
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto py-2 w-fit">
                         <h2 className="my-2 text-2xl font-extrabold">
                             My Portfolios
                         </h2>
-                        <table className="w-full overflow-hidden rounded-lg text-left">
+                        <table className="w-fit overflow-hidden rounded-lg text-left">
                             <thead className="bg-orange-light text-white">
                                 <tr>
                                     <th className="p-3">Name</th>
