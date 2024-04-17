@@ -6,6 +6,7 @@ import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
 const Profile = (props) => {
+    //User Authentication
     const jwtToken = localStorage.getItem('token') // the JWT token, if we have already received one and stored it in localStorage
     const user = jwtDecode(jwtToken)
     const [response, setResponse] = useState({}) // we expect the server to send us a simple object in this case
@@ -43,19 +44,48 @@ const Profile = (props) => {
         return (
             <div className="flex min-h-screen flex-col bg-white text-black dark:bg-dark-blue dark:text-white">
                 <Header />
-                <div className="flex flex-col items-center py-40">
+                <div className="flex flex-col items-center py-24">
                     <h1 className="my-5 mb-8 flex justify-center text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
                         Profile
                     </h1>
 
-                    <p className="font-extrabold">{user.username}</p>
+                    <p className="text-2xl font-extrabold">@{user.username}</p>
 
-                    <button
-                        className="bg-secondary hover:bg-oragne-dark mt-8 rounded bg-orange-light px-12 py-3 font-bold text-white"
-                        onClick={handleLogout}
-                    >
-                        Logout
-                    </button>
+                    <form className="flex flex-col items-center" onSubmit="">
+                        <input
+                            className="my-2 mt-6 rounded-md border-b-4 p-4 dark:text-black"
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                        />
+                        <input
+                            className="my-2 rounded-md border-b-4 p-4 dark:text-black"
+                            type="email"
+                            name="email"
+                            placeholder="Email address"
+                        />
+                        <input
+                            className="my-2 rounded-md border-b-4 p-4 dark:text-black"
+                            type="text"
+                            name="password"
+                            placeholder="Password"
+                        />
+
+                        <div className="flex flex-row space-x-3">
+                            <button
+                                type="submit"
+                                className="bg-secondary hover:bg-oragne-dark mt-8 rounded bg-orange-light px-10 py-3 font-bold text-white"
+                            >
+                                Submit
+                            </button>
+                            <button
+                                className="bg-secondary hover:bg-oragne-dark mt-8 rounded bg-orange-light px-10 py-3 font-bold text-white"
+                                onClick={handleLogout}
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         )
