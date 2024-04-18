@@ -20,11 +20,10 @@ passport.use(jwtStrategy)
 app.use(passport.initialize())
 
 // connect to the database
-// console.log(`Conneting to MongoDB at ${process.env.MONGODB_URI}`)
 try {
     mongoose.connect(process.env.MONGODB_URI)
     console.log(`Connected to MongoDB.`)
-  } catch (err) {
+} catch (err) {
     console.log(
       `Error connecting to MongoDB Atlas: ${err}`
     )

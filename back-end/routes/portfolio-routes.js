@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const User = require("../models/User.js");
 const axios = require("axios");
 const dotenv = require("dotenv").config({ path: "../.env" });
 
@@ -7,10 +8,6 @@ const portfolioRouter = () => {
   const router = express.Router();
 
   // Portfolio Routes
-  // get portfolio data from the database or wherever it's stored this is just temporary
-  const portfoliosData = [
-    // more portfolios will be added
-  ];
 
   // function to format large balance nubmers
   function formatNumber(num) {
@@ -114,8 +111,17 @@ const portfolioRouter = () => {
     }
   }
 
-  router.get("/portfolios", async (req, res) => {
+  router.get("/portfolios/:username", async (req, res) => {
     try {
+      const {username} = req.params
+      const user = await User.findOne({username: username});
+      if(!user){
+        console.log("Something went wrong: user not found");
+        next();
+      }
+
+      const portfoliosData = user.portfolio
+
       const prices = await getCoinPrices();
       const updatedPortfolios = await Promise.all(
         portfoliosData.map(async (portfolio) => {
@@ -154,35 +160,47 @@ const portfolioRouter = () => {
   });
 
   router.post("/addWallet", async (req, res) => {
-    const { name, address, platformId, balance } = req.body;
+    const { username, name, address, platformId, balance } = req.body;
+
+    const id = mongoose.Types.ObjectId
 
     // make a new portfolio object
     const newPortfolio = {
-      id: `portfolio-${portfoliosData.length + 1}`, // ID generation we can change later when we integrate database
+      id,
       name,
       platformId,
       address,
       balance,
-    };
+    };  
 
-    portfoliosData.push(newPortfolio);
+    const user = await User.findOneAndUpdate(
+      { username: username },
+      { $push:  { portfolio: newPortfolio }});
 
-    res.json({
-      portfolios: portfoliosData,
-      message: `Address ${address} received and processed.`,
-    });
+    if(!user){
+      console.log("Something went wrong: user not found")
+      next();
+    } else {
+      res.json({
+        message: `Address ${address} received and processed.`,
+      });
+    }
   });
 
-  router.delete("/deleteWallet/:id", async (req, res) => {
-    const { id } = req.params;
+  router.delete("/deleteWallet/:username/:name", async (req, res) => {
+    const username = req.params['username']
+    const name = req.params['name']
 
-    const index = portfoliosData.findIndex((p) => p.id === id);
-    if (index !== -1) {
-      portfoliosData.splice(index, 1); // remove portfolio from array
-      res.json({ message: `Wallet with ID ${id} deleted.` });
-    } else {
-      res.status(404).json({ message: `Wallet with ID ${id} not found.` });
+    try{
+      await User.updateOne(
+        { username: username }, 
+        { $pull: { "portfolio": { "name": name } }});
+
+        res.json({ message: `Wallet with Name ${name} deleted.` });
+    } catch (err){
+      res.status(404).json({ message: `Wallet with Name ${name} not found.` });
     }
+
   });
 
   // requests for histograph data

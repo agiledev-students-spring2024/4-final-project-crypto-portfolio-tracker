@@ -1,21 +1,51 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './styles.css'
 import Header from './Header'
-import { Link, useNavigate } from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
+import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
 const Home = (props) => {
     const [email, setEmail] = useState('')
-    const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
         navigate(`/register?email=${encodeURIComponent(email)}`)
     }
 
+    //User Authentication
+    const jwtToken = localStorage.getItem('token') // the JWT token, if we have already received one and stored it in localStorage
+    const user = jwtDecode(jwtToken)
+    const [response, setResponse] = useState({}) // we expect the server to send us a simple object in this case
+    const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
+
+    const navigate = useNavigate()
+
+    // try to load the protected data from the server when this component first renders
+    useEffect(() => {
+        // send the request to the server api, including the Authorization header with our JWT token in it
+        axios
+            .get(`http://localhost:5000/api/protected/`, {
+                headers: { Authorization: `JWT ${jwtToken}` }, // pass the token, if any, to the server
+            })
+            .then((res) => {
+                setResponse(res.data) // store the response data
+
+                console.log(response)
+            })
+            .catch((err) => {
+                console.log(
+                    'The server rejected the request for this protected resource... we probably do not have a valid JWT token.'
+                )
+                setIsLoggedIn(false) // update this state variable, so the component re-renders
+            })
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    if(isLoggedIn)
     return (
-        <div className="flex min-h-screen flex-col bg-white text-black dark:bg-dark-blue dark:text-white">
+        <div className="flex min-h-screen flex-col bg-white text-black dark:bg-alt-blue dark:text-white">
             <Header />
-            <div className="flex flex-col items-center px-6 py-12">
+            <div className="mt-16 flex flex-col items-center px-6 py-12">
                 <h1 className="mb-4 text-4xl font-bold">
                     Jump start your crypto portfolio{' '}
                 </h1>
@@ -52,6 +82,7 @@ const Home = (props) => {
             </div>
         </div>
     )
+    
 }
 
 export default Home
