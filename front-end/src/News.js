@@ -26,7 +26,7 @@ const News = (props) => {
                 <div className="mx-1">
                     <h1 className="my-2 text-2xl font-extrabold">News</h1>
                     <div className="bg-gray-300 p-4">
-                        <div className="h-screen overflow-y-auto">
+                        <div className="h-80 overflow-y-auto">
                             {data.map((item, index) => (
                                 <ListItem
                                     url={item.url}

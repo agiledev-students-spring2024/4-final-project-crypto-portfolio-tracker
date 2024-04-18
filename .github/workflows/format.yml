@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Prettier
 
 on:
   pull_request:
@@ -19,4 +19,6 @@ jobs:
       - name: Prettify code
         uses: creyD/prettier_action@v4.3
         with:
+          cache: 'npm'
+          cache-dependency-path: 'front-end/package-lock.json'
           prettier_options: --write ./front-end/*.js

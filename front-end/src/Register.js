@@ -68,7 +68,7 @@ const Register = (props) => {
                             name="name"
                             value={nameInput}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="name"
+                            placeholder="Name"
                         />
                         <input
                             className="my-4 rounded-md border-b-4 p-4 dark:text-black"
@@ -84,7 +84,7 @@ const Register = (props) => {
                             name="username"
                             value={usernameInput}
                             onChange={(e) => setUsername(e.target.value)}
-                            placeholder="username"
+                            placeholder="Username"
                         />
                         <input
                             className="my-4 rounded-md border-b-4 p-4 dark:text-black"
@@ -92,7 +92,7 @@ const Register = (props) => {
                             name="password"
                             value={passwordInput}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="password"
+                            placeholder="Password"
                         />
 
                         <button
