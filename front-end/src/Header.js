@@ -7,9 +7,9 @@ import './styles.css'
  */
 const Header = (props) => {
     return (
-        <header className="Header-header w-full p-4">
+        <header className="Header-header w-full">
             <nav className="Header-navbar w-full">
-                <ul className="nav-links flex hidden justify-between p-3 md:flex">
+                <ul className="nav-links flex hidden justify-between md:flex">
                     <li className="nav-item">
                         <Link
                             to="/"
@@ -68,7 +68,7 @@ const Header = (props) => {
                     </li>
                 </ul>
                 <div
-                    className="p-2 text-left md:hidden"
+                    className=" h-full text-left md:hidden"
                     style={{ maxWidth: '50px' }}
                 >
                     <Hamburger></Hamburger>

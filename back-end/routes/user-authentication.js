@@ -1,5 +1,4 @@
-const express = require("express"); // CommonJS import style!
-// mongoose models for MongoDB data manipulation
+const express = require("express"); 
 const mongoose = require("mongoose");
 const User = require("../models/User.js");
 
@@ -28,7 +27,7 @@ const authenticationRouter = () => {
 
     // try to create a new user
     try {
-      const user = await new User({ name, username, email, password }).save();
+      const user = await new User({ name, username, email, password}).save();
       // user saved successfully... send a success response
       console.error(`New user: ${user}`);
       const token = user.generateJWT(); // generate a signed token

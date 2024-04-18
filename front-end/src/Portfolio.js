@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Header from './Header'
+import { useNavigate } from 'react-router-dom'
+import { jwtDecode } from 'jwt-decode'
+import axios from 'axios'
 import './styles.css'
 import './Portfolio.css'
 import PriceHistogram from './PriceHistogram'
@@ -16,6 +19,33 @@ import {
 } from 'recharts'
 
 const Portfolio = () => {
+    //User Authentication
+    const jwtToken = localStorage.getItem('token') // the JWT token, if we have already received one and stored it in localStorage
+    const user = jwtDecode(jwtToken)
+    const [response, setResponse] = useState({}) // we expect the server to send us a simple object in this case
+    const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        // send the request to the server api, including the Authorization header with our JWT token in it
+        axios
+            .get(`http://localhost:5000/api/protected/`, {
+                headers: { Authorization: `JWT ${jwtToken}` }, // pass the token, if any, to the server
+            })
+            .then((res) => {
+                setResponse(res.data) // store the response data
+
+                console.log(response)
+            })
+            .catch((err) => {
+                console.log(
+                    'The server rejected the request for this protected resource... we probably do not have a valid JWT token.'
+                )
+                setIsLoggedIn(false) // update this state variable, so the component re-renders
+            })
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
     //Portfolio
     const [showPortfolios, setShowPortfolios] = useState(false)
     const [showAddModal, setShowAddModal] = useState(false)
@@ -35,27 +65,25 @@ const Portfolio = () => {
     useEffect(() => {
         // fetch portfolio data when ShowPortfolio is true
         const fetchPortfolios = async () => {
-            if (showPortfolios) {
-                try {
-                    const response = await fetch(
-                        'http://localhost:5000/api/portfolios'
-                    )
-                    const data = await response.json()
-                    if (Array.isArray(data)) {
-                        setPortfolios(data)
-                    } else {
-                        console.error('Received data is not an array:', data)
-                        setPortfolios([])
-                    }
-                } catch (error) {
-                    console.error('Error fetching portfolio data:', error)
+            try {
+                const response = await fetch(
+                    `http://localhost:5000/api/portfolios/${user.username}`
+                )
+                const data = await response.json()
+                if (Array.isArray(data)) {
+                    setPortfolios(data)
+                } else {
+                    console.error('Received data is not an array:', data)
                     setPortfolios([])
                 }
+            } catch (error) {
+                console.error('Error fetching portfolio data:', error)
+                setPortfolios([])
             }
         }
 
         fetchPortfolios()
-    }, [showPortfolios])
+    }, [showPortfolios]) // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         // get data for pie chart composition every time data in backend is updated
@@ -84,13 +112,14 @@ const Portfolio = () => {
         }
 
         aggregateData()
-    }, [portfolios])
+    }, [portfolios]) // eslint-disable-line react-hooks/exhaustive-deps
 
     // Function to handle adding new wallet or exchange
     const handleAddWallet = async (e) => {
         e.preventDefault()
 
         const newPortfolio = {
+            username: user.username,
             name: walletName,
             platformId: selectedCurrency,
             address: address,
@@ -125,10 +154,10 @@ const Portfolio = () => {
         setShowPortfolios(false)
     }
 
-    const handleDeletePortfolio = async (id) => {
+    const handleDeletePortfolio = async (name) => {
         try {
             const response = await fetch(
-                `http://localhost:5000/api/deleteWallet/${id}`,
+                `http://localhost:5000/api/deleteWallet/${user.username}/${name}`,
                 {
                     method: 'DELETE',
                 }
@@ -136,86 +165,101 @@ const Portfolio = () => {
 
             const responseData = await response.json()
             console.log(responseData)
-            setPortfolios(portfolios.filter((portfolio) => portfolio.id !== id))
+            setPortfolios(portfolios.filter((portfolio) => portfolio.name !== name))
         } catch (error) {
             console.error('Error deleting wallet data:', error)
         }
     }
 
-    const togglePortfolios = () => setShowPortfolios(!showPortfolios)
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
     // Define colors for the pie chart
     const COLORS = ['#9B5DE5', '#00F5D4', '#00BBF9', '#21FA90 ', '#F2DD6E']
 
-    return (
-        <div className="min-h-screen bg-white p-5 text-black dark:bg-dark-blue dark:text-white">
-            <Header></Header>
-            <div className="content">
-                <button
-                    className="mb-4 mt-6 rounded bg-gradient-to-r from-orange-500 to-yellow-500 px-4 py-2 font-bold text-white"
-                    onClick={() => setShowPortfolios(!showPortfolios)}
-                >
-                    All Portfolios
-                </button>
-
-                {/* Portfolios List */}
-                {showPortfolios && (
-                    <div className="w-fit overflow-x-auto py-2">
+    if (isLoggedIn)
+        return (
+            <div className="flex h-screen flex-col items-center overflow-auto bg-white text-black dark:bg-alt-blue dark:text-white">
+                <Header />
+                <div className="content mt-16 w-full p-5">
+                    <div className="portfolio-graph">
                         <h2 className="my-2 text-2xl font-extrabold">
-                            My Portfolios
+                            Portfolio Composition
                         </h2>
-                        <table className="w-fit overflow-hidden rounded-lg text-left">
-                            <thead className="bg-orange-light text-white">
-                                <tr>
-                                    <th className="p-3 font-semibold">Name</th>
-                                    <th className="p-3 font-semibold">
-                                        Address
-                                    </th>
-                                    <th className="p-3 font-semibold">
-                                        Balance
-                                    </th>
-                                    <th className="p-3 font-semibold">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {portfolios.map((portfolio) => (
-                                    <tr
-                                        key={portfolio.id}
-                                        className="border-b border-gray-700"
-                                    >
-                                        <td className="p-3">
-                                            {portfolio.name}
-                                        </td>
-                                        <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
-                                        <td className="p-3">
-                                            {portfolio.balance}
-                                        </td>
-                                        <td className="p-3">
-                                            <button
-                                                className="text-s font-medium rounded bg-red-500 px-3 py-1 text-white hover:bg-red-700"
-                                                onClick={() =>
-                                                    handleDeletePortfolio(
-                                                        portfolio.id
-                                                    )
-                                                }
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        <button
-                            className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
-                            onClick={toggleAddModal}
-                        >
-                            Add Wallet/Exchange
-                        </button>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <PieChart>
+                                <Pie
+                                    data={chartData}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={80}
+                                    fill="#8884d8"
+                                    label={renderCustomLabel}
+                                >
+                                    {chartData.map((entry, index) => (
+                                        <Cell
+                                            key={`cell-${index}`}
+                                            fill={COLORS[index % COLORS.length]}
+                                        />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
                     </div>
-                )}
+                    <div className="portfolio-graph">
+                        <h2 className="my-2 text-2xl font-extrabold">
+                            Portfolio Performance
+                        </h2>
+                        <PriceHistogram currencyId="bitcoin" />
+                    </div>
+                </div>
+
+                <div className="flex w-fit flex-col items-center px-5 py-2 pb-44 shadow-md">
+                    <table className="w-fit overflow-hidden rounded-lg text-left">
+                        <thead className="bg-orange-light text-white">
+                            <tr>
+                                <th className="p-3 font-semibold">Name</th>
+                                <th className="p-3 font-semibold">Address</th>
+                                <th className="p-3 font-semibold">Balance</th>
+                                <th className="p-3 font-semibold">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody className="dark:bg-dark-blue">
+                            {portfolios.map((portfolio) => (
+                                <tr
+                                    key={portfolio.id}
+                                    className="border-b border-gray-700"
+                                >
+                                    <td className="p-3">{portfolio.name}</td>
+                                    <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
+                                    <td className="p-3">{portfolio.balance}</td>
+                                    <td className="p-3">
+                                        <button
+                                            className="text-s rounded bg-red-500 px-3 py-1 font-medium text-white hover:bg-red-700"
+                                            onClick={() =>
+                                                handleDeletePortfolio(
+                                                    portfolio.name
+                                                )
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    <button
+                        className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
+                        onClick={toggleAddModal}
+                    >
+                        Add Wallet/Exchange
+                    </button>
+                </div>
 
                 {/* Add Wallet/Exchange Modal */}
                 {showAddModal && (
@@ -291,42 +335,9 @@ const Portfolio = () => {
                         </div>
                     </div>
                 )}
-
-                <div className="portfolio-graph">
-                    <h2 className="my-2 text-2xl font-extrabold">
-                        Portfolio Composition
-                    </h2>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                            <Pie
-                                data={chartData}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                fill="#8884d8"
-                                label={renderCustomLabel}
-                            >
-                                {chartData.map((entry, index) => (
-                                    <Cell
-                                        key={`cell-${index}`}
-                                        fill={COLORS[index % COLORS.length]}
-                                    />
-                                ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className='portfolio-graph'>
-                    <h2 className='my-2 text-2xl font-extrabold'>Portfolio Performance</h2>
-                    <PriceHistogram currencyId="bitcoin" />
-                </div>
             </div>
-        </div>
-    )
+        )
+    else return navigate('/login')
 }
 
 // Needed for charting

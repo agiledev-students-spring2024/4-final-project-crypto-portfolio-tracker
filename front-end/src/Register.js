@@ -52,7 +52,7 @@ const Register = (props) => {
 
     if (!response.success)
         return (
-            <div className="flex min-h-screen flex-col bg-white text-black dark:bg-dark-blue dark:text-white">
+            <div className="flex min-h-screen flex-col bg-white text-black dark:bg-alt-blue dark:text-white">
                 <Header />
                 <div className="flex flex-col items-center py-32">
                     <h1 className="my-5 mb-8 flex justify-center text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">

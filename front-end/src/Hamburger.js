@@ -54,7 +54,7 @@ const Hamburger = () => {
         <div className="relative md:hidden">
             <button
                 onClick={toggleMenu}
-                className="absolute left-0 top-0 z-30 text-xl"
+                className="fixed left-8 top-8 z-30 text-xl"
             >
                 <FontAwesomeIcon
                     icon={isOpen ? faXmark : faBars}
@@ -62,7 +62,7 @@ const Hamburger = () => {
                 />
             </button>
             <div
-                className={`fixed left-0 top-[50px] h-full w-2/3 bg-white p-5 transition-transform duration-300 ease-in-out dark:bg-dark-blue ${
+                className={`fixed left-0 h-full w-2/3 bg-white pl-5 pt-20 transition-transform duration-300 ease-in-out dark:bg-dark-blue ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } z-20`}
             >

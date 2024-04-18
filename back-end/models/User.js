@@ -22,6 +22,9 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    portfolio: {
+        type: []
+    },
 })
 
 UserSchema.pre("save", function(next) {
