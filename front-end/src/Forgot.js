@@ -36,7 +36,7 @@ const Forgot = (props) => {
         setEmail('')
     }
     return (
-        <div className="flex min-h-screen flex-col bg-white text-black dark:bg-dark-blue dark:text-white">
+        <div className="flex min-h-screen flex-col bg-white text-black dark:bg-alt-blue dark:text-white">
             <Header />
 
             <div className="flex flex-col items-center py-40">

@@ -42,10 +42,10 @@ const Profile = (props) => {
 
     if (isLoggedIn)
         return (
-            <div className="flex min-h-screen flex-col bg-white text-black dark:bg-dark-blue dark:text-white">
+            <div className=" h-screen bg-white text-black dark:bg-alt-blue dark:text-white">
                 <Header />
-                <div className="flex flex-col items-center py-24">
-                    <h1 className="my-5 mb-8 flex justify-center text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
+                <div className="pt-36 flex flex-col items-center justify-center ">
+                    <h1 className="my-5 mb-8 text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
                         Profile
                     </h1>
 
