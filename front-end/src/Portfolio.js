@@ -8,6 +8,7 @@ import './Portfolio.css'
 import PriceHistogram from './PriceHistogram'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotate } from '@fortawesome/free-solid-svg-icons'
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
@@ -240,7 +241,11 @@ const Portfolio = () => {
                         <PriceHistogram currencyId="bitcoin" />
                     </div>
                 </div>
-
+                <div>
+                <h2 className="my-2 text-2xl font-extrabold">
+                            Portfolio List
+                        </h2>
+                </div>
                 <div className="mx-5 flex w-screen flex-col items-center px-5 py-2 pb-44 shadow-md">
                     <table className="w-full overflow-hidden rounded-lg text-left shadow-2xl">
                         <thead className="bg-orange-light text-white">
@@ -284,7 +289,8 @@ const Portfolio = () => {
                             className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
                             onClick={toggleAddModal}
                         >
-                            Add Wallet/Exchange
+                            <FontAwesomeIcon icon={faCirclePlus} /> Add
+                            Wallet/Exchange
                         </button>
                         <button
                             onClick={handleRefreshPortfolios}
