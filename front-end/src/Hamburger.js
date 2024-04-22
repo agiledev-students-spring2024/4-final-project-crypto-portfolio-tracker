@@ -54,7 +54,7 @@ const Hamburger = () => {
         <div className="relative md:hidden">
             <button
                 onClick={toggleMenu}
-                className="fixed left-8 top-8 z-30 text-xl"
+                className="fixed left-8 top-8 z-30 text-xl text-black dark:text-white"
             >
                 <FontAwesomeIcon
                     icon={isOpen ? faXmark : faBars}
@@ -62,7 +62,7 @@ const Hamburger = () => {
                 />
             </button>
             <div
-                className={`fixed left-0 h-full w-2/3 bg-white pl-5 pt-20 transition-transform duration-300 ease-in-out dark:bg-dark-blue ${
+                className={`fixed left-0 h-full w-2/3 bg-white pl-5 pt-20 text-black transition-transform duration-300 ease-in-out dark:bg-alt-blue dark:text-white ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 } z-20`}
             >
@@ -89,20 +89,6 @@ const Hamburger = () => {
                 >
                     <FontAwesomeIcon icon={faArrowTrendUp} className="mr-2" />{' '}
                     Cryptocurrencies
-                </Link>
-                <Link
-                    to="/settings"
-                    className="flex items-center px-4 py-2 pl-6 text-lg font-medium"
-                    onClick={() => setIsOpen(false)}
-                >
-                    <FontAwesomeIcon icon={faCog} className="mr-2" /> Settings
-                </Link>
-                <Link
-                    to="/news"
-                    className="flex items-center px-4 py-2 pl-6 text-lg font-medium"
-                    onClick={() => setIsOpen(false)}
-                >
-                    <FontAwesomeIcon icon={faNewspaper} className="mr-2" /> News
                 </Link>
                 <Link
                     to="/about"

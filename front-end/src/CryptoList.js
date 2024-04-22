@@ -58,7 +58,7 @@ const CryptoList = () => {
             <Header />
             <div className="crypto-list-container">
                 <div className="title-container">
-                    <h1>Today's Crypto Prices</h1>
+                    <h1>Crypto Prices</h1>
                 </div>
                 <div className="search-container">
                     <input
@@ -83,12 +83,14 @@ const CryptoList = () => {
                             <tr key={crypto.id}>
                                 <td>{index + 1 + (currentPage - 1) * 100}</td>
                                 <td>
-                                    <img
-                                        src={`https://assets.coincap.io/assets/icons/${crypto.symbol.toLowerCase()}@2x.png`}
-                                        alt={crypto.name}
-                                        className="crypto-icon"
-                                    />
-                                    {crypto.name}
+                                    <div className="flex flex-row py-3">
+                                        <img
+                                            src={`https://assets.coincap.io/assets/icons/${crypto.symbol.toLowerCase()}@2x.png`}
+                                            alt={crypto.name}
+                                            className="crypto-icon"
+                                        />
+                                        {crypto.name}
+                                    </div>
                                 </td>
                                 <td>
                                     ${parseFloat(crypto.priceUsd).toFixed(2)}
