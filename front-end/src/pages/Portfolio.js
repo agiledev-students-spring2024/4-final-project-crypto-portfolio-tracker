@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import Header from './Header'
+import Header from '../components/Header'
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
-import './styles.css'
-import './Portfolio.css'
-import PriceHistogram from './PriceHistogram'
+import '../css/styles.css'
+import '../css/Portfolio.css'
+import PriceHistogram from '../components/PriceHistogram'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotate } from '@fortawesome/free-solid-svg-icons'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
@@ -194,6 +194,7 @@ const Portfolio = () => {
         } catch (error) {
             console.error('Error deleting wallet data:', error)
         }
+        handleRefreshPortfolios()
     }
 
     const toggleAddModal = () => setShowAddModal(!showAddModal)
@@ -264,7 +265,7 @@ const Portfolio = () => {
                                     <td className="p-3">{portfolio.name}</td>
                                     <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
                                     <td className="p-3">{portfolio.balance}</td>
-                                    {/*
+                                    
                                  <td className="p-3">
                                         <button
                                             className="text-s rounded bg-red-500 px-3 py-1 font-medium text-white hover:bg-red-700"
@@ -278,7 +279,7 @@ const Portfolio = () => {
                                         </button>
                                     </td>
                                 
-                                */}
+                                
                                 </tr>
                             ))}
                         </tbody>

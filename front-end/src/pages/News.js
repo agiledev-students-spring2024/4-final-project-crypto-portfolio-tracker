@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
-import Header from './Header'
+import Header from '../components/Header'
 import { Link } from 'react-router-dom'
-import './styles.css'
+import '../css/styles.css'
 
 const News = (props) => {
     const [data, setData] = useState([])

@@ -5,8 +5,9 @@ import {
     Routes,
     Route,
 } from 'react-router-dom'
-import Header from './Header'
-import './CryptoList.css'
+import Header from '../components/Header'
+import '../css/CryptoList.css'
+import '../css/styles.css'
 
 const CryptoList = () => {
     // State management for Crypto data, Search-filtered data, Search query, and Pagination

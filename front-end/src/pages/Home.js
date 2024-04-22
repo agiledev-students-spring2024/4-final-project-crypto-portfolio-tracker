@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import './styles.css'
-import Header from './Header'
+import '../css/styles.css'
+import Header from '../components/Header'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
-import Dashboard from './Dashboard'
+import Dashboard from '../components/Dashboard'
 import News from './News'
 
 const Home = (props) => {
