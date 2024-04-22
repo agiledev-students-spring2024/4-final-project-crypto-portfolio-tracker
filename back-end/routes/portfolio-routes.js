@@ -116,7 +116,7 @@ const portfolioRouter = () => {
       const {username} = req.params
       const user = await User.findOne({username: username});
       if(!user){
-        console.log("Something went wrong: user not found");
+        console.log("Something went wrong: user not found:", username);
         next();
       }
 
@@ -175,7 +175,7 @@ const portfolioRouter = () => {
 
     const user = await User.findOneAndUpdate(
       { username: username },
-      { $push:  { portfolio: newPortfolio }});
+      { $addToSet:  { portfolio: newPortfolio }});
 
     if(!user){
       console.log("Something went wrong: user not found")

@@ -20,38 +20,29 @@ const News = (props) => {
     }, [])
 
     return (
-        <div className="container mx-auto h-screen w-screen p-4 dark:bg-dark-blue dark:text-white">
-            <div className="text-center">
-                <Header></Header>
-                <div className="mx-1">
-                    <h1 className="my-2 text-2xl font-extrabold">News</h1>
-                    <div className="h-[40rem] overflow-y-auto bg-gray-300 p-4">
-                        <div className="overflow-y-auto">
-                            {data.map((item, index) => (
-                                <ListItem
-                                    url={item.url}
-                                    title={item.title}
-                                    description={item.description}
-                                    thumbnail={item.thumbnail}
-                                />
-                            ))}
-                        </div>
+                <div className="h-[28rem] overflow-y-auto p-3 mt-8">
+                    <div className="overflow-y-auto">
+                        {data.map((item, index) => (
+                            <ListItem
+                                url={item.url}
+                                title={item.title}
+                                thumbnail={item.thumbnail}
+                            />
+                        ))}
                     </div>
                 </div>
-            </div>
-        </div>
     )
 }
 
 const ListItem = ({ url, title, description, thumbnail }) => (
     <a href={url}>
-        <button className="my-1 block w-full rounded-lg bg-white from-pink-500 to-orange-500 p-4 text-black shadow-md hover:bg-gradient-to-r hover:text-white">
+        <button className="my-1 block w-full rounded-lg bg-white from-pink-500 to-orange-500 p-4 text-black shadow-2xl hover:bg-gradient-to-r hover:text-white dark:bg-dark-blue dark:text-white ">
             {/* Content goes here */}
 
             <div className="flex flex-row">
-                <div className="flex flex-col">
+                <div className="flex flex-col space-y-4">
+                    <img src={thumbnail} />
                     <p className="font-bold">{title}</p>
-                    <p className="font-small">{description}</p>
                 </div>
             </div>
         </button>

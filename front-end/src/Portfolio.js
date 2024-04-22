@@ -21,11 +21,10 @@ import {
 const Portfolio = () => {
     //User Authentication
     const jwtToken = localStorage.getItem('token') // the JWT token, if we have already received one and stored it in localStorage
-    const user = jwtDecode(jwtToken)
     const [response, setResponse] = useState({}) // we expect the server to send us a simple object in this case
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
-
     const navigate = useNavigate()
+    const user = (isLoggedIn) ? jwtDecode(jwtToken) : " "
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -35,7 +34,6 @@ const Portfolio = () => {
             })
             .then((res) => {
                 setResponse(res.data) // store the response data
-
                 console.log(response)
             })
             .catch((err) => {
@@ -64,8 +62,10 @@ const Portfolio = () => {
     }
     useEffect(() => {
         // fetch portfolio data when ShowPortfolio is true
+
         const fetchPortfolios = async () => {
             try {
+                console.log(user.username)
                 const response = await fetch(
                     `http://localhost:5000/api/portfolios/${user.username}`
                 )
@@ -165,14 +165,16 @@ const Portfolio = () => {
 
             const responseData = await response.json()
             console.log(responseData)
-            setPortfolios(portfolios.filter((portfolio) => portfolio.name !== name))
+            setPortfolios(
+                portfolios.filter((portfolio) => portfolio.name !== name)
+            )
         } catch (error) {
             console.error('Error deleting wallet data:', error)
         }
     }
 
     const toggleAddModal = () => setShowAddModal(!showAddModal)
-
+    
     // Define colors for the pie chart
     const COLORS = ['#9B5DE5', '#00F5D4', '#00BBF9', '#21FA90 ', '#F2DD6E']
 
@@ -217,14 +219,13 @@ const Portfolio = () => {
                     </div>
                 </div>
 
-                <div className="flex w-fit flex-col items-center px-5 py-2 pb-44 shadow-md">
-                    <table className="w-fit overflow-hidden rounded-lg text-left">
+                <div className="flex w-screen flex-col items-center mx-5 px-5 py-2 pb-44 shadow-md">
+                    <table className="w-full overflow-hidden rounded-lg text-left shadow-2xl">
                         <thead className="bg-orange-light text-white">
                             <tr>
                                 <th className="p-3 font-semibold">Name</th>
                                 <th className="p-3 font-semibold">Address</th>
                                 <th className="p-3 font-semibold">Balance</th>
-                                <th className="p-3 font-semibold">Action</th>
                             </tr>
                         </thead>
                         <tbody className="dark:bg-dark-blue">
@@ -236,7 +237,8 @@ const Portfolio = () => {
                                     <td className="p-3">{portfolio.name}</td>
                                     <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
                                     <td className="p-3">{portfolio.balance}</td>
-                                    <td className="p-3">
+                                {/*
+                                 <td className="p-3">
                                         <button
                                             className="text-s rounded bg-red-500 px-3 py-1 font-medium text-white hover:bg-red-700"
                                             onClick={() =>
@@ -248,6 +250,9 @@ const Portfolio = () => {
                                             Delete
                                         </button>
                                     </td>
+                                
+                                */}
+                                
                                 </tr>
                             ))}
                         </tbody>

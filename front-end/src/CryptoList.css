@@ -16,7 +16,7 @@
 .container {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #ffffff;
-    background-color: #14213d;
+    background-color: #162035;
     min-height: 100vh;
     max-width: 100vw; /* Max width to viewport width */
     width: 100%;
@@ -24,10 +24,10 @@
 }
 
 .search-container {
-    padding: 20px;
-    background-color: #fca311;
+    padding: 1.5px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
 }
 
 /* Update media queries for responsive padding and font sizes */
@@ -43,7 +43,7 @@
 .search-input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     font-size: 16px;
     border: none;
     border-radius: 4px;
@@ -88,11 +88,15 @@
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    background-color: #14213d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+/*
 .crypto-table thead {
     background-color: #14213d;
 }
+*/
 
 .crypto-table th,
 .crypto-table td {
@@ -104,7 +108,9 @@
 
 .crypto-table th {
     color: #ffffff;
+    background-color: #fca311;
     font-weight: bold;
+    padding: 6px;
 }
 
 .crypto-table tbody td {
@@ -115,9 +121,11 @@
     background-color: #1e2a45;
 }
 
+/*
 .crypto-table tbody tr:nth-child(even) {
     background-color: #162035;
 }
+*/
 
 /* Narrows the # column to be less noticeable */
 .crypto-table th:first-child,
@@ -125,7 +133,6 @@
     width: 50px;
 }
 
-.crypto-table th:last-child,
 .crypto-table td:last-child {
     display: none;
 }
