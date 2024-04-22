@@ -6,6 +6,8 @@ import axios from 'axios'
 import './styles.css'
 import './Portfolio.css'
 import PriceHistogram from './PriceHistogram'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotate } from '@fortawesome/free-solid-svg-icons'
 
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
@@ -24,7 +26,7 @@ const Portfolio = () => {
     const [response, setResponse] = useState({}) // we expect the server to send us a simple object in this case
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
     const navigate = useNavigate()
-    const user = (isLoggedIn) ? jwtDecode(jwtToken) : " "
+    const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -60,6 +62,26 @@ const Portfolio = () => {
         cardano: 'ADA',
         // add more mappings as we go
     }
+
+    // allow user to control when data for protfolios is refreshed
+    const handleRefreshPortfolios = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/portfolios/${user.username}`
+            )
+            const data = await response.json()
+            if (Array.isArray(data)) {
+                setPortfolios(data)
+            } else {
+                console.error('Received data is not an array:', data)
+                setPortfolios([])
+            }
+        } catch (error) {
+            console.error('Error fetching portfolio data:', error)
+            setPortfolios([])
+        }
+    }
+
     useEffect(() => {
         // fetch portfolio data when ShowPortfolio is true
 
@@ -146,12 +168,12 @@ const Portfolio = () => {
         } catch (error) {
             console.error('Error posting wallet data:', error)
         }
-
         setAddress('') // reset the address
         setWalletName('')
         setSelectedCurrency('bitcoin')
         setShowAddModal(false)
         setShowPortfolios(false)
+        handleRefreshPortfolios()
     }
 
     const handleDeletePortfolio = async (name) => {
@@ -174,7 +196,7 @@ const Portfolio = () => {
     }
 
     const toggleAddModal = () => setShowAddModal(!showAddModal)
-    
+
     // Define colors for the pie chart
     const COLORS = ['#9B5DE5', '#00F5D4', '#00BBF9', '#21FA90 ', '#F2DD6E']
 
@@ -219,7 +241,7 @@ const Portfolio = () => {
                     </div>
                 </div>
 
-                <div className="flex w-screen flex-col items-center mx-5 px-5 py-2 pb-44 shadow-md">
+                <div className="mx-5 flex w-screen flex-col items-center px-5 py-2 pb-44 shadow-md">
                     <table className="w-full overflow-hidden rounded-lg text-left shadow-2xl">
                         <thead className="bg-orange-light text-white">
                             <tr>
@@ -237,7 +259,7 @@ const Portfolio = () => {
                                     <td className="p-3">{portfolio.name}</td>
                                     <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
                                     <td className="p-3">{portfolio.balance}</td>
-                                {/*
+                                    {/*
                                  <td className="p-3">
                                         <button
                                             className="text-s rounded bg-red-500 px-3 py-1 font-medium text-white hover:bg-red-700"
@@ -252,18 +274,26 @@ const Portfolio = () => {
                                     </td>
                                 
                                 */}
-                                
                                 </tr>
                             ))}
                         </tbody>
                     </table>
 
-                    <button
-                        className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
-                        onClick={toggleAddModal}
-                    >
-                        Add Wallet/Exchange
-                    </button>
+                    <div className="flex items-center space-x-4 overflow-auto">
+                        <button
+                            className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
+                            onClick={toggleAddModal}
+                        >
+                            Add Wallet/Exchange
+                        </button>
+                        <button
+                            onClick={handleRefreshPortfolios}
+                            className="mt-4 rounded bg-gray-500 px-4 py-2 font-semibold text-white hover:bg-gray-700"
+                        >
+                            <FontAwesomeIcon icon={faRotate} /> Refresh
+                            Portfolios
+                        </button>
+                    </div>
                 </div>
 
                 {/* Add Wallet/Exchange Modal */}
