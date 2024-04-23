@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.logo-gradient {
+    background: linear-gradient(45deg, #ff6600, #ffd000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
+    background: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.body-padding {
+    padding-top: 70px; 
+}
+
