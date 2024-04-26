@@ -149,6 +149,34 @@ const portfolioRouter = () => {
           }
         })
       );
+      
+      const datetime = new Date();
+      let total_balance = 0;
+
+      function sameDay(d1, d2) {
+        return d1.getFullYear() === d2.getFullYear() &&
+          d1.getMonth() === d2.getMonth() &&
+          d1.getDate() === d2.getDate();
+      }
+
+      if(user.portfolio_total.at(-1) === undefined || !sameDay(user.portfolio_total.at(-1).datetime, datetime)){
+
+        updatedPortfolios.forEach((wallet) => {
+          let wallet_balance = parseFloat(wallet.balance.replace(/[^\d.-]/g, ''))
+          total_balance += wallet_balance
+        })
+
+        const newPortfolioTotal = {
+          total_balance,
+          datetime,
+        }
+
+        user.portfolio_total.push(newPortfolioTotal);
+        user.save();
+        
+      } else {
+        console.log("Date already entered!!!")
+      }
 
       res.json(updatedPortfolios);
     } catch (error) {
