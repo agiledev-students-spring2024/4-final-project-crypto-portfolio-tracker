@@ -249,13 +249,13 @@ const Portfolio = () => {
                     </h2>
                 </div>
                 <div className="mx-5 flex w-screen flex-col items-center px-5 py-2 pb-44 shadow-md">
-                    <table className="w-full overflow-hidden rounded-lg text-left shadow-2xl">
+                    <table className="w-fit text-left shadow-2xl">
                         <thead className="bg-orange-light text-white">
                             <tr>
-                                <th className="p-3 font-semibold">Name</th>
+                                <th className="rounded-tl-lg p-3 font-semibold">Name</th>
                                 <th className="p-3 font-semibold">Address</th>
                                 <th className="p-3 font-semibold">Balance</th>
-                                <th className="p-3 font-semibold"></th>
+                                <th className="rounded-tr-lg p-3 font-semibold"></th>
                             </tr>
                         </thead>
                         <tbody className="dark:bg-dark-blue">
