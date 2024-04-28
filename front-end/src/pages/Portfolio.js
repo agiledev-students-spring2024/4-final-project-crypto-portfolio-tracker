@@ -6,6 +6,7 @@ import axios from 'axios'
 import '../css/styles.css'
 import '../css/Portfolio.css'
 import PriceHistogram from '../components/PriceHistogram'
+import DropdownMenu from '../components/DropdownMenu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotate } from '@fortawesome/free-solid-svg-icons'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
@@ -243,9 +244,9 @@ const Portfolio = () => {
                     </div>
                 </div>
                 <div>
-                <h2 className="my-2 text-2xl font-extrabold">
-                            Portfolio List
-                        </h2>
+                    <h2 className="my-2 text-2xl font-extrabold">
+                        Portfolio List
+                    </h2>
                 </div>
                 <div className="mx-5 flex w-screen flex-col items-center px-5 py-2 pb-44 shadow-md">
                     <table className="w-full overflow-hidden rounded-lg text-left shadow-2xl">
@@ -266,21 +267,21 @@ const Portfolio = () => {
                                     <td className="p-3">{portfolio.name}</td>
                                     <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
                                     <td className="p-3">{portfolio.balance}</td>
-                                    
-                                 <td className="p-3">
-                                        <button
-                                            className="text-s rounded bg-red-500 px-3 py-1 font-medium text-white hover:bg-red-700"
-                                            onClick={() =>
+
+                                    <td className="p-3">
+                                        <DropdownMenu
+                                            onRenameClick={() =>
+                                                console.log(
+                                                    'Rename functionality will be implemented here'
+                                                )
+                                            }
+                                            onDeleteClick={() =>
                                                 handleDeletePortfolio(
                                                     portfolio.name
                                                 )
                                             }
-                                        >
-                                            Delete
-                                        </button>
+                                        />
                                     </td>
-                                
-                                
                                 </tr>
                             ))}
                         </tbody>
