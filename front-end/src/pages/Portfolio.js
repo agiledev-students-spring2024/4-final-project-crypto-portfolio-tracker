@@ -254,6 +254,7 @@ const Portfolio = () => {
                                 <th className="p-3 font-semibold">Name</th>
                                 <th className="p-3 font-semibold">Address</th>
                                 <th className="p-3 font-semibold">Balance</th>
+                                <th className="p-3 font-semibold"></th>
                             </tr>
                         </thead>
                         <tbody className="dark:bg-dark-blue">
