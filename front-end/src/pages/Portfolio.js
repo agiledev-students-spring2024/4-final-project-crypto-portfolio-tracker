@@ -224,7 +224,7 @@ const Portfolio = () => {
         handleRefreshPortfolios()
     }
 
-    const handleRenamePortfolio = async (name, newName) => {
+    const handleRenamePortfolio = async (portfolioId, newName) => {
         if (!newName.trim()) {
             alert('Portfolio name cannot be empty!')
             return
@@ -232,7 +232,7 @@ const Portfolio = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/renamePortfolio/${user.username}/${name}`,
+                `http://localhost:5000/api/renamePortfolio/${user.username}/${portfolioId}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -252,7 +252,7 @@ const Portfolio = () => {
 
             setPortfolios(
                 portfolios.map((portfolio) =>
-                    portfolio.name === name
+                    portfolio.portfolioId === portfolioId
                         ? { ...portfolio, name: newName }
                         : portfolio
                 )
@@ -342,7 +342,7 @@ const Portfolio = () => {
                                 >
                                     <td className="p-3">
                                         {editingPortfolioId ===
-                                        portfolio.name ? (
+                                        portfolio.portfolioId ? (
                                             <input
                                                 type="text"
                                                 value={newPortfolioName}
@@ -351,16 +351,11 @@ const Portfolio = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                onBlur={() =>
-                                                    handleRenamePortfolio(
-                                                        portfolio.name,
-                                                        newPortfolioName
-                                                    )
-                                                }
+                                                onBlur={() => setEditingPortfolioId(null)}
                                                 onKeyDown={(event) => {
                                                     if (event.key === 'Enter') {
                                                         handleRenamePortfolio(
-                                                            portfolio.name,
+                                                            portfolio.portfolioId,
                                                             newPortfolioName
                                                         )
                                                         setEditingPortfolioId(
@@ -368,13 +363,14 @@ const Portfolio = () => {
                                                         )
                                                     }
                                                 }}
+                                                style={{ width: '100%', maxWidth: '200px', color: 'black', backgroundColor: 'white' }}
                                                 autoFocus
                                             />
                                         ) : (
                                             <div
                                                 onClick={() => {
                                                     setEditingPortfolioId(
-                                                        portfolio.id
+                                                        portfolio.portfolioId
                                                     )
                                                     setNewPortfolioName(
                                                         portfolio.name
@@ -403,7 +399,7 @@ const Portfolio = () => {
                                         <DropdownMenu
                                             onRenameClick={() => {
                                                 setEditingPortfolioId(
-                                                    portfolio.id
+                                                    portfolio.portfolioId
                                                 )
                                                 setNewPortfolioName(
                                                     portfolio.name

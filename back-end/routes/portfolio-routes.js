@@ -196,9 +196,9 @@ const portfolioRouter = () => {
     }
   });
 
-
   router.post("/addWallet", async (req, res) => {
-    const { username, name, address, platformId, balance, portfolioId } = req.body;
+    const { username, name, address, platformId, balance, portfolioId } =
+      req.body;
 
     // make a new portfolio object
     const newPortfolio = {
@@ -230,40 +230,48 @@ const portfolioRouter = () => {
     console.log("Attempting to delete portfolio with ID:", portfolioId);
 
     if (!portfolioId) {
-        return res.status(400).json({ message: "No portfolio ID provided." });
+      return res.status(400).json({ message: "No portfolio ID provided." });
     }
 
     try {
-        const user = await User.updateOne(
-            { username: username },
-            { $pull: { portfolio: { portfolioId: portfolioId } } }
-        );
-        if (user.modifiedCount === 0) {
-            throw new Error('Portfolio not found or already deleted');
-        }
-        res.json({ message: `Wallet with ID ${portfolioId} deleted successfully.` });
+      const user = await User.updateOne(
+        { username: username },
+        { $pull: { portfolio: { portfolioId: portfolioId } } }
+      );
+      if (user.modifiedCount === 0) {
+        throw new Error("Portfolio not found or already deleted");
+      }
+      res.json({
+        message: `Wallet with ID ${portfolioId} deleted successfully.`,
+      });
     } catch (err) {
-        console.error("Error deleting wallet data:", err);
-        res.status(404).json({ message: `Wallet with ID ${portfolioId} not found.` });
+      console.error("Error deleting wallet data:", err);
+      res
+        .status(404)
+        .json({ message: `Wallet with ID ${portfolioId} not found.` });
     }
-});
+  });
 
   // PUT request to rename portfolio
   router.put("/renamePortfolio/:username/:portfolioId", async (req, res) => {
     const { username, portfolioId } = req.params;
     const { newName } = req.body;
+
     try {
       const user = await User.findOne({ username });
-      const portfolio = user.portfolio.find((p) => p.portfolioId === portfolioId);
-      if (portfolio) {
-        portfolio.name = newName;
-        await user.save();
-        res
-          .status(200)
-          .json({ message: "Portfolio renamed successfully", portfolio });
-      } else {
-        res.status(404).json({ message: "Portfolio not found" });
+      const portfolio = user.portfolio.find(
+        (p) => p.portfolioId === portfolioId
+      );
+      if (!portfolio) {
+        return res.status(404).json({ message: "Portfolio not found" });
       }
+
+      // update the name of the portfolio
+      portfolio.name = newName;
+      await user.save();
+      res
+        .status(200)
+        .json({ message: "Portfolio renamed successfully", portfolio });
     } catch (error) {
       console.error("Error renaming portfolio:", error);
       res.status(500).json({ message: "Error renaming portfolio" });
