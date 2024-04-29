@@ -6,6 +6,8 @@ import axios from 'axios'
 import '../css/styles.css'
 import '../css/Portfolio.css'
 import PriceHistogram from '../components/PriceHistogram'
+import DropdownMenu from '../components/DropdownMenu'
+import AddressModal from '../components/AddressModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotate } from '@fortawesome/free-solid-svg-icons'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
@@ -28,6 +30,10 @@ const Portfolio = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
     const navigate = useNavigate()
     const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
+    const [editingPortfolioId, setEditingPortfolioId] = useState(null)
+    const [newPortfolioName, setNewPortfolioName] = useState('')
+    const [addressModalOpen, setAddressModalOpen] = useState(false)
+    const [fullAddress, setFullAddress] = useState('')
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -137,11 +143,19 @@ const Portfolio = () => {
         aggregateData()
     }, [portfolios]) // eslint-disable-line react-hooks/exhaustive-deps
 
+    function generateUniqueID() {
+        const timestamp = new Date().getTime() // get current time in milliseconds
+        const randomPart = Math.random().toString(36).substring(2, 15) // create a random string
+        const uniqueID = `${timestamp}-${randomPart}`
+        return uniqueID
+    }
+
     // Function to handle adding new wallet or exchange
     const handleAddWallet = async (e) => {
         e.preventDefault()
 
         const newPortfolio = {
+            portfolioId: generateUniqueID(),
             username: user.username,
             name: walletName,
             platformId: selectedCurrency,
@@ -177,24 +191,77 @@ const Portfolio = () => {
         handleRefreshPortfolios()
     }
 
-    const handleDeletePortfolio = async (name) => {
+    const handleDeletePortfolio = async (portfolioId) => {
+        console.log('Deleting portfolio with ID:', portfolioId)
+
+        if (!portfolioId) {
+            return alert('No Portfolio ID provided.')
+        }
+
         try {
             const response = await fetch(
-                `http://localhost:5000/api/deleteWallet/${user.username}/${name}`,
+                `http://localhost:5000/api/deleteWallet/${user.username}/${portfolioId}`,
                 {
                     method: 'DELETE',
                 }
             )
-
             const responseData = await response.json()
             console.log(responseData)
-            setPortfolios(
-                portfolios.filter((portfolio) => portfolio.name !== name)
-            )
+
+            if (response.ok) {
+                setPortfolios(
+                    portfolios.filter(
+                        (portfolio) => portfolio.portfolioId !== portfolioId
+                    )
+                )
+            } else {
+                throw new Error(responseData.message || 'Deletion failed')
+            }
         } catch (error) {
             console.error('Error deleting wallet data:', error)
+            alert(error.message)
         }
         handleRefreshPortfolios()
+    }
+
+    const handleRenamePortfolio = async (portfolioId, newName) => {
+        if (!newName.trim()) {
+            alert('Portfolio name cannot be empty!')
+            return
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/renamePortfolio/${user.username}/${portfolioId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `JWT ${jwtToken}`,
+                    },
+                    body: JSON.stringify({ newName }),
+                }
+            )
+
+            if (!response.ok) {
+                throw new Error('Failed to rename portfolio')
+            }
+
+            const updatedPortfolio = await response.json()
+            console.log('Rename successful:', updatedPortfolio)
+
+            setPortfolios(
+                portfolios.map((portfolio) =>
+                    portfolio.portfolioId === portfolioId
+                        ? { ...portfolio, name: newName }
+                        : portfolio
+                )
+            )
+            setEditingPortfolioId(null) // reset editing state
+        } catch (error) {
+            console.error('Error renaming portfolio:', error)
+            alert('Failed to rename portfolio')
+        }
     }
 
     const toggleAddModal = () => setShowAddModal(!showAddModal)
@@ -207,6 +274,14 @@ const Portfolio = () => {
             <div className="flex h-screen flex-col items-center overflow-auto bg-white text-black dark:bg-alt-blue dark:text-white">
                 <Header />
                 <div className="content mt-16 w-full p-5">
+                    <div className="portfolio-graph">
+                        <h2 className="my-2 text-2xl font-extrabold">
+                            Total Worth
+                        </h2>
+                        <h2 className="my-2 text-xl font-extrabold text-green-400">
+                            $5,234.24
+                        </h2>
+                    </div>
                     <div className="portfolio-graph">
                         <h2 className="my-2 text-2xl font-extrabold">
                             Portfolio Composition
@@ -243,43 +318,100 @@ const Portfolio = () => {
                     </div>
                 </div>
                 <div>
-                <h2 className="my-2 text-2xl font-extrabold">
-                            Portfolio List
-                        </h2>
+                    <h2 className="my-2 text-2xl font-extrabold">
+                        Portfolio List
+                    </h2>
                 </div>
                 <div className="mx-5 flex w-screen flex-col items-center px-5 py-2 pb-44 shadow-md">
-                    <table className="w-full overflow-hidden rounded-lg text-left shadow-2xl">
+                    <table className="w-fit text-left shadow-2xl">
                         <thead className="bg-orange-light text-white">
                             <tr>
-                                <th className="p-3 font-semibold">Name</th>
+                                <th className="rounded-tl-lg p-3 font-semibold">
+                                    Name
+                                </th>
                                 <th className="p-3 font-semibold">Address</th>
                                 <th className="p-3 font-semibold">Balance</th>
+                                <th className="rounded-tr-lg p-3 font-semibold"></th>
                             </tr>
                         </thead>
                         <tbody className="dark:bg-dark-blue">
                             {portfolios.map((portfolio) => (
                                 <tr
-                                    key={portfolio.id}
+                                    key={portfolio.portfolioId}
                                     className="border-b border-gray-700"
                                 >
-                                    <td className="p-3">{portfolio.name}</td>
-                                    <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
+                                    <td className="p-3">
+                                        {editingPortfolioId ===
+                                        portfolio.portfolioId ? (
+                                            <input
+                                                type="text"
+                                                value={newPortfolioName}
+                                                onChange={(e) =>
+                                                    setNewPortfolioName(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                onBlur={() => setEditingPortfolioId(null)}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === 'Enter') {
+                                                        handleRenamePortfolio(
+                                                            portfolio.portfolioId,
+                                                            newPortfolioName
+                                                        )
+                                                        setEditingPortfolioId(
+                                                            null
+                                                        )
+                                                    }
+                                                }}
+                                                style={{ width: '100%', maxWidth: '200px', color: 'black', backgroundColor: 'white' }}
+                                                autoFocus
+                                            />
+                                        ) : (
+                                            <div
+                                                onClick={() => {
+                                                    setEditingPortfolioId(
+                                                        portfolio.portfolioId
+                                                    )
+                                                    setNewPortfolioName(
+                                                        portfolio.name
+                                                    )
+                                                }}
+                                            >
+                                                {portfolio.name}
+                                            </div>
+                                        )}
+                                    </td>{' '}
+                                    <td className="p-3">
+                                        <span
+                                            onClick={() => {
+                                                setFullAddress(
+                                                    portfolio.address
+                                                )
+                                                setAddressModalOpen(true)
+                                            }}
+                                            className="cursor-pointer"
+                                        >
+                                            {`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}
+                                        </span>
+                                    </td>
                                     <td className="p-3">{portfolio.balance}</td>
-                                    
-                                 <td className="p-3">
-                                        <button
-                                            className="text-s rounded bg-red-500 px-3 py-1 font-medium text-white hover:bg-red-700"
-                                            onClick={() =>
-                                                handleDeletePortfolio(
+                                    <td className="p-3">
+                                        <DropdownMenu
+                                            onRenameClick={() => {
+                                                setEditingPortfolioId(
+                                                    portfolio.portfolioId
+                                                )
+                                                setNewPortfolioName(
                                                     portfolio.name
                                                 )
+                                            }}
+                                            onDeleteClick={() =>
+                                                handleDeletePortfolio(
+                                                    portfolio.portfolioId
+                                                )
                                             }
-                                        >
-                                            Delete
-                                        </button>
+                                        />
                                     </td>
-                                
-                                
                                 </tr>
                             ))}
                         </tbody>
@@ -290,8 +422,7 @@ const Portfolio = () => {
                             className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
                             onClick={toggleAddModal}
                         >
-                            <FontAwesomeIcon icon={faCirclePlus} /> Add
-                            Wallet/Exchange
+                            <FontAwesomeIcon icon={faCirclePlus} /> Add Wallet
                         </button>
                         <button
                             onClick={handleRefreshPortfolios}
@@ -302,6 +433,14 @@ const Portfolio = () => {
                         </button>
                     </div>
                 </div>
+
+                {addressModalOpen && (
+                    <AddressModal
+                        isOpen={addressModalOpen}
+                        onClose={() => setAddressModalOpen(false)}
+                        address={fullAddress}
+                    />
+                )}
 
                 {/* Add Wallet/Exchange Modal */}
                 {showAddModal && (
@@ -314,7 +453,7 @@ const Portfolio = () => {
                                 >
                                     &times;
                                 </span>
-                                <h2>Add Wallet or Exchange</h2>
+                                <h2>Add Wallet Address</h2>
                                 <form onSubmit={handleAddWallet}>
                                     <input
                                         type="text"
@@ -362,14 +501,6 @@ const Portfolio = () => {
                                     <div className="py-2">
                                         <button type="submit">
                                             Add Wallet
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                /* Coinbase connect logic  will go here*/
-                                            }}
-                                        >
-                                            Add Coinbase Exchange
                                         </button>
                                     </div>
                                 </form>
