@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Header from '../components/Header'
+import FavoriteCryptoList from '../components/FavoriteCryptoList'; // make sure to create this component
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
@@ -28,6 +29,10 @@ const Portfolio = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
     const navigate = useNavigate()
     const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
+
+    // Favorite Cryptos List
+    const [favoriteCryptos, setFavoriteCryptos] = useState([]);
+
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -136,6 +141,23 @@ const Portfolio = () => {
 
         aggregateData()
     }, [portfolios]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Fetch favorite cryptos for the user
+    useEffect(() => {
+    // Your code to fetch favorite cryptos from the backend and set it to state
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/favorites/${user.username}`);
+        setFavoriteCryptos(response.data.favorites);
+      } catch (error) {
+        console.error('Error fetching favorite cryptos:', error);
+      }
+    }
+  
+    if(isLoggedIn) {
+      fetchFavorites();
+    }
+  }, [isLoggedIn, user.username]);
 
     // Function to handle adding new wallet or exchange
     const handleAddWallet = async (e) => {

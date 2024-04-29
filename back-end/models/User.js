@@ -25,6 +25,10 @@ const UserSchema = new Schema({
     portfolio: {
         type: []
     },
+    favorites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Crypto' // Assuming you have a Crypto model, otherwise just use String for the crypto ID or name
+      }]
 })
 
 UserSchema.pre("save", function(next) {

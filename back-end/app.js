@@ -1,7 +1,7 @@
 // import and instantiate express
+const cors = require("cors");
 const express = require("express"); // CommonJS import style!
 const app = express(); // instantiate an Express object
-const cors = require("cors");
 const axios = require("axios");
 const dotenv = require("dotenv").config();
 const mongoose = require("mongoose");
