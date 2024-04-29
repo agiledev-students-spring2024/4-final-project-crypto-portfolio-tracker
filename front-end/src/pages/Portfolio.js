@@ -7,6 +7,7 @@ import '../css/styles.css'
 import '../css/Portfolio.css'
 import PriceHistogram from '../components/PriceHistogram'
 import DropdownMenu from '../components/DropdownMenu'
+import AddressModal from '../components/AddressModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotate } from '@fortawesome/free-solid-svg-icons'
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
@@ -31,6 +32,8 @@ const Portfolio = () => {
     const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
     const [editingPortfolioId, setEditingPortfolioId] = useState(null)
     const [newPortfolioName, setNewPortfolioName] = useState('')
+    const [addressModalOpen, setAddressModalOpen] = useState(false)
+    const [fullAddress, setFullAddress] = useState('')
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -202,38 +205,44 @@ const Portfolio = () => {
 
     const handleRenamePortfolio = async (name, newName) => {
         if (!newName.trim()) {
-            alert("Portfolio name cannot be empty!");
-            return;
+            alert('Portfolio name cannot be empty!')
+            return
         }
-    
+
         try {
-            const response = await fetch(`http://localhost:5000/api/renamePortfolio/${user.username}/${name}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `JWT ${jwtToken}`
-                },
-                body: JSON.stringify({ newName })
-            });
-    
+            const response = await fetch(
+                `http://localhost:5000/api/renamePortfolio/${user.username}/${name}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `JWT ${jwtToken}`,
+                    },
+                    body: JSON.stringify({ newName }),
+                }
+            )
+
             if (!response.ok) {
-                throw new Error('Failed to rename portfolio');
+                throw new Error('Failed to rename portfolio')
             }
-    
-            const updatedPortfolio = await response.json();
-            console.log('Rename successful:', updatedPortfolio);
-    
-            setPortfolios(portfolios.map(portfolio => 
-                portfolio.name === name ? {...portfolio, name: newName} : portfolio
-            ));
-            setEditingPortfolioId(null); // reset editing state
-    
+
+            const updatedPortfolio = await response.json()
+            console.log('Rename successful:', updatedPortfolio)
+
+            setPortfolios(
+                portfolios.map((portfolio) =>
+                    portfolio.name === name
+                        ? { ...portfolio, name: newName }
+                        : portfolio
+                )
+            )
+            setEditingPortfolioId(null) // reset editing state
         } catch (error) {
-            console.error('Error renaming portfolio:', error);
-            alert('Failed to rename portfolio');
+            console.error('Error renaming portfolio:', error)
+            alert('Failed to rename portfolio')
         }
-    };
-    
+    }
+
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
     // Define colors for the pie chart
@@ -303,7 +312,8 @@ const Portfolio = () => {
                                     className="border-b border-gray-700"
                                 >
                                     <td className="p-3">
-                                        {editingPortfolioId === portfolio.name ? (
+                                        {editingPortfolioId ===
+                                        portfolio.name ? (
                                             <input
                                                 type="text"
                                                 value={newPortfolioName}
@@ -346,7 +356,19 @@ const Portfolio = () => {
                                             </div>
                                         )}
                                     </td>{' '}
-                                    <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
+                                    <td className="p-3">
+                                        <span
+                                            onClick={() => {
+                                                setFullAddress(
+                                                    portfolio.address
+                                                )
+                                                setAddressModalOpen(true)
+                                            }}
+                                            className="cursor-pointer"
+                                        >
+                                            {`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}
+                                        </span>
+                                    </td>
                                     <td className="p-3">{portfolio.balance}</td>
                                     <td className="p-3">
                                         <DropdownMenu
@@ -370,13 +392,21 @@ const Portfolio = () => {
                         </tbody>
                     </table>
 
+                    <div className="flex h-screen flex-col items-center overflow-auto bg-white text-black">
+
+                        <AddressModal
+                            isOpen={addressModalOpen}
+                            onClose={() => setAddressModalOpen(false)}
+                            address={fullAddress}
+                        />
+                    </div>
+
                     <div className="flex items-center space-x-4 overflow-auto">
                         <button
                             className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
                             onClick={toggleAddModal}
                         >
-                            <FontAwesomeIcon icon={faCirclePlus} /> Add
-                            Wallet/Exchange
+                            <FontAwesomeIcon icon={faCirclePlus} /> Add Wallet
                         </button>
                         <button
                             onClick={handleRefreshPortfolios}
@@ -399,7 +429,7 @@ const Portfolio = () => {
                                 >
                                     &times;
                                 </span>
-                                <h2>Add Wallet or Exchange</h2>
+                                <h2>Add Wallet Address</h2>
                                 <form onSubmit={handleAddWallet}>
                                     <input
                                         type="text"
@@ -447,14 +477,6 @@ const Portfolio = () => {
                                     <div className="py-2">
                                         <button type="submit">
                                             Add Wallet
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                /* Coinbase connect logic  will go here*/
-                                            }}
-                                        >
-                                            Add Coinbase Exchange
                                         </button>
                                     </div>
                                 </form>
