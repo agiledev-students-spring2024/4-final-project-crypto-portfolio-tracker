@@ -143,11 +143,19 @@ const Portfolio = () => {
         aggregateData()
     }, [portfolios]) // eslint-disable-line react-hooks/exhaustive-deps
 
+    function generateUniqueID() {
+        const timestamp = new Date().getTime() // get current time in milliseconds
+        const randomPart = Math.random().toString(36).substring(2, 15) // create a random string
+        const uniqueID = `${timestamp}-${randomPart}`
+        return uniqueID
+    }
+
     // Function to handle adding new wallet or exchange
     const handleAddWallet = async (e) => {
         e.preventDefault()
 
         const newPortfolio = {
+            portfolioId: generateUniqueID(),
             username: user.username,
             name: walletName,
             platformId: selectedCurrency,
@@ -183,22 +191,35 @@ const Portfolio = () => {
         handleRefreshPortfolios()
     }
 
-    const handleDeletePortfolio = async (name) => {
+    const handleDeletePortfolio = async (portfolioId) => {
+        console.log('Deleting portfolio with ID:', portfolioId)
+
+        if (!portfolioId) {
+            return alert('No Portfolio ID provided.')
+        }
+
         try {
             const response = await fetch(
-                `http://localhost:5000/api/deleteWallet/${user.username}/${name}`,
+                `http://localhost:5000/api/deleteWallet/${user.username}/${portfolioId}`,
                 {
                     method: 'DELETE',
                 }
             )
-
             const responseData = await response.json()
             console.log(responseData)
-            setPortfolios(
-                portfolios.filter((portfolio) => portfolio.name !== name)
-            )
+
+            if (response.ok) {
+                setPortfolios(
+                    portfolios.filter(
+                        (portfolio) => portfolio.portfolioId !== portfolioId
+                    )
+                )
+            } else {
+                throw new Error(responseData.message || 'Deletion failed')
+            }
         } catch (error) {
             console.error('Error deleting wallet data:', error)
+            alert(error.message)
         }
         handleRefreshPortfolios()
     }
@@ -316,7 +337,7 @@ const Portfolio = () => {
                         <tbody className="dark:bg-dark-blue">
                             {portfolios.map((portfolio) => (
                                 <tr
-                                    key={portfolio.id}
+                                    key={portfolio.portfolioId}
                                     className="border-b border-gray-700"
                                 >
                                     <td className="p-3">
@@ -390,7 +411,7 @@ const Portfolio = () => {
                                             }}
                                             onDeleteClick={() =>
                                                 handleDeletePortfolio(
-                                                    portfolio.name
+                                                    portfolio.portfolioId
                                                 )
                                             }
                                         />

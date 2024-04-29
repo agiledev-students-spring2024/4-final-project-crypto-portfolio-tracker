@@ -196,14 +196,13 @@ const portfolioRouter = () => {
     }
   });
 
-  router.post("/addWallet", async (req, res) => {
-    const { username, name, address, platformId, balance } = req.body;
 
-    const id = mongoose.Types.ObjectId;
+  router.post("/addWallet", async (req, res) => {
+    const { username, name, address, platformId, balance, portfolioId } = req.body;
 
     // make a new portfolio object
     const newPortfolio = {
-      id,
+      portfolioId,
       name,
       platformId,
       address,
@@ -225,28 +224,37 @@ const portfolioRouter = () => {
     }
   });
 
-  router.delete("/deleteWallet/:username/:name", async (req, res) => {
-    const username = req.params["username"];
-    const name = req.params["name"];
+  router.delete("/deleteWallet/:username/:portfolioId", async (req, res) => {
+    const { username, portfolioId } = req.params;
+
+    console.log("Attempting to delete portfolio with ID:", portfolioId);
+
+    if (!portfolioId) {
+        return res.status(400).json({ message: "No portfolio ID provided." });
+    }
 
     try {
-      await User.updateOne(
-        { username: username },
-        { $pull: { portfolio: { name: name } } }
-      );
-
-      res.json({ message: `Wallet with Name ${name} deleted.` });
+        const user = await User.updateOne(
+            { username: username },
+            { $pull: { portfolio: { portfolioId: portfolioId } } }
+        );
+        if (user.modifiedCount === 0) {
+            throw new Error('Portfolio not found or already deleted');
+        }
+        res.json({ message: `Wallet with ID ${portfolioId} deleted successfully.` });
     } catch (err) {
-      res.status(404).json({ message: `Wallet with Name ${name} not found.` });
+        console.error("Error deleting wallet data:", err);
+        res.status(404).json({ message: `Wallet with ID ${portfolioId} not found.` });
     }
-  });
+});
+
   // PUT request to rename portfolio
   router.put("/renamePortfolio/:username/:portfolioId", async (req, res) => {
     const { username, portfolioId } = req.params;
     const { newName } = req.body;
     try {
       const user = await User.findOne({ username });
-      const portfolio = user.portfolio.find((p) => p.id === portfolioId);
+      const portfolio = user.portfolio.find((p) => p.portfolioId === portfolioId);
       if (portfolio) {
         portfolio.name = newName;
         await user.save();

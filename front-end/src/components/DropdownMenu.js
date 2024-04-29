@@ -41,6 +41,15 @@ const DropdownMenu = ({ onRenameClick, onDeleteClick }) => {
                     >
                         Delete
                     </li>
+                    <li
+                        className="cursor-pointer px-4 py-2 text-black"
+                        onClick={() => {
+                            onRenameClick()
+                            setIsOpen(false)
+                        }}
+                    >
+                        Rename Portfolio
+                    </li>
                 </ul>
             )}
         </div>
