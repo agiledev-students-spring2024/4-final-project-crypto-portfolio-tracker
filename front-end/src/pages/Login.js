@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Link, useNavigate } from 'react-router-dom'
-import Header from './Header'
-import './styles.css'
+import Header from '../components/Header'
+import '../css/styles.css'
 
 const Login = (props) => {
     const [usernameInput, setUsername] = useState('')

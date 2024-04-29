@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Header from './Header'
-import './styles.css'
+import Header from '../components/Header'
+import '../css/styles.css'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
 const Profile = (props) => {
     //User Authentication
     const jwtToken = localStorage.getItem('token') // the JWT token, if we have already received one and stored it in localStorage
-    const user = jwtDecode(jwtToken)
     const [response, setResponse] = useState({}) // we expect the server to send us a simple object in this case
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
+
+    const user = (isLoggedIn) ? jwtDecode(jwtToken) : " "
 
     const navigate = useNavigate()
 
@@ -29,7 +30,6 @@ const Profile = (props) => {
             })
             .then((res) => {
                 setResponse(res.data) // store the response data
-
                 console.log(response)
             })
             .catch((err) => {
@@ -40,32 +40,33 @@ const Profile = (props) => {
             })
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-    if (isLoggedIn)
+    if (isLoggedIn && response.success)
         return (
             <div className=" h-screen bg-white text-black dark:bg-alt-blue dark:text-white">
                 <Header />
-                <div className="pt-36 flex flex-col items-center justify-center ">
-                    <h1 className="my-5 mb-8 text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
-                        Profile
-                    </h1>
+                <div className="flex flex-col items-center justify-center pt-36 ">
+                    <form
+                        className="flex flex-col items-center rounded-2xl p-8 shadow-2xl dark:bg-dark-blue"
+                        onSubmit=""
+                    >
+                        <h1 className="my-5 mb-8 text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
+                            @{user.username}
+                        </h1>
 
-                    <p className="text-2xl font-extrabold">@{user.username}</p>
-
-                    <form className="flex flex-col items-center" onSubmit="">
                         <input
-                            className="my-2 mt-6 rounded-md border-b-4 p-4 dark:text-black"
+                            className="my-2 mt-6 rounded-md border-b-4 p-3 dark:text-black"
                             type="text"
                             name="name"
                             placeholder="Name"
                         />
                         <input
-                            className="my-2 rounded-md border-b-4 p-4 dark:text-black"
+                            className="my-2 rounded-md border-b-4 p-3 dark:text-black"
                             type="email"
                             name="email"
                             placeholder="Email address"
                         />
                         <input
-                            className="my-2 rounded-md border-b-4 p-4 dark:text-black"
+                            className="my-2 rounded-md border-b-4 p-3 dark:text-black"
                             type="text"
                             name="password"
                             placeholder="Password"

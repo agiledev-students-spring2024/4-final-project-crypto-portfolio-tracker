@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.logo-gradient {
+    background: linear-gradient(45deg, #ff6600, #ffd000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
+    background: white; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.body-padding {
+    padding-top: 70px; 
+}
+
+
+
+
+
+
+/* Add the new styles for the News header */
+.news-container {
+    overflow-y: auto;
+    max-width: 95%; /* Adjust this value to match the Dashboard container width */
+    max-height: 58%;
+    margin: auto; /* Centers the container */
+    background: darkblue; /* Black background for modern look */
+    color: white; /* White text color */
+    padding: 20px;
+    border-radius: 10px; /* Rounded corners */
+    margin-top: 20px; /* Add some space above the news section */
+}
+
+.news-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px; /* Add space below the header */
+}
+
+.news-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0; /* Remove default margins */
+}
+
+/* Update ListItem button styles to align with the dark theme */
+.list-item-button {
+    background: #1a1a1a; /* Darker button background for better contrast */
+    color: #ffffff;
+    border: none;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px; /* Rounded corners for buttons */
+    transition: all 0.3s ease;
+    max-height: 100%;
+}
+
+.list-item-button:hover {
+    background: #333333; /* Slightly lighter background on hover */
+    color: #ffffff;
+}

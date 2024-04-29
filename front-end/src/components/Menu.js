@@ -14,7 +14,7 @@ import {
     faUser,
     faWallet,
 } from '@fortawesome/free-solid-svg-icons'
-import './styles.css'
+import '../css/styles.css'
 
 const Menu = () => {
     const jwtToken = localStorage.getItem('token')

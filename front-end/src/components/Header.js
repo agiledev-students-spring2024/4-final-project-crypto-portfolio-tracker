@@ -1,16 +1,25 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
 import Hamburger from './Hamburger'
-import './styles.css'
+import '../css/styles.css'
 
-/**TODO:
- * get hamburger icon, iconfify everything, make this actually look good then we chillin
- */
-const Header = (props) => {
+const Header = () => {
     return (
-        <header className="Header-header w-full">
-            <nav className="Header-navbar w-full">
-                <ul className="nav-links flex hidden justify-between md:flex">
-                    <li className="nav-item">
+        <header className="header w-full bg-white shadow-md dark:bg-alt-blue">
+            <nav className="mx-auto flex max-w-7xl items-center justify-between p-4">
+                <div className="flex items-center">
+                    <div className="md:hidden">
+                        <Hamburger />
+                    </div>
+                    <Link
+                        to="/"
+                        className="logo-gradient ml-4 text-xl font-bold"
+                    >
+                        CryptoTracker
+                    </Link>
+                </div>
+                <ul className="hidden flex-1 items-center justify-center space-x-4 md:flex">
+                    <li>
                         <Link
                             to="/"
                             className="rounded-md px-3 py-2 text-sm font-medium"
@@ -18,7 +27,7 @@ const Header = (props) => {
                             Home
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li>
                         <Link
                             to="/login"
                             className="rounded-md px-3 py-2 text-sm font-medium"
@@ -26,7 +35,7 @@ const Header = (props) => {
                             Login
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li>
                         <Link
                             to="/portfolio"
                             className="rounded-md px-3 py-2 text-sm font-medium"
@@ -34,7 +43,7 @@ const Header = (props) => {
                             My Portfolio
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li>
                         <Link
                             to="/cryptolist"
                             className="rounded-md px-3 py-2 text-sm font-medium"
@@ -42,7 +51,7 @@ const Header = (props) => {
                             Cryptocurrencies
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li>
                         <Link
                             to="/settings"
                             className="rounded-md px-3 py-2 text-sm font-medium"
@@ -50,7 +59,7 @@ const Header = (props) => {
                             Settings
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li>
                         <Link
                             to="/news"
                             className="rounded-md px-3 py-2 text-sm font-medium"
@@ -58,7 +67,7 @@ const Header = (props) => {
                             News
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li>
                         <Link
                             to="/about"
                             className="rounded-md px-3 py-2 text-sm font-medium"
@@ -67,12 +76,6 @@ const Header = (props) => {
                         </Link>
                     </li>
                 </ul>
-                <div
-                    className=" h-full text-left md:hidden"
-                    style={{ maxWidth: '50px' }}
-                >
-                    <Hamburger></Hamburger>
-                </div>
             </nav>
         </header>
     )

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import './styles.css'
-import Header from './Header'
+import '../css/styles.css'
+import Header from '../components/Header'
 
 const Settings = () => {
     const [darkMode, setDarkMode] = useState(false)

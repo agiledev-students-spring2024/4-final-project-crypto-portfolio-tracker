@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import Header from './Header'
+import Header from '../components/Header'
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
-import './styles.css'
-import './Portfolio.css'
-import PriceHistogram from './PriceHistogram'
+import '../css/styles.css'
+import '../css/Portfolio.css'
+import PriceHistogram from '../components/PriceHistogram'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotate } from '@fortawesome/free-solid-svg-icons'
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
@@ -21,11 +24,10 @@ import {
 const Portfolio = () => {
     //User Authentication
     const jwtToken = localStorage.getItem('token') // the JWT token, if we have already received one and stored it in localStorage
-    const user = jwtDecode(jwtToken)
     const [response, setResponse] = useState({}) // we expect the server to send us a simple object in this case
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
-
     const navigate = useNavigate()
+    const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -35,7 +37,6 @@ const Portfolio = () => {
             })
             .then((res) => {
                 setResponse(res.data) // store the response data
-
                 console.log(response)
             })
             .catch((err) => {
@@ -62,10 +63,32 @@ const Portfolio = () => {
         cardano: 'ADA',
         // add more mappings as we go
     }
+
+    // allow user to control when data for protfolios is refreshed
+    const handleRefreshPortfolios = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/portfolios/${user.username}`
+            )
+            const data = await response.json()
+            if (Array.isArray(data)) {
+                setPortfolios(data)
+            } else {
+                console.error('Received data is not an array:', data)
+                setPortfolios([])
+            }
+        } catch (error) {
+            console.error('Error fetching portfolio data:', error)
+            setPortfolios([])
+        }
+    }
+
     useEffect(() => {
         // fetch portfolio data when ShowPortfolio is true
+
         const fetchPortfolios = async () => {
             try {
+                console.log(user.username)
                 const response = await fetch(
                     `http://localhost:5000/api/portfolios/${user.username}`
                 )
@@ -146,12 +169,12 @@ const Portfolio = () => {
         } catch (error) {
             console.error('Error posting wallet data:', error)
         }
-
         setAddress('') // reset the address
         setWalletName('')
         setSelectedCurrency('bitcoin')
         setShowAddModal(false)
         setShowPortfolios(false)
+        handleRefreshPortfolios()
     }
 
     const handleDeletePortfolio = async (name) => {
@@ -165,10 +188,13 @@ const Portfolio = () => {
 
             const responseData = await response.json()
             console.log(responseData)
-            setPortfolios(portfolios.filter((portfolio) => portfolio.name !== name))
+            setPortfolios(
+                portfolios.filter((portfolio) => portfolio.name !== name)
+            )
         } catch (error) {
             console.error('Error deleting wallet data:', error)
         }
+        handleRefreshPortfolios()
     }
 
     const toggleAddModal = () => setShowAddModal(!showAddModal)
@@ -216,15 +242,18 @@ const Portfolio = () => {
                         <PriceHistogram currencyId="bitcoin" />
                     </div>
                 </div>
-
-                <div className="flex w-fit flex-col items-center px-5 py-2 pb-44 shadow-md">
-                    <table className="w-fit overflow-hidden rounded-lg text-left">
+                <div>
+                <h2 className="my-2 text-2xl font-extrabold">
+                            Portfolio List
+                        </h2>
+                </div>
+                <div className="mx-5 flex w-screen flex-col items-center px-5 py-2 pb-44 shadow-md">
+                    <table className="w-full overflow-hidden rounded-lg text-left shadow-2xl">
                         <thead className="bg-orange-light text-white">
                             <tr>
                                 <th className="p-3 font-semibold">Name</th>
                                 <th className="p-3 font-semibold">Address</th>
                                 <th className="p-3 font-semibold">Balance</th>
-                                <th className="p-3 font-semibold">Action</th>
                             </tr>
                         </thead>
                         <tbody className="dark:bg-dark-blue">
@@ -236,7 +265,8 @@ const Portfolio = () => {
                                     <td className="p-3">{portfolio.name}</td>
                                     <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
                                     <td className="p-3">{portfolio.balance}</td>
-                                    <td className="p-3">
+                                    
+                                 <td className="p-3">
                                         <button
                                             className="text-s rounded bg-red-500 px-3 py-1 font-medium text-white hover:bg-red-700"
                                             onClick={() =>
@@ -248,17 +278,29 @@ const Portfolio = () => {
                                             Delete
                                         </button>
                                     </td>
+                                
+                                
                                 </tr>
                             ))}
                         </tbody>
                     </table>
 
-                    <button
-                        className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
-                        onClick={toggleAddModal}
-                    >
-                        Add Wallet/Exchange
-                    </button>
+                    <div className="flex items-center space-x-4 overflow-auto">
+                        <button
+                            className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
+                            onClick={toggleAddModal}
+                        >
+                            <FontAwesomeIcon icon={faCirclePlus} /> Add
+                            Wallet/Exchange
+                        </button>
+                        <button
+                            onClick={handleRefreshPortfolios}
+                            className="mt-4 rounded bg-gray-500 px-4 py-2 font-semibold text-white hover:bg-gray-700"
+                        >
+                            <FontAwesomeIcon icon={faRotate} /> Refresh
+                            Portfolios
+                        </button>
+                    </div>
                 </div>
 
                 {/* Add Wallet/Exchange Modal */}

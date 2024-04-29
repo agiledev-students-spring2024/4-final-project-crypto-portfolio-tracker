@@ -9,32 +9,36 @@
     font-size: 2rem;
     font-weight: bold;
 }
+
 .crypto-list-container {
     padding: 20px;
+
 }
 
 .container {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     color: #ffffff;
-    background-color: #14213d;
+    background-color: #162035;
     min-height: 100vh;
     max-width: 100vw; /* Max width to viewport width */
     width: 100%;
     box-sizing: border-box; /* Include padding in width calculation */
+    display: flex;
+    justify-content: center;
 }
 
 .search-container {
-    padding: 20px;
-    background-color: #fca311;
+    padding: 1.5px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
 }
 
 /* Update media queries for responsive padding and font sizes */
 @media (max-width: 768px) {
     .crypto-table th,
     .crypto-table td {
-        padding: 0.5em; /* Less padding on smaller screens */
+        padding: 0.25em; /* Less padding on smaller screens */
         font-size: 0.9em; /* Smaller font size on smaller screens */
     }
 }
@@ -43,7 +47,7 @@
 .search-input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     font-size: 16px;
     border: none;
     border-radius: 4px;
@@ -85,26 +89,37 @@
 
 /* Crypto Table  */
 .crypto-table {
-    width: 100%;
-    border-collapse: collapse;
+    width: 101%;
+    border-collapse: separate;
     margin-bottom: 20px;
+    background-color: #14213d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    /* New Updates */
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto;
 }
 
+/*
 .crypto-table thead {
     background-color: #14213d;
 }
+*/
 
 .crypto-table th,
 .crypto-table td {
     padding: 2px; /* Made the entries more compact, less spread out */
-    border: 1px solid #1e2a45;
+    border: 0px solid #1e2a45;
     text-align: middle;
     font-size: 1rem;
 }
 
 .crypto-table th {
     color: #ffffff;
+    background-color: #fca311;
     font-weight: bold;
+    padding: 6px;
 }
 
 .crypto-table tbody td {
@@ -115,20 +130,40 @@
     background-color: #1e2a45;
 }
 
+/*
 .crypto-table tbody tr:nth-child(even) {
     background-color: #162035;
 }
+*/
 
-/* Narrows the # column to be less noticeable */
+/* Narrows the # column to be less noticeable & Header rounded corners */
 .crypto-table th:first-child,
 .crypto-table td:first-child {
-    width: 50px;
+    width: 45px;
+    text-align: center; /* Center align the # column */
 }
 
-.crypto-table th:last-child,
-.crypto-table td:last-child {
-    display: none;
+
+
+.crypto-table th:first-child{
+    border-top-left-radius: 10px; /* Rounded top left corner */
+
 }
+
+.crypto-table th:last-child {
+    border-top-right-radius: 10px; /* Rounded top right corner */
+}
+
+.crypto-table td:nth-last-child() {
+    display: none;
+  }
+  
+.crypto-table td:nth-child(3),
+.crypto-table td:nth-child(4) {
+    text-align: right; /* Right align Price and 24h % columns */
+    padding-right: 6px; /* Space from the right edge */
+}
+
 
 /*********************************************************************/
 
@@ -165,4 +200,26 @@
     margin: 0 10px; /* Add some margin around the text for spacing */
     color: #ffffff; /* Set the color of the text */
     font-weight: bold; /* Optional: to make it stand out more */
+}
+
+
+
+
+/* Stars for Favorites */
+.flex-row {
+    display: flex;
+    align-items: center; /* This ensures vertical center alignment of the items */
+}
+
+.star-button {
+    background: none;
+    border: none;
+    color: gold;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 5px; /* Adds a small space between the name and the star */
+}
+
+.star-button.empty {
+    color: gray;
 }
