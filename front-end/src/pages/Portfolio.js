@@ -255,6 +255,14 @@ const Portfolio = () => {
                 <div className="content mt-16 w-full p-5">
                     <div className="portfolio-graph">
                         <h2 className="my-2 text-2xl font-extrabold">
+                            Total Worth
+                        </h2>
+                        <h2 className="my-2 text-xl font-extrabold text-green-400">
+                            $5,234.24
+                        </h2>
+                    </div>
+                    <div className="portfolio-graph">
+                        <h2 className="my-2 text-2xl font-extrabold">
                             Portfolio Composition
                         </h2>
                         <ResponsiveContainer width="100%" height={300}>
