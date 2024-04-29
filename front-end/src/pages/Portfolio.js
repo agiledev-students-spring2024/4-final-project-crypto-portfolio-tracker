@@ -392,15 +392,6 @@ const Portfolio = () => {
                         </tbody>
                     </table>
 
-                    <div className="flex h-screen flex-col items-center overflow-auto bg-white text-black">
-
-                        <AddressModal
-                            isOpen={addressModalOpen}
-                            onClose={() => setAddressModalOpen(false)}
-                            address={fullAddress}
-                        />
-                    </div>
-
                     <div className="flex items-center space-x-4 overflow-auto">
                         <button
                             className="mt-4 rounded bg-orange-light px-4 py-2 font-semibold text-white hover:bg-orange-dark"
@@ -417,6 +408,14 @@ const Portfolio = () => {
                         </button>
                     </div>
                 </div>
+
+                {addressModalOpen && (
+                    <AddressModal
+                        isOpen={addressModalOpen}
+                        onClose={() => setAddressModalOpen(false)}
+                        address={fullAddress}
+                    />
+                )}
 
                 {/* Add Wallet/Exchange Modal */}
                 {showAddModal && (
