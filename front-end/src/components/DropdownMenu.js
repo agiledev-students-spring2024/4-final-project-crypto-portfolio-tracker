@@ -14,7 +14,7 @@ const DropdownMenu = ({ onRenameClick, onDeleteClick }) => {
             </button>
             {isOpen && (
                 <ul className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-10">
-                    <li className="px-4 py-2 cursor-pointer text-black" onClick={onRenameClick}>Rename Portfolio</li>
+                    {/* <li className="px-4 py-2 cursor-pointer text-black" onClick={onRenameClick}>Rename Portfolio</li> */}
                     <li className="px-4 py-2 cursor-pointer text-black" onClick={onDeleteClick}>Delete</li>
                 </ul>
             )}

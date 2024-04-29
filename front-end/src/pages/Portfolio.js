@@ -29,6 +29,8 @@ const Portfolio = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
     const navigate = useNavigate()
     const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
+    const [editingPortfolioId, setEditingPortfolioId] = useState(null)
+    const [newPortfolioName, setNewPortfolioName] = useState('')
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -198,6 +200,40 @@ const Portfolio = () => {
         handleRefreshPortfolios()
     }
 
+    const handleRenamePortfolio = async (name, newName) => {
+        if (!newName.trim()) {
+            alert("Portfolio name cannot be empty!");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://localhost:5000/api/renamePortfolio/${user.username}/${name}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `JWT ${jwtToken}`
+                },
+                body: JSON.stringify({ newName })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to rename portfolio');
+            }
+    
+            const updatedPortfolio = await response.json();
+            console.log('Rename successful:', updatedPortfolio);
+    
+            setPortfolios(portfolios.map(portfolio => 
+                portfolio.name === name ? {...portfolio, name: newName} : portfolio
+            ));
+            setEditingPortfolioId(null); // reset editing state
+    
+        } catch (error) {
+            console.error('Error renaming portfolio:', error);
+            alert('Failed to rename portfolio');
+        }
+    };
+    
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
     // Define colors for the pie chart
@@ -252,7 +288,9 @@ const Portfolio = () => {
                     <table className="w-fit text-left shadow-2xl">
                         <thead className="bg-orange-light text-white">
                             <tr>
-                                <th className="rounded-tl-lg p-3 font-semibold">Name</th>
+                                <th className="rounded-tl-lg p-3 font-semibold">
+                                    Name
+                                </th>
                                 <th className="p-3 font-semibold">Address</th>
                                 <th className="p-3 font-semibold">Balance</th>
                                 <th className="rounded-tr-lg p-3 font-semibold"></th>
@@ -264,17 +302,62 @@ const Portfolio = () => {
                                     key={portfolio.id}
                                     className="border-b border-gray-700"
                                 >
-                                    <td className="p-3">{portfolio.name}</td>
+                                    <td className="p-3">
+                                        {editingPortfolioId === portfolio.name ? (
+                                            <input
+                                                type="text"
+                                                value={newPortfolioName}
+                                                onChange={(e) =>
+                                                    setNewPortfolioName(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                onBlur={() =>
+                                                    handleRenamePortfolio(
+                                                        portfolio.name,
+                                                        newPortfolioName
+                                                    )
+                                                }
+                                                onKeyDown={(event) => {
+                                                    if (event.key === 'Enter') {
+                                                        handleRenamePortfolio(
+                                                            portfolio.name,
+                                                            newPortfolioName
+                                                        )
+                                                        setEditingPortfolioId(
+                                                            null
+                                                        )
+                                                    }
+                                                }}
+                                                autoFocus
+                                            />
+                                        ) : (
+                                            <div
+                                                onClick={() => {
+                                                    setEditingPortfolioId(
+                                                        portfolio.id
+                                                    )
+                                                    setNewPortfolioName(
+                                                        portfolio.name
+                                                    )
+                                                }}
+                                            >
+                                                {portfolio.name}
+                                            </div>
+                                        )}
+                                    </td>{' '}
                                     <td className="p-3">{`${portfolio.address.substring(0, 5)}...${portfolio.address.substring(portfolio.address.length - 4)}`}</td>
                                     <td className="p-3">{portfolio.balance}</td>
-
                                     <td className="p-3">
                                         <DropdownMenu
-                                            onRenameClick={() =>
-                                                console.log(
-                                                    'Rename functionality will be implemented here'
+                                            onRenameClick={() => {
+                                                setEditingPortfolioId(
+                                                    portfolio.id
                                                 )
-                                            }
+                                                setNewPortfolioName(
+                                                    portfolio.name
+                                                )
+                                            }}
                                             onDeleteClick={() =>
                                                 handleDeletePortfolio(
                                                     portfolio.name
