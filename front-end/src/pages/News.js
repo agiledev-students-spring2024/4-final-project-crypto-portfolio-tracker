@@ -20,17 +20,22 @@ const News = (props) => {
     }, [])
 
     return (
-                <div className="h-[28rem] overflow-y-auto p-3 mt-8">
-                    <div className="overflow-y-auto">
-                        {data.map((item, index) => (
-                            <ListItem
-                                url={item.url}
-                                title={item.title}
-                                thumbnail={item.thumbnail}
-                            />
-                        ))}
-                    </div>
+        <div className="news-container">
+            <div className="news-header">
+                <h2 className="news-title">Latest News</h2>
+            </div>
+            <div className="h-[28rem] overflow-y-auto p-3 mt-8">
+                <div className="overflow-y-auto">
+                    {data.map((item, index) => (
+                        <ListItem
+                            url={item.url}
+                            title={item.title}
+                            thumbnail={item.thumbnail}
+                        />
+                    ))}
                 </div>
+            </div>
+        </div>
     )
 }
 
