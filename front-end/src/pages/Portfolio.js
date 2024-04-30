@@ -34,6 +34,8 @@ const Portfolio = () => {
     const [newPortfolioName, setNewPortfolioName] = useState('')
     const [addressModalOpen, setAddressModalOpen] = useState(false)
     const [fullAddress, setFullAddress] = useState('')
+    const [totalWorth, setTotalWorth] = useState('0')
+    const [lastUpdated, setLastUpdated] = useState('') // for graph with timestamps
 
     useEffect(() => {
         // send the request to the server api, including the Authorization header with our JWT token in it
@@ -77,15 +79,19 @@ const Portfolio = () => {
                 `http://localhost:5000/api/portfolios/${user.username}`
             )
             const data = await response.json()
-            if (Array.isArray(data)) {
-                setPortfolios(data)
+            if (data.portfolios && Array.isArray(data.portfolios)) {
+                setPortfolios(data.portfolios)
+                setTotalWorth(data.totalWorth)
+                setLastUpdated(data.datetime)
             } else {
                 console.error('Received data is not an array:', data)
                 setPortfolios([])
+                setTotalWorth('0')
             }
         } catch (error) {
             console.error('Error fetching portfolio data:', error)
             setPortfolios([])
+            setTotalWorth('0')
         }
     }
 
@@ -279,7 +285,7 @@ const Portfolio = () => {
                             Total Worth
                         </h2>
                         <h2 className="my-2 text-xl font-extrabold text-green-400">
-                            $5,234.24
+                            ${totalWorth}
                         </h2>
                     </div>
                     <div className="portfolio-graph">
@@ -351,7 +357,9 @@ const Portfolio = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                onBlur={() => setEditingPortfolioId(null)}
+                                                onBlur={() =>
+                                                    setEditingPortfolioId(null)
+                                                }
                                                 onKeyDown={(event) => {
                                                     if (event.key === 'Enter') {
                                                         handleRenamePortfolio(
@@ -363,7 +371,12 @@ const Portfolio = () => {
                                                         )
                                                     }
                                                 }}
-                                                style={{ width: '100%', maxWidth: '200px', color: 'black', backgroundColor: 'white' }}
+                                                style={{
+                                                    width: '100%',
+                                                    maxWidth: '200px',
+                                                    color: 'black',
+                                                    backgroundColor: 'white',
+                                                }}
                                                 autoFocus
                                             />
                                         ) : (

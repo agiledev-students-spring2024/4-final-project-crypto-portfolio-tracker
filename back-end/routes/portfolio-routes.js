@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const User = require("../models/User.js");
 const axios = require("axios");
 const dotenv = require("dotenv").config({ path: "../.env" });
-
+// Portfolio Routes
 const portfolioRouter = () => {
   const router = express.Router();
 
-  // Portfolio Routes
+  // Helper Functions
+  //-------------------------------------
 
   // function to format large balance nubmers
   function formatNumber(num) {
@@ -20,6 +21,36 @@ const portfolioRouter = () => {
       return parsedNum.toFixed(2); // original number if its less than 1000 up to 2 decimal places
     }
   }
+
+  // function to calculate total worth of portfolios and timestamp
+  async function calculateTotalBalance(user, updatedPortfolios) {
+    const datetime = new Date();
+    let total_balance = 0;
+
+    updatedPortfolios.forEach((portfolio) => {
+      let balance = portfolio.true_balance;
+      total_balance += balance;
+    });
+
+    function sameDay(d1, d2) {
+      return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+      );
+    }
+
+    if (
+      user.portfolio_total.at(-1) === undefined ||
+      !sameDay(user.portfolio_total.at(-1).datetime, datetime)
+    ) {
+      user.portfolio_total.push({ total_balance, datetime });
+      await user.save();
+    }
+
+    return { total_balance, datetime };
+  }
+
   async function getBitcoinBalance(address) {
     const url = `https://mempool.space/api/address/${address}`;
     try {
@@ -121,7 +152,6 @@ const portfolioRouter = () => {
       }
 
       const portfoliosData = user.portfolio;
-
       const prices = await getCoinPrices();
       const updatedPortfolios = await Promise.all(
         portfoliosData.map(async (portfolio) => {
@@ -133,6 +163,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(btcBalanceUSD.toFixed(2))}`,
+                true_balance: btcBalanceUSD
               };
             case "ethereum":
               const ethBalance = await getEthereumBalance(portfolio.address);
@@ -140,6 +171,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(ethBalanceUSD.toFixed(2))}`,
+                true_balance: ethBalanceUSD
               };
             case "cardano":
               const adaBalance = await getCardanoBalance(portfolio.address);
@@ -147,6 +179,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(adaBalanceUSD.toFixed(2))}`,
+                true_balance: adaBalanceUSD
               };
             default:
               return portfolio; // case for other or unknown platformIds SHOULD NOT BE REACHED
@@ -154,40 +187,16 @@ const portfolioRouter = () => {
         })
       );
 
-      const datetime = new Date();
-      let total_balance = 0;
+      const { total_balance, datetime } = await calculateTotalBalance(
+        user,
+        updatedPortfolios
+      );
 
-      function sameDay(d1, d2) {
-        return (
-          d1.getFullYear() === d2.getFullYear() &&
-          d1.getMonth() === d2.getMonth() &&
-          d1.getDate() === d2.getDate()
-        );
-      }
-
-      if (
-        user.portfolio_total.at(-1) === undefined ||
-        !sameDay(user.portfolio_total.at(-1).datetime, datetime)
-      ) {
-        updatedPortfolios.forEach((wallet) => {
-          let wallet_balance = parseFloat(
-            wallet.balance.replace(/[^\d.-]/g, "")
-          );
-          total_balance += wallet_balance;
-        });
-
-        const newPortfolioTotal = {
-          total_balance,
-          datetime,
-        };
-
-        user.portfolio_total.push(newPortfolioTotal);
-        user.save();
-      } else {
-        console.log("Date already entered!!!");
-      }
-
-      res.json(updatedPortfolios);
+      res.json({
+        portfolios: updatedPortfolios,
+        totalWorth: total_balance.toFixed(2),
+        datetime,
+      });
     } catch (error) {
       console.error("Error fetching portfolio data with balance:", error);
       res
@@ -197,7 +206,7 @@ const portfolioRouter = () => {
   });
 
   router.post("/addWallet", async (req, res) => {
-    const { username, name, address, platformId, balance, portfolioId } =
+    const { username, name, address, platformId, balance, portfolioId, true_balance } =
       req.body;
 
     // make a new portfolio object
@@ -207,6 +216,7 @@ const portfolioRouter = () => {
       platformId,
       address,
       balance,
+      true_balance
     };
 
     const user = await User.findOneAndUpdate(
