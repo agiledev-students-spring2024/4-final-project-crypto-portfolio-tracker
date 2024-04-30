@@ -37,26 +37,7 @@ const Portfolio = () => {
     const [totalWorth, setTotalWorth] = useState('0')
     const [lastUpdated, setLastUpdated] = useState('') // for graph with timestamps
 
-    useEffect(() => {
-        // send the request to the server api, including the Authorization header with our JWT token in it
-        axios
-            .get(`http://localhost:5000/api/protected/`, {
-                headers: { Authorization: `JWT ${jwtToken}` }, // pass the token, if any, to the server
-            })
-            .then((res) => {
-                setResponse(res.data) // store the response data
-                console.log(response)
-            })
-            .catch((err) => {
-                console.log(
-                    'The server rejected the request for this protected resource... we probably do not have a valid JWT token.'
-                )
-                setIsLoggedIn(false) // update this state variable, so the component re-renders
-            })
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
     //Portfolio
-    const [showPortfolios, setShowPortfolios] = useState(false)
     const [showAddModal, setShowAddModal] = useState(false)
     const [address, setAddress] = useState('')
     const [walletName, setWalletName] = useState('')
@@ -72,17 +53,22 @@ const Portfolio = () => {
         // add more mappings as we go
     }
 
-    // allow user to control when data for protfolios is refreshed
-    const handleRefreshPortfolios = async () => {
+    // Fetch and refresh portfolios
+    const fetchPortfolios = async () => {
+        if (!jwtToken || !isLoggedIn) {
+            navigate('/login') // Redirect if no token is found
+            return
+        }
+
         try {
             const response = await fetch(
                 `http://localhost:5000/api/portfolios/${user.username}`
             )
             const data = await response.json()
-            if (data.portfolios && Array.isArray(data.portfolios)) {
+            if (Array.isArray(data.portfolios)) {
                 setPortfolios(data.portfolios)
                 setTotalWorth(data.totalWorth)
-                setLastUpdated(data.datetime)
+                aggregateData(data.portfolios)
             } else {
                 console.error('Received data is not an array:', data)
                 setPortfolios([])
@@ -95,59 +81,31 @@ const Portfolio = () => {
         }
     }
 
+    // Aggregate data for the pie chart
+    const aggregateData = (portfolios) => {
+        const dataMap = portfolios.reduce((acc, portfolio) => {
+            const balanceUSD = parseFloat(
+                portfolio.balance.replace(/[^\d.-]/g, '')
+            )
+            const abbreviation =
+                cryptoAbbreviations[portfolio.platformId] ||
+                portfolio.platformId.toUpperCase()
+            acc[abbreviation] = (acc[abbreviation] || 0) + balanceUSD
+            return acc
+        }, {})
+
+        const newData = Object.keys(dataMap).map((key) => ({
+            name: key,
+            value: dataMap[key],
+        }))
+
+        setChartData(newData)
+    }
+
+    // Initial data fetch
     useEffect(() => {
-        // fetch portfolio data when ShowPortfolio is true
-
-        const fetchPortfolios = async () => {
-            try {
-                console.log(user.username)
-                const response = await fetch(
-                    `http://localhost:5000/api/portfolios/${user.username}`
-                )
-                const data = await response.json()
-                if (Array.isArray(data)) {
-                    setPortfolios(data)
-                } else {
-                    console.error('Received data is not an array:', data)
-                    setPortfolios([])
-                }
-            } catch (error) {
-                console.error('Error fetching portfolio data:', error)
-                setPortfolios([])
-            }
-        }
-
         fetchPortfolios()
-    }, [showPortfolios]) // eslint-disable-line react-hooks/exhaustive-deps
-
-    useEffect(() => {
-        // get data for pie chart composition every time data in backend is updated
-        const aggregateData = () => {
-            const dataMap = portfolios.reduce((acc, portfolio) => {
-                const balanceUSD = parseFloat(
-                    portfolio.balance.replace(/[^\d.-]/g, '')
-                )
-                const abbreviation =
-                    cryptoAbbreviations[portfolio.platformId] ||
-                    portfolio.platformId.toUpperCase()
-                if (acc[abbreviation]) {
-                    acc[abbreviation] += balanceUSD
-                } else {
-                    acc[abbreviation] = balanceUSD
-                }
-                return acc
-            }, {})
-
-            const newData = Object.keys(dataMap).map((key) => ({
-                name: key, // Use abbreviation
-                value: dataMap[key],
-            }))
-
-            setChartData(newData)
-        }
-
-        aggregateData()
-    }, [portfolios]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [isLoggedIn]) // Dependency on isLoggedIn to ensure user is logged in
 
     function generateUniqueID() {
         const timestamp = new Date().getTime() // get current time in milliseconds
@@ -193,8 +151,7 @@ const Portfolio = () => {
         setWalletName('')
         setSelectedCurrency('bitcoin')
         setShowAddModal(false)
-        setShowPortfolios(false)
-        handleRefreshPortfolios()
+        fetchPortfolios()
     }
 
     const handleDeletePortfolio = async (portfolioId) => {
@@ -227,7 +184,7 @@ const Portfolio = () => {
             console.error('Error deleting wallet data:', error)
             alert(error.message)
         }
-        handleRefreshPortfolios()
+        fetchPortfolios()
     }
 
     const handleRenamePortfolio = async (portfolioId, newName) => {
@@ -438,7 +395,7 @@ const Portfolio = () => {
                             <FontAwesomeIcon icon={faCirclePlus} /> Add Wallet
                         </button>
                         <button
-                            onClick={handleRefreshPortfolios}
+                            onClick={fetchPortfolios}
                             className="mt-4 rounded bg-gray-500 px-4 py-2 font-semibold text-white hover:bg-gray-700"
                         >
                             <FontAwesomeIcon icon={faRotate} /> Refresh
