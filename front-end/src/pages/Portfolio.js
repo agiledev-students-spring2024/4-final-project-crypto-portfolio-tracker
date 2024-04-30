@@ -377,6 +377,8 @@ const Portfolio = () => {
                         </div>
                     </div>
                 )}
+                {/*<CryptoList favoritesMode={true} />*/}
+            
             </div>
         )
     else return navigate('/login')

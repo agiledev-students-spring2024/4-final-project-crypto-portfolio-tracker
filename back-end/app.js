@@ -32,10 +32,13 @@ try {
 const authenticationRoutes = require("./routes/user-authentication.js")
 const protectedRoutes = require("./routes/protected-content-routes.js")
 const portfolioRoutes = require("./routes/portfolio-routes.js")
+// Import the favorites routes const favoritesRoutes = require("./routes/favorites-routes.js");
+
 
 app.use("/api", authenticationRoutes())
 app.use("/api/protected/", protectedRoutes())
 app.use("/api", portfolioRoutes())
+// Use the favorites routes app.use("/api", favoritesRoutes); 
 
 app.get("/api/news", (req, res, next) => {
   const options = {
