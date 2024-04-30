@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
 import '../css/styles.css'
 import '../css/Portfolio.css'
-import PriceHistogram from '../components/PriceHistogram'
+import HistoricalPortfolioGraph from '../components/HistoricalPortfolioGraph'
 import DropdownMenu from '../components/DropdownMenu'
 import AddressModal from '../components/AddressModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,7 +18,6 @@ import {
     PieChart,
     Pie,
     Cell,
-    Tooltip,
     Legend,
     ResponsiveContainer,
 } from 'recharts'
@@ -35,7 +34,7 @@ const Portfolio = () => {
     const [addressModalOpen, setAddressModalOpen] = useState(false)
     const [fullAddress, setFullAddress] = useState('')
     const [totalWorth, setTotalWorth] = useState('0')
-    const [lastUpdated, setLastUpdated] = useState('') // for graph with timestamps
+    const [timeRange, setTimeRange] = useState('30days') // default range for histograph
 
     //Portfolio
     const [showAddModal, setShowAddModal] = useState(false)
@@ -227,6 +226,11 @@ const Portfolio = () => {
         }
     }
 
+    // handle range change for histograph
+    const handleRangeChange = (e) => {
+        setTimeRange(e.target.value)
+    }
+
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
     // Define colors for the pie chart
@@ -268,16 +272,30 @@ const Portfolio = () => {
                                         />
                                     ))}
                                 </Pie>
-                                <Tooltip />
                                 <Legend />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
-                    <div className="portfolio-graph">
+
+                    <div className="portfolio-graph space-y-2">
                         <h2 className="my-2 text-2xl font-extrabold">
                             Portfolio Performance
                         </h2>
-                        <PriceHistogram currencyId="bitcoin" />
+                            <div>
+                                <select className='text-black'
+                                    value={timeRange}
+                                    onChange={handleRangeChange}
+                                >
+                                    <option className='text-black' value="24hours">
+                                        Last 24 Hours
+                                    </option>
+                                    <option className='text-black' value="30days">Last 30 Days</option>
+                                </select>
+                            </div>
+                            <HistoricalPortfolioGraph
+                                username={user.username}
+                                range={timeRange}
+                            />
                     </div>
                 </div>
                 <div>
