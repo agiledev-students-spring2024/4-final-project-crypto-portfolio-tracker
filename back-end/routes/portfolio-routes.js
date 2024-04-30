@@ -1,7 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../models/User.js");
+const Moralis = require("moralis").default;
 const axios = require("axios");
+const { useSyncExternalStore } = require("react");
 const dotenv = require("dotenv").config({ path: "../.env" });
 // Portfolio Routes
 const portfolioRouter = () => {
@@ -189,6 +191,7 @@ const portfolioRouter = () => {
         totalWorth: total_balance.toFixed(2),
         datetime,
       });
+      
     } catch (error) {
       console.error("Error fetching portfolio data with balance:", error);
       res
@@ -315,10 +318,83 @@ const portfolioRouter = () => {
         }))
       );
     } catch (error) {
-      console.error("Error retrieving portfolio history:", error);
-      res.status(500).json({ message: "Failed to retrieve history" });
+      console.error("Error fetching historical data:", error);
+      res.status(500).send("Failed to fetch historical data");
     }
-  });
+});
+
+  router.post("/addNFT", async (req, res) => {
+    const { username, address } = req.body;
+
+    async function getNFTCollection() {
+      try {
+        await Moralis.start({
+          apiKey: `${process.env.MORALIS_API_KEY}`
+        });
+      
+        const response = await Moralis.EvmApi.nft.getWalletNFTs({
+          "chain": "0x1",
+          "format": "decimal",
+          "normalizeMetadata": true,
+          "address": `${address}`
+        });
+      
+        return response.raw.result;
+
+      } catch (e) {
+        console.error(e);
+      }
+  }
+
+    const user = await User.findOne({username: username});
+
+    if(!user){
+      console.log("Something went wrong: user not found")
+      next();
+    } else {
+      getNFTCollection().then(NFTs => {
+        NFTs.map(NFT => {
+          if(NFT.normalized_metadata !== null){
+            const id = mongoose.Types.ObjectId
+            const newNFT = {
+              id,
+              name: NFT.name,
+              address: NFT.token_address,
+              balance: "$0",
+              image: NFT.normalized_metadata.image,
+            };
+            
+            user.nfts.push(newNFT);
+          }
+          
+        })
+        user.save();
+      })
+
+      res.json({message: "NFT Collection Added"});
+    }
+
+});
+
+  router.get("/nfts/:username", async (req, res) => {
+    const { username } = req.params;
+
+    try{
+      const user = await User.findOne({ username: username });
+      if (!user) {
+        console.log("Something went wrong: user not found:", username);
+        next();
+      }
+
+      res.json(user.nfts)
+
+    } catch (error){
+      console.error("Error fetching nfts:", error);
+      res
+        .status(500)
+        .json({ message: "Error fetching portfolio nfts" });
+    }
+  })
 
   //For CryptoList API - Route handler for GET requests to the '/api/coins' endpoint
 

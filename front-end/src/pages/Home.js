@@ -46,11 +46,8 @@ const Home = (props) => {
         return (
             <div className="flex h-screen flex-col bg-white text-black dark:bg-alt-blue dark:text-white">
                 <Header />
-
                 <Dashboard />
-
                 <News />
-
             </div>
         )
     } else

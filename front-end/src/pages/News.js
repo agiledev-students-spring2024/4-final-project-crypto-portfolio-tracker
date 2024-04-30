@@ -24,7 +24,7 @@ const News = (props) => {
             <div className="news-header">
                 <h2 className="news-title">Latest News</h2>
             </div>
-            <div className="h-[28rem] overflow-y-auto p-3 mt-8">
+            <div className="h-[28rem] overflow-y-auto p-1 mt-8">
                 <div className="overflow-y-auto">
                     {data.map((item, index) => (
                         <ListItem
@@ -41,7 +41,7 @@ const News = (props) => {
 
 const ListItem = ({ url, title, description, thumbnail }) => (
     <a href={url}>
-        <button className="my-1 block w-full rounded-lg bg-white from-pink-500 to-orange-500 p-4 text-black shadow-2xl hover:bg-gradient-to-r hover:text-white dark:bg-dark-blue dark:text-white ">
+        <button className="my-1 block w-full rounded-lg bg-white from-pink-500 to-orange-500 p-5 text-black shadow-2xl hover:bg-gradient-to-r hover:text-white dark:bg-alt-blue dark:text-white ">
             {/* Content goes here */}
 
             <div className="flex flex-row">

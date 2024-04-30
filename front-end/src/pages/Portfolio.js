@@ -42,6 +42,9 @@ const Portfolio = () => {
     const [selectedCurrency, setSelectedCurrency] = useState('bitcoin') // btc as default
     const [chartData, setChartData] = useState([])
 
+    //NFT 
+    const [showNFTModal, setShowNFTModal] = useState(false)
+
     // make platform IDs to abbreviations
     const cryptoAbbreviations = {
         bitcoin: 'BTC',
@@ -230,6 +233,40 @@ const Portfolio = () => {
     }
 
     const toggleAddModal = () => setShowAddModal(!showAddModal)
+
+    const handleAddNFT = async (e) => {
+        e.preventDefault()
+
+        const newPortfolio = {
+            username: user.username,
+            address: address,
+        }
+        try {
+            // POST request to the back-end with the Bitcoin address
+            const response = await fetch(
+                `http://localhost:5000/api/addNft`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newPortfolio),
+                }
+            )
+
+            const responseData = await response.json()
+            console.log(responseData)
+
+            // update front end portfolio list
+            setPortfolios([...portfolios, newPortfolio])
+        } catch (error) {
+            console.error('Error posting wallet data:', error)
+        }
+        setAddress('') // reset the address
+        setShowNFTModal(false)
+    }
+
+    const toggleNFTModal = () => setShowNFTModal(!showNFTModal)
 
     // Define colors for the pie chart
     const COLORS = ['#9B5DE5', '#00F5D4', '#00BBF9', '#21FA90 ', '#F2DD6E']
@@ -421,6 +458,15 @@ const Portfolio = () => {
                             Portfolios
                         </button>
                     </div>
+
+                    <NFTs />
+
+                    <button
+                        className="mt-7 rounded bg-orange-light px-5 py-3 font-semibold text-white hover:bg-orange-dark"
+                        onClick={toggleNFTModal}
+                    >
+                        <FontAwesomeIcon icon={faCirclePlus} /> Add NFT
+                    </button>
                 </div>
 
                 {addressModalOpen && (
@@ -497,10 +543,104 @@ const Portfolio = () => {
                         </div>
                     </div>
                 )}
+
+                {showNFTModal && (
+                    <div className="modal">
+                        <div className="modal-background">
+                            <div className="modal-content">
+                                <span
+                                    className="modal-close-button"
+                                    onClick={toggleNFTModal}
+                                >
+                                    &times;
+                                </span>
+                                <h2>Add NFT</h2>
+                                <form onSubmit={handleAddNFT}>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        placeholder={`${selectedCurrency.charAt(0).toUpperCase() + selectedCurrency.slice(1)} Wallet Address`} // dynamically update placeholder text based off crypto type
+                                        value={address}
+                                        onChange={(e) =>
+                                            setAddress(e.target.value)
+                                        }
+                                        required
+                                    />
+                                    <div className="py-2">
+                                        <button type="submit">
+                                            Add NFT
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         )
     else return navigate('/login')
 }
+
+const NFTs = (props) => {
+    const [nfts, setNFTs] = useState([])
+    const jwtToken = localStorage.getItem('token') // the JWT token, if we have already received one and stored it in localStorage
+    const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
+    const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
+
+    useEffect(() => {
+        const fetchNFTs = async () => {
+            try {
+                const response = await fetch(
+                    `http://localhost:5000/api/nfts/${user.username}`
+                )
+                const data = await response.json()
+                if (Array.isArray(data)) {
+                    setNFTs(data)
+                } else {
+                    console.error('Received data is not an array:', data)
+                    setNFTs([])
+                }
+            } catch (error) {
+                console.error('Error fetching nfts', error)
+                setNFTs([])
+            }
+        }
+
+        fetchNFTs()
+    }, [])
+
+    return (
+        <div className="rounded-xl dark:bg-dark-blue mt-10 shadow-2xl min-h-[20rem] min-w-[98%]">
+           <div className="news-header">
+                <h2 className="news-title">NFT Collection</h2>
+            </div>
+            <div className="h-[20rem] overflow-y-auto px-4 mt-6">
+                <div className="overflow-y-auto">
+                    {nfts.map((nft) => (
+                        <ListItem
+                            image={nft.image}
+                            name={nft.name}
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const ListItem = ({ image, name }) => (
+        <button className="my-1 border-gray-300 block w-full rounded-lg bg-white from-pink-500 to-orange-500 p-5 text-black shadow-2xl hover:bg-gradient-to-r hover:text-white dark:bg-alt-blue dark:text-white ">
+            {/* Content goes here */}
+
+            <div className="flex flex-row">
+                <div className="flex flex-col space-y-4">
+                    <img src={image} />
+                    <p className="font-bold">{name}</p>
+                </div>
+            </div>
+        </button>
+)
+
 
 // Needed for charting
 const RADIAN = Math.PI / 180
