@@ -285,7 +285,7 @@ const Portfolio = () => {
                             Total Worth
                         </h2>
                         <h2 className="my-2 text-xl font-extrabold text-green-400">
-                            ${totalWorth}
+                            ${Number(totalWorth).toLocaleString()}
                         </h2>
                     </div>
                     <div className="portfolio-graph">
