@@ -32,7 +32,10 @@ const portfolioRouter = () => {
     });
 
     const lastEntry = user.portfolioHistory[user.portfolioHistory.length - 1];
-    if (!lastEntry || lastEntry.date.toDateString() !== datetime.toDateString()) {
+    if (
+      !lastEntry ||
+      lastEntry.date.toDateString() !== datetime.toDateString()
+    ) {
       user.portfolioHistory.push({ date: datetime, totalWorth: total_balance });
       await user.save();
     }
@@ -287,34 +290,35 @@ const portfolioRouter = () => {
   // requests for histograph data
   router.get("/portfolioHistory/:username", async (req, res) => {
     const { username } = req.params;
-    const { range } = req.query;  // '30days' or '24hours'
-    
+    const { range } = req.query; // '30days' or '24hours'
+
     try {
       const user = await User.findOne({ username });
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       const now = new Date();
-      let history = user.portfolioHistory.filter(entry => {
+      let history = user.portfolioHistory.filter((entry) => {
         let timeDiff = now - entry.date;
-        if (range === '30days') {
+        if (range === "30days") {
           return timeDiff <= 30 * 24 * 60 * 60 * 1000;
-        } else if (range === '24hours') {
+        } else if (range === "24hours") {
           return timeDiff <= 24 * 60 * 60 * 1000;
         }
       });
-  
-      res.json(history.map(entry => ({
-        date: entry.date,
-        totalWorth: entry.totalWorth
-      })));
+
+      res.json(
+        history.map((entry) => ({
+          date: entry.date,
+          totalWorth: entry.totalWorth,
+        }))
+      );
     } catch (error) {
       console.error("Error retrieving portfolio history:", error);
       res.status(500).json({ message: "Failed to retrieve history" });
     }
   });
-  
 
   //For CryptoList API - Route handler for GET requests to the '/api/coins' endpoint
 

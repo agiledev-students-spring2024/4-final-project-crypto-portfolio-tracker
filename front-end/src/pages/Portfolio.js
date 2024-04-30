@@ -14,13 +14,7 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
-import {
-    PieChart,
-    Pie,
-    Cell,
-    Legend,
-    ResponsiveContainer,
-} from 'recharts'
+import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts'
 
 const Portfolio = () => {
     //User Authentication
@@ -29,14 +23,18 @@ const Portfolio = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
     const navigate = useNavigate()
     const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
+
+    //portfolio list table
     const [editingPortfolioId, setEditingPortfolioId] = useState(null)
     const [newPortfolioName, setNewPortfolioName] = useState('')
     const [addressModalOpen, setAddressModalOpen] = useState(false)
     const [fullAddress, setFullAddress] = useState('')
+
+    // histograph
     const [totalWorth, setTotalWorth] = useState('0')
     const [timeRange, setTimeRange] = useState('30days') // default range for histograph
 
-    //Portfolio
+    //Portfolio add wallet modal
     const [showAddModal, setShowAddModal] = useState(false)
     const [address, setAddress] = useState('')
     const [walletName, setWalletName] = useState('')
@@ -281,21 +279,24 @@ const Portfolio = () => {
                         <h2 className="my-2 text-2xl font-extrabold">
                             Portfolio Performance
                         </h2>
-                            <div>
-                                <select className='text-black'
-                                    value={timeRange}
-                                    onChange={handleRangeChange}
-                                >
-                                    <option className='text-black' value="24hours">
-                                        Last 24 Hours
-                                    </option>
-                                    <option className='text-black' value="30days">Last 30 Days</option>
-                                </select>
-                            </div>
-                            <HistoricalPortfolioGraph
-                                username={user.username}
-                                range={timeRange}
-                            />
+                        <div>
+                            <select
+                                className="text-black"
+                                value={timeRange}
+                                onChange={handleRangeChange}
+                            >
+                                <option className="text-black" value="24hours">
+                                    Last 24 Hours
+                                </option>
+                                <option className="text-black" value="30days">
+                                    Last 30 Days
+                                </option>
+                            </select>
+                        </div>
+                        <HistoricalPortfolioGraph
+                            username={user.username}
+                            range={timeRange}
+                        />
                     </div>
                 </div>
                 <div>
