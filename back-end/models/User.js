@@ -28,6 +28,7 @@ const UserSchema = new Schema({
     portfolio_total: {
         type: []
     },
+    favorites: [],
 })
 
 UserSchema.pre("save", function(next) {

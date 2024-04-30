@@ -98,7 +98,7 @@ const CryptoList = () => {
         }
     };
 
-
+    // Star icon
     const renderStarIcon = (cryptoId) => {
         const isFavorite = favorites.includes(cryptoId);
         return (
@@ -114,6 +114,7 @@ const CryptoList = () => {
             </button>
         );
     };
+    
 
     // Formats too large numbers
     const formatPrice = (price) => {
@@ -147,6 +148,15 @@ const CryptoList = () => {
         }
         return parseFloat(price.replace(/,/g, '')); // Remove commas and convert to float
     };
+
+    // Filters data from search query
+    useEffect(() => {
+        const filteredData = cryptoData.filter(crypto =>
+            crypto.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredCryptoData(filteredData);
+    }, [cryptoData, searchQuery]);
+
 
 
     return (
@@ -186,7 +196,7 @@ const CryptoList = () => {
                                             className="crypto-icon"
                                         />
                                         {crypto.name}
-                                        {renderStarIcon(crypto.id)} {/* Star icon next to the name */}
+                                        {/*renderStarIcon(crypto.id)}  Star icon next to the name*/} 
                                     </div>
                                 </td>
                                 <td>

@@ -201,25 +201,3 @@
     color: #ffffff; /* Set the color of the text */
     font-weight: bold; /* Optional: to make it stand out more */
 }
-
-
-
-
-/* Stars for Favorites */
-.flex-row {
-    display: flex;
-    align-items: center; /* This ensures vertical center alignment of the items */
-}
-
-.star-button {
-    background: none;
-    border: none;
-    color: gold;
-    cursor: pointer;
-    font-size: 18px;
-    margin-left: 5px; /* Adds a small space between the name and the star */
-}
-
-.star-button.empty {
-    color: gray;
-}
