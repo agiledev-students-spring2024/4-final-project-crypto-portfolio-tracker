@@ -29,13 +29,13 @@
 
 /* Add the new styles for the News header */
 .news-container {
-    overflow-y: auto;
+    overflow-y: hidden;
     max-width: 95%; /* Adjust this value to match the Dashboard container width */
     max-height: 58%;
     margin: auto; /* Centers the container */
-    background: darkblue; /* Black background for modern look */
+    background: #14213D; /* Black background for modern look */
     color: white; /* White text color */
-    padding: 20px;
+    padding: 5px;
     border-radius: 10px; /* Rounded corners */
     margin-top: 20px; /* Add some space above the news section */
 }
@@ -43,7 +43,8 @@
 .news-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    padding-left: 20px;
+    padding-top: 20px;
     margin-bottom: 20px; /* Add space below the header */
 }
 

@@ -12,6 +12,37 @@ const Dashboard = (props) => {
 
     const user = (isLoggedIn) ? jwtDecode(jwtToken) : " "
 
+    const navigate = useNavigate();
+
+    const [totalWorth, setTotalWorth] = useState('0')
+
+    const fetchPortfolios = async () => {
+        if (!jwtToken || !isLoggedIn) {
+            navigate('/login') // Redirect if no token is found
+            return
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/portfolios/${user.username}`
+            )
+            const data = await response.json()
+            if (Array.isArray(data.portfolios)) {
+                setTotalWorth(data.totalWorth)
+            } else {
+                console.error('Received data is not an array:', data)
+                setTotalWorth('0')
+            }
+        } catch (error) {
+            console.error('Error fetching portfolio data:', error)
+            setTotalWorth('0')
+        }
+    }
+
+    useEffect(() => {
+        fetchPortfolios()
+    }, [isLoggedIn]) // Dependency on isLoggedIn to ensure user is logged in
+
         return (
                     <div
                         className="mt-24 mx-3 flex flex-col items-center rounded-2xl p-8 shadow-2xl dark:bg-dark-blue"
@@ -19,6 +50,14 @@ const Dashboard = (props) => {
                         <h1 className="my-5 mb-8 text-4xl font-extrabold leading-none md:text-5xl lg:text-6xl">
                             Dashboard
                         </h1>
+
+                        <h2 className="my-2 text-2xl font-extrabold">
+                            Total Worth
+                        </h2>
+                        
+                        <h2 className="my-2 text-xl font-extrabold text-green-400">
+                            ${Number(totalWorth).toLocaleString()}
+                        </h2>
 
 
                         <div className="flex flex-row space-x-3">

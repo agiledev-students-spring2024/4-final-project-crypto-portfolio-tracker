@@ -30,6 +30,9 @@ const UserSchema = new Schema({
     portfolio: {
         type: []
     },
+    nfts: {
+        type: []
+    },
     portfolioHistory: [PortfolioHistorySchema]
 
 })
