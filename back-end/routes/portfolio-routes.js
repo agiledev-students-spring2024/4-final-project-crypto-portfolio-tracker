@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const User = require("../models/User.js");
 const axios = require("axios");
 const dotenv = require("dotenv").config({ path: "../.env" });
-
+// Portfolio Routes
 const portfolioRouter = () => {
   const router = express.Router();
 
-  // Portfolio Routes
+  // Helper Functions
+  //-------------------------------------
 
   // function to format large balance nubmers
   function formatNumber(num) {
@@ -20,6 +21,28 @@ const portfolioRouter = () => {
       return parsedNum.toFixed(2); // original number if its less than 1000 up to 2 decimal places
     }
   }
+
+  // function to calculate total worth of portfolios and timestamp
+  async function calculateTotalBalance(user, updatedPortfolios) {
+    const datetime = new Date();
+    let total_balance = 0;
+
+    updatedPortfolios.forEach((portfolio) => {
+      total_balance += portfolio.true_balance;
+    });
+
+    const lastEntry = user.portfolioHistory[user.portfolioHistory.length - 1];
+    if (
+      !lastEntry ||
+      lastEntry.date.toDateString() !== datetime.toDateString()
+    ) {
+      user.portfolioHistory.push({ date: datetime, totalWorth: total_balance });
+      await user.save();
+    }
+
+    return { total_balance, datetime };
+  }
+
   async function getBitcoinBalance(address) {
     const url = `https://mempool.space/api/address/${address}`;
     try {
@@ -121,7 +144,6 @@ const portfolioRouter = () => {
       }
 
       const portfoliosData = user.portfolio;
-
       const prices = await getCoinPrices();
       const updatedPortfolios = await Promise.all(
         portfoliosData.map(async (portfolio) => {
@@ -133,6 +155,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(btcBalanceUSD.toFixed(2))}`,
+                true_balance: btcBalanceUSD,
               };
             case "ethereum":
               const ethBalance = await getEthereumBalance(portfolio.address);
@@ -140,6 +163,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(ethBalanceUSD.toFixed(2))}`,
+                true_balance: ethBalanceUSD,
               };
             case "cardano":
               const adaBalance = await getCardanoBalance(portfolio.address);
@@ -147,6 +171,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(adaBalanceUSD.toFixed(2))}`,
+                true_balance: adaBalanceUSD,
               };
             default:
               return portfolio; // case for other or unknown platformIds SHOULD NOT BE REACHED
@@ -154,40 +179,16 @@ const portfolioRouter = () => {
         })
       );
 
-      const datetime = new Date();
-      let total_balance = 0;
+      const { total_balance, datetime } = await calculateTotalBalance(
+        user,
+        updatedPortfolios
+      );
 
-      function sameDay(d1, d2) {
-        return (
-          d1.getFullYear() === d2.getFullYear() &&
-          d1.getMonth() === d2.getMonth() &&
-          d1.getDate() === d2.getDate()
-        );
-      }
-
-      if (
-        user.portfolio_total.at(-1) === undefined ||
-        !sameDay(user.portfolio_total.at(-1).datetime, datetime)
-      ) {
-        updatedPortfolios.forEach((wallet) => {
-          let wallet_balance = parseFloat(
-            wallet.balance.replace(/[^\d.-]/g, "")
-          );
-          total_balance += wallet_balance;
-        });
-
-        const newPortfolioTotal = {
-          total_balance,
-          datetime,
-        };
-
-        user.portfolio_total.push(newPortfolioTotal);
-        user.save();
-      } else {
-        console.log("Date already entered!!!");
-      }
-
-      res.json(updatedPortfolios);
+      res.json({
+        portfolios: updatedPortfolios,
+        totalWorth: total_balance.toFixed(2),
+        datetime,
+      });
     } catch (error) {
       console.error("Error fetching portfolio data with balance:", error);
       res
@@ -197,8 +198,15 @@ const portfolioRouter = () => {
   });
 
   router.post("/addWallet", async (req, res) => {
-    const { username, name, address, platformId, balance, portfolioId } =
-      req.body;
+    const {
+      username,
+      name,
+      address,
+      platformId,
+      balance,
+      portfolioId,
+      true_balance,
+    } = req.body;
 
     // make a new portfolio object
     const newPortfolio = {
@@ -207,6 +215,7 @@ const portfolioRouter = () => {
       platformId,
       address,
       balance,
+      true_balance,
     };
 
     const user = await User.findOneAndUpdate(
@@ -279,21 +288,35 @@ const portfolioRouter = () => {
   });
 
   // requests for histograph data
-  router.get("/historical/:currencyId", async (req, res) => {
-    const { currencyId } = req.params;
-    const days = req.query.days || 30; // default to last 30 days
-    const url = `https://api.coingecko.com/api/v3/coins/${currencyId}/market_chart?vs_currency=usd&days=${days}`;
+  router.get("/portfolioHistory/:username", async (req, res) => {
+    const { username } = req.params;
+    const { range } = req.query; // '30days' or '24hours'
 
     try {
-      const response = await axios.get(url);
-      const prices = response.data.prices.map((price) => ({
-        date: new Date(price[0]).toISOString().split("T")[0], // converts timestamp to YYYY-MM-DD
-        price: price[1],
-      }));
-      res.json(prices);
+      const user = await User.findOne({ username });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const now = new Date();
+      let history = user.portfolioHistory.filter((entry) => {
+        let timeDiff = now - entry.date;
+        if (range === "30days") {
+          return timeDiff <= 30 * 24 * 60 * 60 * 1000;
+        } else if (range === "24hours") {
+          return timeDiff <= 24 * 60 * 60 * 1000;
+        }
+      });
+
+      res.json(
+        history.map((entry) => ({
+          date: entry.date,
+          totalWorth: entry.totalWorth,
+        }))
+      );
     } catch (error) {
-      console.error("Error fetching historical data:", error);
-      res.status(500).send("Failed to fetch historical data");
+      console.error("Error retrieving portfolio history:", error);
+      res.status(500).json({ message: "Failed to retrieve history" });
     }
   });
 

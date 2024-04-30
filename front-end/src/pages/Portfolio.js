@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode'
 import axios from 'axios'
 import '../css/styles.css'
 import '../css/Portfolio.css'
-import PriceHistogram from '../components/PriceHistogram'
+import HistoricalPortfolioGraph from '../components/HistoricalPortfolioGraph'
 import DropdownMenu from '../components/DropdownMenu'
 import AddressModal from '../components/AddressModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -14,14 +14,7 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
 // REQUIRES INSTALLATION OF Recharts Library.
 // Use command 'npm install recharts' for use
-import {
-    PieChart,
-    Pie,
-    Cell,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-} from 'recharts'
+import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts'
 
 const Portfolio = () => {
     //User Authentication
@@ -30,31 +23,18 @@ const Portfolio = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(jwtToken && true) // if we already have a JWT token in local storage, set this to true, otherwise false
     const navigate = useNavigate()
     const user = isLoggedIn ? jwtDecode(jwtToken) : ' '
+
+    //portfolio list table
     const [editingPortfolioId, setEditingPortfolioId] = useState(null)
     const [newPortfolioName, setNewPortfolioName] = useState('')
     const [addressModalOpen, setAddressModalOpen] = useState(false)
     const [fullAddress, setFullAddress] = useState('')
 
-    useEffect(() => {
-        // send the request to the server api, including the Authorization header with our JWT token in it
-        axios
-            .get(`http://localhost:5000/api/protected/`, {
-                headers: { Authorization: `JWT ${jwtToken}` }, // pass the token, if any, to the server
-            })
-            .then((res) => {
-                setResponse(res.data) // store the response data
-                console.log(response)
-            })
-            .catch((err) => {
-                console.log(
-                    'The server rejected the request for this protected resource... we probably do not have a valid JWT token.'
-                )
-                setIsLoggedIn(false) // update this state variable, so the component re-renders
-            })
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    // histograph
+    const [totalWorth, setTotalWorth] = useState('0')
+    const [timeRange, setTimeRange] = useState('30days') // default range for histograph
 
-    //Portfolio
-    const [showPortfolios, setShowPortfolios] = useState(false)
+    //Portfolio add wallet modal
     const [showAddModal, setShowAddModal] = useState(false)
     const [address, setAddress] = useState('')
     const [walletName, setWalletName] = useState('')
@@ -70,78 +50,59 @@ const Portfolio = () => {
         // add more mappings as we go
     }
 
-    // allow user to control when data for protfolios is refreshed
-    const handleRefreshPortfolios = async () => {
+    // Fetch and refresh portfolios
+    const fetchPortfolios = async () => {
+        if (!jwtToken || !isLoggedIn) {
+            navigate('/login') // Redirect if no token is found
+            return
+        }
+
         try {
             const response = await fetch(
                 `http://localhost:5000/api/portfolios/${user.username}`
             )
             const data = await response.json()
-            if (Array.isArray(data)) {
-                setPortfolios(data)
+            if (Array.isArray(data.portfolios)) {
+                setPortfolios(data.portfolios)
+                setTotalWorth(data.totalWorth)
+                aggregateData(data.portfolios)
             } else {
                 console.error('Received data is not an array:', data)
                 setPortfolios([])
+                setTotalWorth('0')
             }
         } catch (error) {
             console.error('Error fetching portfolio data:', error)
             setPortfolios([])
+            setTotalWorth('0')
         }
     }
 
+    // Aggregate data for the pie chart
+    const aggregateData = (portfolios) => {
+        const dataMap = portfolios.reduce((acc, portfolio) => {
+            const balanceUSD = parseFloat(
+                portfolio.balance.replace(/[^\d.-]/g, '')
+            )
+            const abbreviation =
+                cryptoAbbreviations[portfolio.platformId] ||
+                portfolio.platformId.toUpperCase()
+            acc[abbreviation] = (acc[abbreviation] || 0) + balanceUSD
+            return acc
+        }, {})
+
+        const newData = Object.keys(dataMap).map((key) => ({
+            name: key,
+            value: dataMap[key],
+        }))
+
+        setChartData(newData)
+    }
+
+    // Initial data fetch
     useEffect(() => {
-        // fetch portfolio data when ShowPortfolio is true
-
-        const fetchPortfolios = async () => {
-            try {
-                console.log(user.username)
-                const response = await fetch(
-                    `http://localhost:5000/api/portfolios/${user.username}`
-                )
-                const data = await response.json()
-                if (Array.isArray(data)) {
-                    setPortfolios(data)
-                } else {
-                    console.error('Received data is not an array:', data)
-                    setPortfolios([])
-                }
-            } catch (error) {
-                console.error('Error fetching portfolio data:', error)
-                setPortfolios([])
-            }
-        }
-
         fetchPortfolios()
-    }, [showPortfolios]) // eslint-disable-line react-hooks/exhaustive-deps
-
-    useEffect(() => {
-        // get data for pie chart composition every time data in backend is updated
-        const aggregateData = () => {
-            const dataMap = portfolios.reduce((acc, portfolio) => {
-                const balanceUSD = parseFloat(
-                    portfolio.balance.replace(/[^\d.-]/g, '')
-                )
-                const abbreviation =
-                    cryptoAbbreviations[portfolio.platformId] ||
-                    portfolio.platformId.toUpperCase()
-                if (acc[abbreviation]) {
-                    acc[abbreviation] += balanceUSD
-                } else {
-                    acc[abbreviation] = balanceUSD
-                }
-                return acc
-            }, {})
-
-            const newData = Object.keys(dataMap).map((key) => ({
-                name: key, // Use abbreviation
-                value: dataMap[key],
-            }))
-
-            setChartData(newData)
-        }
-
-        aggregateData()
-    }, [portfolios]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [isLoggedIn]) // Dependency on isLoggedIn to ensure user is logged in
 
     function generateUniqueID() {
         const timestamp = new Date().getTime() // get current time in milliseconds
@@ -187,8 +148,7 @@ const Portfolio = () => {
         setWalletName('')
         setSelectedCurrency('bitcoin')
         setShowAddModal(false)
-        setShowPortfolios(false)
-        handleRefreshPortfolios()
+        fetchPortfolios()
     }
 
     const handleDeletePortfolio = async (portfolioId) => {
@@ -221,7 +181,7 @@ const Portfolio = () => {
             console.error('Error deleting wallet data:', error)
             alert(error.message)
         }
-        handleRefreshPortfolios()
+        fetchPortfolios()
     }
 
     const handleRenamePortfolio = async (portfolioId, newName) => {
@@ -264,6 +224,11 @@ const Portfolio = () => {
         }
     }
 
+    // handle range change for histograph
+    const handleRangeChange = (e) => {
+        setTimeRange(e.target.value)
+    }
+
     const toggleAddModal = () => setShowAddModal(!showAddModal)
 
     // Define colors for the pie chart
@@ -279,7 +244,7 @@ const Portfolio = () => {
                             Total Worth
                         </h2>
                         <h2 className="my-2 text-xl font-extrabold text-green-400">
-                            $5,234.24
+                            ${Number(totalWorth).toLocaleString()}
                         </h2>
                     </div>
                     <div className="portfolio-graph">
@@ -305,16 +270,33 @@ const Portfolio = () => {
                                         />
                                     ))}
                                 </Pie>
-                                <Tooltip />
                                 <Legend />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
-                    <div className="portfolio-graph">
+
+                    <div className="portfolio-graph space-y-2">
                         <h2 className="my-2 text-2xl font-extrabold">
                             Portfolio Performance
                         </h2>
-                        <PriceHistogram currencyId="bitcoin" />
+                        <div>
+                            <select
+                                className="text-black"
+                                value={timeRange}
+                                onChange={handleRangeChange}
+                            >
+                                <option className="text-black" value="24hours">
+                                    Last 24 Hours
+                                </option>
+                                <option className="text-black" value="30days">
+                                    Last 30 Days
+                                </option>
+                            </select>
+                        </div>
+                        <HistoricalPortfolioGraph
+                            username={user.username}
+                            range={timeRange}
+                        />
                     </div>
                 </div>
                 <div>
@@ -351,7 +333,9 @@ const Portfolio = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                onBlur={() => setEditingPortfolioId(null)}
+                                                onBlur={() =>
+                                                    setEditingPortfolioId(null)
+                                                }
                                                 onKeyDown={(event) => {
                                                     if (event.key === 'Enter') {
                                                         handleRenamePortfolio(
@@ -363,7 +347,12 @@ const Portfolio = () => {
                                                         )
                                                     }
                                                 }}
-                                                style={{ width: '100%', maxWidth: '200px', color: 'black', backgroundColor: 'white' }}
+                                                style={{
+                                                    width: '100%',
+                                                    maxWidth: '200px',
+                                                    color: 'black',
+                                                    backgroundColor: 'white',
+                                                }}
                                                 autoFocus
                                             />
                                         ) : (
@@ -425,7 +414,7 @@ const Portfolio = () => {
                             <FontAwesomeIcon icon={faCirclePlus} /> Add Wallet
                         </button>
                         <button
-                            onClick={handleRefreshPortfolios}
+                            onClick={fetchPortfolios}
                             className="mt-4 rounded bg-gray-500 px-4 py-2 font-semibold text-white hover:bg-gray-700"
                         >
                             <FontAwesomeIcon icon={faRotate} /> Refresh

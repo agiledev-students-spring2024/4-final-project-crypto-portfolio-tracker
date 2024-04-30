@@ -3,6 +3,11 @@ const Schema = mongoose.Schema
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 
+const PortfolioHistorySchema = new Schema({
+    date: { type: Date, default: Date.now },
+    totalWorth: { type: Number, required: true }
+});
+
 const UserSchema = new Schema({
     name: {
         type: String,
@@ -25,9 +30,8 @@ const UserSchema = new Schema({
     portfolio: {
         type: []
     },
-    portfolio_total: {
-        type: []
-    },
+    portfolioHistory: [PortfolioHistorySchema]
+
 })
 
 UserSchema.pre("save", function(next) {
