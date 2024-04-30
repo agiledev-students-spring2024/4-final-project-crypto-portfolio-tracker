@@ -163,7 +163,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(btcBalanceUSD.toFixed(2))}`,
-                true_balance: btcBalanceUSD
+                true_balance: btcBalanceUSD,
               };
             case "ethereum":
               const ethBalance = await getEthereumBalance(portfolio.address);
@@ -171,7 +171,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(ethBalanceUSD.toFixed(2))}`,
-                true_balance: ethBalanceUSD
+                true_balance: ethBalanceUSD,
               };
             case "cardano":
               const adaBalance = await getCardanoBalance(portfolio.address);
@@ -179,7 +179,7 @@ const portfolioRouter = () => {
               return {
                 ...portfolio,
                 balance: `$${formatNumber(adaBalanceUSD.toFixed(2))}`,
-                true_balance: adaBalanceUSD
+                true_balance: adaBalanceUSD,
               };
             default:
               return portfolio; // case for other or unknown platformIds SHOULD NOT BE REACHED
@@ -206,8 +206,15 @@ const portfolioRouter = () => {
   });
 
   router.post("/addWallet", async (req, res) => {
-    const { username, name, address, platformId, balance, portfolioId, true_balance } =
-      req.body;
+    const {
+      username,
+      name,
+      address,
+      platformId,
+      balance,
+      portfolioId,
+      true_balance,
+    } = req.body;
 
     // make a new portfolio object
     const newPortfolio = {
@@ -216,7 +223,7 @@ const portfolioRouter = () => {
       platformId,
       address,
       balance,
-      true_balance
+      true_balance,
     };
 
     const user = await User.findOneAndUpdate(
