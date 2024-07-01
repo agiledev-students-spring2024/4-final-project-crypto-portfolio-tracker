@@ -28,7 +28,6 @@ try {
       `Error connecting to MongoDB Atlas: ${err}`
     )
   }
-
 const authenticationRoutes = require("./routes/user-authentication.js")
 const protectedRoutes = require("./routes/protected-content-routes.js")
 const portfolioRoutes = require("./routes/portfolio-routes.js")

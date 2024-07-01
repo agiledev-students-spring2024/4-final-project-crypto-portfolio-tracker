@@ -1,5 +1,5 @@
 # Crypto Portfolio Tracker and Analyzer
-
+![alt text](logocrypto-1.png)
 ## Product Vision Statement
 The Crypto Portfolio Tracker and Analyzer aims to empower individual crypto investors by providing a comprehensive and intuitive platform to track and analyze the performance of their cryptocurrency investments. In the fast-paced and volatile crypto market, staying informed is key to making educated investment decisions. Our application addresses this need by offering real-time market data, insightful analysis, and user-friendly data visualization to cater to both novice and experienced traders.
 
@@ -20,8 +20,7 @@ The idea for the Crypto Portfolio Tracker and Analyzer was born out of the perso
 ## Contributing
 We welcome contributions from the community! For more information on how to contribute, please refer to our [CONTRIBUTING.md](./CONTRIBUTING.md) document.
 
-## Building and Testing [INCOMPLETE]
-*Note: Detailed instructions will be added as the project develops.*
+## Usage
 
 To set up the project locally, ensure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed. Clone the repository and install dependencies:
 
@@ -33,10 +32,12 @@ npm install
 
 To run the project:
 ```bash
+cd front-end
 npm start
 ```
-
-For testing:
+Then,
 ```bash
-npm test
+cd back-end
+npx nodemon server
 ```
+
