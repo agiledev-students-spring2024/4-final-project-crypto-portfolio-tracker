@@ -13,6 +13,11 @@ The Crypto Portfolio Tracker and Analyzer aims to empower individual crypto inve
 - **Ryan Rim** - Developer  
   GitHub: [Ryan's GitHub](https://github.com/rryan1010)  
 
+## Gallery
+<img src="img1.png" alt="Splash Page" width="200"/>
+<img src="img2.png" alt="Crypto List" width="200"/>
+<img src="img_3.png" alt="Add Wallet" width="200"/>
+
 
 ## Project Genesis
 The idea for the Crypto Portfolio Tracker and Analyzer was born out of the personal experiences of its creators, Alessandro, Reyhan, and Ryan who recognized the challenges of managing crypto investments through disparate platforms and tools. The project aims to consolidate various tools into a single, coherent application that provides real-time insights, trend analysis, and portfolio performance in an accessible manner for everyone invested in the cryptocurrency market.
@@ -20,7 +25,7 @@ The idea for the Crypto Portfolio Tracker and Analyzer was born out of the perso
 ## Contributing
 We welcome contributions from the community! For more information on how to contribute, please refer to our [CONTRIBUTING.md](./CONTRIBUTING.md) document.
 
-## Usage
+## Getting Started
 
 To set up the project locally, ensure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed. Clone the repository and install dependencies:
 
