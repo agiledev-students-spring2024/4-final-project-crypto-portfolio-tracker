@@ -4,6 +4,14 @@
   <img alt="Crypto Portfolio Tracker Logo" src="https://github.com/agiledev-students-spring2024/4-final-project-crypto-portfolio-tracker/assets/115737572/d362a869-260a-48ea-bf13-9680ffe44e4f">
 </picture>
 
+![Static Badge](https://img.shields.io/badge/mongoDB-db?style=for-the-badge&logo=mongodb&labelColor=black)&nbsp;
+![Static Badge](https://img.shields.io/badge/express-yellow?style=for-the-badge&logo=express&labelColor=black)&nbsp;
+![Static Badge](https://img.shields.io/badge/react-blue?style=for-the-badge&logo=react&labelColor=black)&nbsp;
+![Static Badge](https://img.shields.io/badge/node-neon?style=for-the-badge&logo=node.js&labelColor=black)&nbsp;
+![Static Badge](https://img.shields.io/badge/javascript-yellow?style=for-the-badge&logo=javascript&labelColor=black&color=%23ffe100)&nbsp;
+![Static Badge](https://img.shields.io/badge/TailwindCSS-blue?style=for-the-badge&logo=tailwindcss&labelColor=black&color=%2300dad8)
+
+
 ## Product Vision Statement
 The Crypto Portfolio Tracker and Analyzer aims to empower individual crypto investors by providing a comprehensive and intuitive platform to track and analyze the performance of their cryptocurrency investments. In the fast-paced and volatile crypto market, staying informed is key to making educated investment decisions. Our application addresses this need by offering real-time market data, insightful analysis, and user-friendly data visualization to cater to both novice and experienced traders.
 
@@ -48,3 +56,5 @@ cd back-end
 npx nodemon server
 ```
 
+<!-- MARKDOWN LINKS & IMAGES -->
+[mongo-url]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge](https://img.shields.io/badge/mongoDB-db?style=for-the-badge&logo=mongodb&labelColor=black
