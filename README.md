@@ -35,8 +35,7 @@ The Crypto Portfolio Tracker and Analyzer aims to empower individual crypto inve
   GitHub: [Ryan's GitHub](https://github.com/rryan1010)  
 
 ## Gallery
-
-<img src="img1.png" alt="Splash Page" width="200"/> <img src="img2.png" alt="Crypto List" width="200"/> <img src="img_3.png" alt="Add Wallet" width="200"/>
+<img src="https://github.com/user-attachments/assets/b2eca706-f2fa-4f74-a41b-253ca07a465a" alt="Splash Page" width="200"/> <img src="https://github.com/user-attachments/assets/e8b782e7-598e-432c-8211-83cbe92fdad3" alt="Crypto List" width="200"/> <img src="https://github.com/user-attachments/assets/11ed97c9-ffc0-4399-8452-5d91fd24ae2f" alt="Add Wallet" width="200"/> <img src="https://github.com/user-attachments/assets/20fed525-dc89-4c3d-824b-b30720c2c337" alt="Image 3" width="200"/> <img src="https://github.com/user-attachments/assets/662bb6ea-48ad-4eed-b07b-6b1a373bca21" alt="Image 4" width="200"/>
 
 ## Project Genesis
 The idea for the Crypto Portfolio Tracker and Analyzer was born out of the personal experiences of its creators, Alessandro, Reyhan, and Ryan who recognized the challenges of managing crypto investments through disparate platforms and tools. The project aims to consolidate various tools into a single, coherent application that provides real-time insights, trend analysis, and portfolio performance in an accessible manner for everyone invested in the cryptocurrency market.
